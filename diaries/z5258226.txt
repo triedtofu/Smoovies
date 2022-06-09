@@ -1,0 +1,5 @@
+Week 1
+
+- The group was formed and we decided to do the Movie Finder System
+- I was placed in the frontend team which will be using Typescript with React
+- I completed the user stories for the two criteria I was assigned
