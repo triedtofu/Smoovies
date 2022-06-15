@@ -1,0 +1,13 @@
+Week 1 
+- Discussed with group which project was most suitable, movie finder was selected
+- Role assigned as backend
+- Discussed potential novel ideas with the group
+- Discussed potential/preferred languages that could be used for system architecture
+
+Week 2
+- Wrote User Stories for assigned stories and put it on Jira
+- Researched suitable languages/framework to write backend with
+
+Week 3
+- Assisted parter with creating diagram of system architecture
+- Further refined assigned user stories to conform to lecture guide 
