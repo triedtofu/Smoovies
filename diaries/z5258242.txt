@@ -1,1 +1,13 @@
+Week 1
+- Groups created, after discussion I was put into the frontend.
+- Completed user stories before our next tutorial after deciding which system we wanted to build
+Week 2
+Thursday
+- Made plans to talk to my other group member that does frontend regarding the interface and how we will be designing the pages and a little bit of the functionality
+- Discussed to have more meetings before our tutorial
 
+Week 3
+Monday
+- Planned quite a bit of the frontend pages with my partner and discussed with all other group members where we're up to.
+- Understanding how to use AWS to implement the frontend on
+- Complete all other slides that my group members suggested as well as fix up user Stories
