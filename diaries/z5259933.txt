@@ -31,3 +31,4 @@ Monday Scrum
 
 Tutorial
 - Absent due to clashing MMAN3200 exam
+- New commit because I forgot to give a description
