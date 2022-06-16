@@ -1,1 +1,33 @@
+Week 1 
 
+Tutorial
+- We selected the Movie Finder Project
+- Role assigned as Scrum Master - will probably be coding for backend
+- We discussed potential novel ideas with the group, 'Higher or Lower', night mode
+- We discussed potential/preferred languages that could be used for system architecture
+- I assigned two functional requirements per member, and we are to write user stories for each on Jira
+
+Week 2
+
+Tasks completed
+- I wrote user stories for functionalities 3 and 4 from the project description
+- I researched existing movie finder systems
+
+Tutorial
+- We discussed potential system architectures and languages for backend
+- I allocated responsibilities for the project proposal to each team member
+- We discussed dates for scrums outside of tutorials - Monday and Sunday were decided
+
+Week 3
+
+Tasks completed
+- I wrote the first draft for the background section of the project proposal
+
+Monday Scrum
+- I asked each member to present the work that they have completed for the project proposal
+- We gave feedback to each other
+- Chris and Wayne asked me to seek clarification from the tutor about using AWS
+- I asked each member to finalise their user stories
+
+Tutorial
+- Absent due to clashing MMAN3200 exam
