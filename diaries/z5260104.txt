@@ -1,1 +1,5 @@
 
+Created system architecture diagram
+Clean up system permissions
+Research development stack we should use.
+Write out the descriptions for the software architecture layer & technologies.
