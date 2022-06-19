@@ -32,3 +32,15 @@ Monday Scrum
 Tutorial
 - Absent due to clashing MMAN3200 exam
 - New commit because I forgot to give a description
+
+Week 4
+
+Tasks completed
+- I completed the 'User Stories and Sprints' section of the project proposal
+- I submitted the project proposal
+
+Sunday Scrum
+- We discussed which user stories should be part of the first sprint
+- We agreed upon the value of one story point for user stories to represent three hours of work for one person
+- We discussed final requirements for the completion of the project proposal, to be submitted to Leighton for formatting by 10pm
+- We discussed the priority hierarchy of user stories
