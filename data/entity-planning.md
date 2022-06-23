@@ -48,7 +48,7 @@ Object 6: Reviews
         
     Can't group them together otherwise we wont know if the person is a director or actor for a movie.
  - reviewId : int (primary key)
- - reviewer : string 
+ - reviewer : string (foreign key to user)
  - rating : double 
  - description : string 
  - movieId : int (foreign key)
