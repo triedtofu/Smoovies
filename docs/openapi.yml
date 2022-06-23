@@ -1,5 +1,9 @@
 openapi: 3.0.0
-servers: []
+servers:
+  - url: https://comp3900-lawnchair.herokuapp.com/
+    description: Production server
+  - url: https://comp3900-lawnchair-back.herokuapp.com/
+    description: Test server
 info:
   description: This is a simple API
   version: "1.0.0"
@@ -73,6 +77,11 @@ paths:
         400:
           $ref: '#/components/responses/InputError'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Token:
       type: string
