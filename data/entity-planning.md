@@ -26,17 +26,22 @@ Object 3: Actor
         These will map to the primary key of the Actor, and Movie object.
 This structure will help make up the Cast of a movie, by querying the isIn object.
 
-Object 4: isIn (Relationship object between movie and actor)
+Object 4: ActorIsIn (Relationship object between movie and actor)
 
 n:n relationship, actors can be in many movies, and a movie can have many actors.
 
- - actorName (foreign key)
- - movieName (foreign key) 
- - directorName (foreign key)
+ - actorId (foreign key)
+ - movieId (foreign key) 
 
 Object 5: Director 
- - name: string (primary key)
+ - directorId : int (primary key)
+ - name: string 
  
+Object: DirectorIsIn:
+ - directorId: (foreign key)
+ - movieId: (foreign key) 
+
+
 Object 6: Reviews 
 
     Caution: and person can be both an actor and director. We want to know for a specific movie.
@@ -47,8 +52,6 @@ Object 6: Reviews
  - rating : double 
  - description : string 
  - movieId : int (foreign key)
-
-
 
 Object 7: Genre 
 
