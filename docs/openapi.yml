@@ -1,0 +1,108 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Movie Finder API
+tags:
+  - name: Auth
+    description: Managing user authentication and authorisation
+paths:
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Logs a user in to the application
+      description: Given correct user credentials, returns an authorised access token for making subsequent calls
+      requestBody:
+        required: true
+        content:
+          application-json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    $ref: '#/components/schemas/Token'
+                  userId:
+                    $ref: '#/components/schemas/UserId'
+        400:
+          $ref: '#/components/responses/InputError'
+  /api/register:
+    post:
+      tags:
+        - Auth
+      summary: Registers a user in the application
+      description: Given user details, registers the user and returns an authorised access token for making subsequent calls
+      requestBody:
+        required: true
+        content:
+          application-json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Token'
+                password:
+                  $ref: '#/components/schemas/Password'
+                name:
+                  $ref: '#/components/schemas/Name'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    $ref: '#/components/schemas/Token'
+                  password:
+                    $ref: '#/components/schemas/Password'
+        400:
+          $ref: '#/components/responses/InputError'
+components:
+  schemas:
+    Token:
+      type: string
+      format: jwt
+      description: Token to provide authorisation
+      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhheWRlbkB1bnN3LmVkdS5hdSIsImlhdCI6MTYwMzk0MzIzMH0.b37PfwlcH_cue6yhgvDt2IiNvhRACf79hTNtacYB94Q
+    Email:
+      type: string
+      description: User's email address
+      example: betty@email.com
+    Password:
+      type: string
+      description: User's password
+      example: Password123
+    Name:
+      type: string
+      description: User's name
+      example: Betty
+    UserId:
+      type: number
+      description: ID of the user
+      example: 1729
+  responses:
+    InputError:
+      description: Input error
+      content:
+        application-json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Invalid input
