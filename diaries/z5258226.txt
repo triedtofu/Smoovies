@@ -9,3 +9,10 @@ Week 2
 - Worked with Raymond on the interface/flow diagrams
 - Had a group meeting on Monday where we discussed our progress and plans
 - Finished a majority of the interface/flow diagrams
+
+Week 3
+
+- Finished the inferface/flow diagrams
+- Worked with group to finish the project proposal
+- Set up the project on heroku
+- Worked on the login and register page
