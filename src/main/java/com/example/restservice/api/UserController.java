@@ -17,12 +17,13 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+//Expose endpoints so clients can consume 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
+    @Autowired
     private final UserService userService;
-
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;

@@ -7,7 +7,7 @@ import com.example.restservice.dataModels.User;
 
 
 public interface UserDAO {
-    
+
     int addUser(User user, UUID id);
 
     int addAdmin(User user, UUID id);

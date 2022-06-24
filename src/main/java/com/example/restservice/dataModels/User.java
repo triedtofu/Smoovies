@@ -1,28 +1,52 @@
 package com.example.restservice.dataModels;
 
 import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Entity
+@Table(name = "users")
 public class User {
-    private final UUID id;
-    private final String name;
-    private final String email;
-    private final String password;
-    private final Boolean isAdmin;
 
-    public User(UUID id, 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "name")
+    private  String name;
+    
+    @Column(name = "email")
+    private  String email;
+
+    @Column(name = "password")
+    private String password;
+  
+    @Column(name = "isAdmin")
+    private Boolean isAdmin;
+
+    public User() {
+        super();
+    }
+
+    public User(
                 @JsonProperty("name") String name,
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String password,
                 Boolean isAdmin) {
-        this.id = id;
+        super();
         this.name = name;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 

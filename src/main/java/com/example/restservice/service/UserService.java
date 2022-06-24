@@ -4,24 +4,24 @@ import java.util.List;
 import java.util.UUID;
 
 import com.example.restservice.dataModels.User;
-import com.example.restservice.database.UserDAO;
+import com.example.restservice.database.UserDataAccessService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
+
 @Service
 public class UserService {
     
-    private final UserDAO userDAO;
-
+    
     @Autowired
-    public UserService(@Qualifier("TestUserDAO") UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
+	private UserDataAccessService userDAO;
+
 
     public JSONObject authenticateUser(User user) {
 
@@ -76,10 +76,18 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
+/*
+    public int addUser(User user) {
+        if (userDAO.save(user) != null) {
+            return 1;
+        }
+        return 0;
+
     }
+*/
 
     public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
+        return userDAO.findAll();
     }
 
     private JSONObject invalidInputError() {

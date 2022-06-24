@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Repository("TestUserDAO")
 public class TestUserDataAccessService implements UserDAO {
     
+    //This is the database, will need to change this.
     private static List<User> testDB = new ArrayList<>();
 
     @Override
@@ -24,6 +25,8 @@ public class TestUserDataAccessService implements UserDAO {
     @Override
     public int addAdmin(User user, UUID id) {
         testDB.add(new User(id, user.getName(), user.getEmail(), user.getPassword(), true));
+
+    
         return 1;
     }
 
