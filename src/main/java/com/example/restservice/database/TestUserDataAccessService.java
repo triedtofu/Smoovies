@@ -18,8 +18,7 @@ public class TestUserDataAccessService implements UserDAO {
     @Override
     public int addUser(User user) {
         // generate random user ID for now
-        UUID id = UUID.randomUUID();
-        testDB.add(new User(id, user.getName(), user.getEmail(), user.getPassword()));
+        testDB.add(new User(user.getName(), user.getEmail(), user.getPassword()));
         return 1;
     }
 
