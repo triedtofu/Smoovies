@@ -17,6 +17,7 @@ Object 2: User (Movie Finder)
  - userId : int (primary key)
  - email : string (some sort of constraints here)
  - password : string 
+ - username: string
 
 Notes: Average ratings will be calculated after from the reviews?
 
