@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
@@ -24,13 +28,36 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/addUser")
-    public void addUser(@RequestBody User user) {
-        userService.addUser(user);
+    @PostMapping("/login")
+    public Object authenticateUser(@RequestBody User user) {
+        JSONObject response = userService.authenticateUser(user);
+
+        if(response.has("error")){
+            return new ResponseEntity<Object>(response.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<Object>(response.toString(), HttpStatus.OK);
+        }
     }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> addUser(@RequestBody User user) {
+
+        JSONObject response = userService.addUser(user);
+
+        if(response.has("error")){
+            return new ResponseEntity<Object>(response.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<Object>(response.toString(), HttpStatus.OK);
+        }
+
+    }
+
     
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
+
 }

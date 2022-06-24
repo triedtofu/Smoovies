@@ -8,15 +8,18 @@ public class User {
     private final String name;
     private final String email;
     private final String password;
+    private final Boolean isAdmin;
 
     public User(UUID id, 
                 @JsonProperty("name") String name,
                 @JsonProperty("email") String email,
-                @JsonProperty("password") String password) {
+                @JsonProperty("password") String password,
+                Boolean isAdmin) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.isAdmin = isAdmin;
     }
 
     public UUID getId() {
@@ -33,5 +36,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
     }
 }
