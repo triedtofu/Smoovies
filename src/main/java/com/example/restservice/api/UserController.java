@@ -29,16 +29,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
-    public Object authenticateUser(@RequestBody User user) {
-        JSONObject response = userService.authenticateUser(user);
+    // @PostMapping("/login")
+    // public Object authenticateUser(@RequestBody User user) {
+    //     JSONObject response = userService.authenticateUser(user);
 
-        if(response.has("error")){
-            return new ResponseEntity<Object>(response.toString(), HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<Object>(response.toString(), HttpStatus.OK);
-        }
-    }
+    //     if(response.has("error")){
+    //         return new ResponseEntity<Object>(response.toString(), HttpStatus.BAD_REQUEST);
+    //     } else {
+    //         return new ResponseEntity<Object>(response.toString(), HttpStatus.OK);
+    //     }
+    // }
 
 
     @PostMapping("/register")
