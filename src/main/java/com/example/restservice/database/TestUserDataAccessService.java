@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @Repository("TestUserDAO")
 public class TestUserDataAccessService implements UserDAO {
     
+    //This is the database, will need to change this.
     private static List<User> testDB = new ArrayList<>();
 
     @Override

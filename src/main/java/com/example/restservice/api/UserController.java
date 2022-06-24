@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+//Expose endpoints so clients can consume 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
