@@ -45,6 +45,8 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
+                  isAdmin:
+                    $ref: '#/components/schemas/IsAdmin'
         400:
           $ref: '#/components/responses/InputError'
   /api/register:
@@ -321,6 +323,10 @@ components:
           $ref: '#/components/schemas/Genres'
         averageRating:
           $ref: '#/components/schemas/AverageRating'
+    IsAdmin:
+      type: boolean
+      description: Whether the authorised user is an admin
+      example: false
   parameters:
     UserIdParam:
       name: userId
