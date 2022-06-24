@@ -283,7 +283,7 @@ components:
       minimum: 0
       maximum: 5
       multipleOf: 0.01
-      description: Averate number rating
+      description: Average number rating
       example: 3.14
     Cast:
       type: string
