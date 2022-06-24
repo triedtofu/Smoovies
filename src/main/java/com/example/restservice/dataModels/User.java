@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,6 +26,9 @@ public class User {
 
     @Column(name = "password")
     private String password;
+  
+    @Column(name = "isAdmin")
+    private Boolean isAdmin;
 
     public User() {
         super();
@@ -33,11 +37,13 @@ public class User {
     public User(
                 @JsonProperty("name") String name,
                 @JsonProperty("email") String email,
-                @JsonProperty("password") String password) {
+                @JsonProperty("password") String password,
+                Boolean isAdmin) {
         super();
         this.name = name;
         this.email = email;
         this.password = password;
+        this.isAdmin = isAdmin;
     }
 
     public long getId() {
@@ -54,5 +60,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
     }
 }
