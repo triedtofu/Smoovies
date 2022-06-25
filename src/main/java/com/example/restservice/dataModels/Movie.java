@@ -37,6 +37,8 @@ public class Movie {
     @Column(name = "averageRating")
     private String averageRating;
 
+
+
     public Movie() {
         super();
     }
@@ -57,6 +59,7 @@ public class Movie {
         this.director = director;
         this.contentRating = contentRating;
         this.averageRating = averageRating;
+
     }
 
     public long getId() {
@@ -90,4 +93,6 @@ public class Movie {
     public String getAverageRating() {
         return averageRating;
     }
+
+
 }
