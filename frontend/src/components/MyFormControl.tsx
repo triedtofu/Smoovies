@@ -12,6 +12,6 @@ const MyFormControl = (props: WrapperProps) => {
       {props.children}
     </FormControl>
   );
-}
+};
 
 export default MyFormControl;

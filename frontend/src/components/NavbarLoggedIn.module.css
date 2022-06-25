@@ -7,3 +7,9 @@
   display: flex;
   gap: 8px;
 }
+
+.logo {
+  margin-left: 10px;
+  height: 15%;
+  width: 15%;
+}

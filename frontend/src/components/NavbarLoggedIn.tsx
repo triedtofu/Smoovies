@@ -1,11 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import movieLogo from '../logo.png';
 
 import styles from './NavbarLoggedIn.module.css';
 
 const NavbarLoggedIn = () => {
   return (
     <nav className={styles.nav}>
+      <nav>
+        <div>
+          <img src={movieLogo} className={styles.logo} alt="loading" />
+        </div>
+      </nav>
       <div>
         <Link to="/">Home</Link>
       </div>

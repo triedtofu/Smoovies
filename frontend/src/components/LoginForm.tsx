@@ -10,20 +10,20 @@ import styles from './AuthForm.module.css';
 const LoginForm = () => {
   const loginSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("TODO Submit");
-  }
+    console.log('TODO Submit');
+  };
 
   return (
     <>
       <form onSubmit={loginSubmit}>
         <MyFormControl>
-            <RequiredTextField
-              name="email"
-              label="Email"
-              type="email"
-              // value={email}
-              // onChange={e => setEmail(e.target.value)}
-            />
+          <RequiredTextField
+            name="email"
+            label="Email"
+            type="email"
+            // value={email}
+            // onChange={e => setEmail(e.target.value)}
+          />
         </MyFormControl>
         <MyFormControl>
           <RequiredTextField
@@ -35,15 +35,20 @@ const LoginForm = () => {
           />
         </MyFormControl>
         <MyFormControl>
-          <Button variant="contained" type="submit">Login</Button>
+          <Button variant="contained" type="submit">
+            Login
+          </Button>
         </MyFormControl>
       </form>
 
       <div className={styles.box}>
-        Don&apos;t have an account? <Link className={styles.box_link} to="/register">Register</Link>
+        Don&apos;t have an account?{' '}
+        <Link className={styles.box_link} to="/register">
+          Register
+        </Link>
       </div>
     </>
   );
-}
+};
 
 export default LoginForm;
