@@ -69,7 +69,7 @@ public class UserService {
         if (!ServiceInputChecks.checkName(user.getName()) || !ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {
             return ServiceErrors.invalidInputError();
         }
-
+        
         user.setIsAdmin(isAdmin);
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
