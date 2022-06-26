@@ -1,5 +1,22 @@
-
+Week 2
 Created system architecture diagram
 Clean up system permissions
 Research development stack we should use.
 Write out the descriptions for the software architecture layer & technologies.
+
+Week 3:
+
+- Finished system architecture section of the report , and updated to reflect heroku
+- Added technologies and language descriptions 
+- Added descriptions to each architecture level to reflect new changes.
+- AdFixed user stories that I previously wrote to reflect up to date acceptance criteria.
+- Reviewed system permission for each class of user
+
+week 4: 
+
+ -Planned entity relationship and data model for the system
+ -Created ER diagram
+ -Create SQL Schema's
+ -Work out backend functionality to system and interactions of springboot java to heroku.
+ 
+
