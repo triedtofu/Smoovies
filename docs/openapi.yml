@@ -187,6 +187,8 @@ paths:
             schema:
               type: object
               properties:
+                token:
+                  $ref: '#/components/schemas/Token'                
                 movieId:
                   $ref: '#/components/schemas/MovieId'
                 turnon:
