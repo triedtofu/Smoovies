@@ -16,7 +16,7 @@ tags:
   - name: Users
     description: Managing user profiles
 paths:
-  /api/login:
+  /api/user/login:
     post:
       tags:
         - Auth
@@ -49,7 +49,7 @@ paths:
                     $ref: '#/components/schemas/IsAdmin'
         400:
           $ref: '#/components/responses/InputError'
-  /api/register:
+  /api/user/register:
     post:
       tags:
         - Auth
@@ -82,7 +82,7 @@ paths:
                     $ref: '#/components/schemas/UserId'
         400:
           $ref: '#/components/responses/InputError'
-  /api/movie:
+  /api/movie/getMovie:
     get:
       tags:
         - Movies
