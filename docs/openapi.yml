@@ -1,0 +1,382 @@
+openapi: 3.0.0
+servers:
+  - url: https://comp3900-lawnchair.herokuapp.com/
+    description: Production server
+  - url: https://comp3900-lawnchair-back.herokuapp.com/
+    description: Test server
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Movie Finder API
+tags:
+  - name: Auth
+    description: Managing user authentication and authorisation
+  - name: Movies
+    description: Managing movie data
+  - name: Users
+    description: Managing user profiles
+paths:
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Logs a user in to the application
+      description: Given correct user credentials, returns an authorised access token for making subsequent calls
+      requestBody:
+        required: true
+        content:
+          application-json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    $ref: '#/components/schemas/Token'
+                  userId:
+                    $ref: '#/components/schemas/UserId'
+                  isAdmin:
+                    $ref: '#/components/schemas/IsAdmin'
+        400:
+          $ref: '#/components/responses/InputError'
+  /api/register:
+    post:
+      tags:
+        - Auth
+      summary: Registers a user in the application
+      description: Given user details, registers the user and returns an authorised access token for making subsequent calls
+      requestBody:
+        required: true
+        content:
+          application-json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/Name'
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    $ref: '#/components/schemas/Token'
+                  userId:
+                    $ref: '#/components/schemas/UserId'
+        400:
+          $ref: '#/components/responses/InputError'
+  /api/movie:
+    get:
+      tags:
+        - Movies
+      summary: Get the details of a specific movie
+      description: Returns the details of a specific movie
+      parameters:
+        - $ref: '#/components/parameters/MovieIdParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/MovieName'
+                  year:
+                    $ref: '#/components/schemas/MovieYear'
+                  poster:
+                    $ref: '#/components/schemas/MoviePoster'
+                  description:
+                    $ref: '#/components/schemas/MovieDescription'
+                  director:
+                    $ref: '#/components/schemas/Director'
+                  genres:
+                    $ref: '#/components/schemas/Genres'
+                  contentRating:
+                    $ref: '#/components/schemas/ContentRating'
+                  averageRating:
+                    $ref: '#/components/schemas/AverageRating'
+                  cast:
+                    $ref: '#/components/schemas/Cast'
+                  reviews:
+                    type: array
+                    maxItems: 10
+                    items:
+                      $ref: '#/components/schemas/Review'
+        400:
+          $ref: '#/components/responses/InputError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+  /api/movie/search:
+    get:
+      tags:
+        - Movies
+      summary: Search for movies
+      description: Returns the details of movies matching the search criteria
+      parameters:
+        - $ref: '#/components/parameters/MovieNameParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
+        400:
+          $ref: '#/components/responses/InputError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/wishlist:
+    get:
+      tags:
+        - Users
+      summary: Get the wishlist of a specific user
+      description: Returns the wishlist of a specific 
+      parameters:
+        - $ref: '#/components/parameters/UserIdParam'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
+        400:
+          $ref: '#/components/responses/InputError'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Add or remove a movie from wishlist
+      description: Allow an authorised user to add or remove a movie from their wishlist. If 'on' is set to true, then the action adds the movie. If 'on' is set to false, then the action removes the movie.
+      requestBody:
+        required: true
+        content:
+          application-json:
+            schema:
+              type: object
+              properties:
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                turnon:
+                  $ref: '#/components/schemas/TurnOn'
+      responses:
+        200:
+          description: OK
+          content:
+            application-json:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/InputError'
+        403:
+          $ref: '#/components/responses/AccessError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Token:
+      type: string
+      format: jwt
+      description: Token to provide authorisation
+      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhheWRlbkB1bnN3LmVkdS5hdSIsImlhdCI6MTYwMzk0MzIzMH0.b37PfwlcH_cue6yhgvDt2IiNvhRACf79hTNtacYB94Q
+    Email:
+      type: string
+      description: User's email address
+      example: donald@email.com
+    Password:
+      type: string
+      description: User's password
+      example: Password123
+    Name:
+      type: string
+      description: User's name
+      example: Donald Knuth
+    UserId:
+      type: number
+      description: ID of the user
+      example: 1729
+    MovieId:
+      type: number
+      description: ID of the movie
+      example: 6174
+    MovieName:
+      type: string
+      description: Name of the movie
+      example: Morbius
+    MovieYear:
+      type: integer
+      description: Release year of the movie
+      example: 2022
+    MovieDescription:
+      type: string
+      description: Description of the movie
+      example: Biochemist Michael Morbius tries to cure himself of a rare blood disease, but he inadvertently infects himself with a form of vampirism instead.
+    MoviePoster:
+      type: string
+      format: url
+      description: Image url
+      example: https://i.imgur.com/CBC2V7j.jpeg
+    Director:
+      type: string
+      description: Name of a director
+      example: Steven Spielberg
+    Genre:
+      type: string
+      description: Genre of a movie
+      enum:
+      - Action
+      - Horror
+      - Comedy
+      - Fantasy
+      example: Action
+    Genres:
+      type: array
+      items:
+        $ref: '#/components/schemas/Genre'
+      example: [Action, Fantasy]
+    ContentRating:
+      type: string
+      description: Content rating of a movie
+      enum:
+      - G
+      - PG
+      - PG-13
+      - R
+      example: PG
+    AverageRating:
+      type: number
+      minimum: 0
+      maximum: 5
+      multipleOf: 0.01
+      description: Average number rating
+      example: 3.14
+    Cast:
+      type: string
+      description: Cast of a movie
+      example: Johnny Depp, Will Smith
+    Review:
+      type: object
+      properties: 
+        user:
+          $ref: '#/components/schemas/UserId'
+        review:
+          type: string
+          description: A review of a movie
+          example: It's Morbin Time
+        rating:
+          type: integer
+          description: A rating of a movie
+          example: 5
+    TurnOn:
+      type: boolean
+      description: True if should add/enable, false if should remove/disable
+      example: true
+    MovieSummary:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/MovieId'
+        name:
+          $ref: '#/components/schemas/MovieName'
+        year:
+          $ref: '#/components/schemas/MovieYear'
+        poster:
+          $ref: '#/components/schemas/MoviePoster'
+        description:
+          $ref: '#/components/schemas/MovieDescription'
+        genres:
+          $ref: '#/components/schemas/Genres'
+        averageRating:
+          $ref: '#/components/schemas/AverageRating'
+    IsAdmin:
+      type: boolean
+      description: Whether the authorised user is an admin
+      example: false
+  parameters:
+    UserIdParam:
+      name: userId
+      in: query
+      description: ID of the user
+      required: true
+      schema:
+        $ref: '#/components/schemas/UserId'
+    MovieIdParam:
+      name: movieId
+      in: query
+      description: ID of the movie
+      required: true
+      schema:
+        $ref: '#/components/schemas/MovieId'
+    MovieNameParam:
+      name: name
+      in: query
+      description: Name of the movie
+      required: true
+      schema:
+        $ref: '#/components/schemas/MovieName'
+  responses:
+    InputError:
+      description: Input error
+      content:
+        application-json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Invalid input
+    AccessError:
+      description: Access error
+      content:
+        application-json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Invalid token
+    NotFoundError:
+      description: Not found error
+      content:
+        application-json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Not found
