@@ -1,7 +1,5 @@
 package com.example.restservice.dataModels;
 
-import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -64,5 +62,9 @@ public class User {
 
     public Boolean getIsAdmin() {
         return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }
