@@ -22,7 +22,7 @@ public class UserService {
     @Autowired
 	private UserDataAccessService userDAO;
 
-
+    /* 
     public JSONObject authenticateUser(User user) {
 
         // // TODO: check user values for errors
@@ -30,9 +30,7 @@ public class UserService {
         //     return invalidInputError();
         // }
 
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         // find the user in the database
         User dbUser = userDAO.getUserByEmailPassword(user.getEmail(), user.getPassword());
         if (dbUser != null) {
@@ -50,41 +48,41 @@ public class UserService {
 
 
     }
-
+    */
+    /*
+     * Register a user by adding their details to the database.
+     */
     public JSONObject addUser(User user) {
         // generate random ID for now
-        UUID id = UUID.randomUUID();
-
         // // TODO: check user values for errors
         // if () {
         //     return invalidInputError();
         // }
 
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
+        boolean success = this.helperAddUser(user);
         // if user is added, return details
-        if (userDAO.addUser(user, id) == 1) {
-            // TODO: Add token implementation
-            returnMessage.put("userId", id);
+        if (success) {
+            returnMessage.put("userId", user.getId());
         }
         // otherwise return error
         else {
             return invalidInputError();
         }
-
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
-/*
-    public int addUser(User user) {
-        if (userDAO.save(user) != null) {
-            return 1;
-        }
-        return 0;
-
     }
-*/
+
+    /*
+     * Helper function to add a user -- abstract into a new folder 
+     */
+    public boolean helperAddUser(User user) {
+        if (userDAO.save(user) != null) {
+            return true;
+        }
+        return false;
+    }
+
 
     public List<User> getAllUsers() {
         return userDAO.findAll();

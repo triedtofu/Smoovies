@@ -8,5 +8,5 @@ import com.example.restservice.dataModels.User;
 //the Long is from id type 
 @Repository 
 public interface UserDataAccessService extends JpaRepository<User, Long>{
-    
+    //User getUserByEmailPassword(String email, String password);
 }

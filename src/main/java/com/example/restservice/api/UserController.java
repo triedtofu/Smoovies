@@ -28,7 +28,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
+    /* 
     @PostMapping("/login")
     public Object authenticateUser(@RequestBody User user) {
         JSONObject response = userService.authenticateUser(user);
@@ -38,7 +38,7 @@ public class UserController {
         } else {
             return new ResponseEntity<Object>(response.toString(), HttpStatus.OK);
         }
-    }
+    }*/
 
 
     @PostMapping("/register")
@@ -53,8 +53,6 @@ public class UserController {
         }
 
     }
-
-    
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
