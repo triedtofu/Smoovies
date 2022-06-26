@@ -27,4 +27,15 @@ public class ServiceErrors {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "Invalid token"}
+     */
+    public static JSONObject invalidTokenError() {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        returnMessage.put("error", "Invalid token");
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
 }

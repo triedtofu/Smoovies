@@ -2,14 +2,16 @@ package com.example.restservice.api;
 
 import com.example.restservice.dataModels.User;
 import com.example.restservice.service.UserService;
-
+import com.example.restservice.dataModels.AuthenticationToken;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 
 import org.json.JSONObject;
@@ -55,10 +57,19 @@ public class UserController {
 
 
     @GetMapping("/wishlist")
-    public ResponseEntity<Object> getUserWishlist(long id) {
+    public ResponseEntity<Object> getUserWishlist(@PathVariable("userId") long id) {
         JSONObject response = userService.getUserWishlist(id);
 
-        return ControllerResponses.responseInputAndSearch(response);
+        return ControllerResponses.responseInputAndSearchDatabase(response);
+    }
+
+    @PutMapping("/wishlist")
+    public ResponseEntity<Object> updateUserWishlist(@RequestBody AuthenticationToken authenticationToken, 
+                                                    @PathVariable("movieId") long movieId,
+                                                    @PathVariable("turnon") Boolean addRemove) {
+        JSONObject response = userService.updateUserWishlist(authenticationToken, movieId, addRemove);
+
+        return ControllerResponses.responseInputAndSearchToken(response);
     }
 
 }

@@ -2,12 +2,17 @@ package com.example.restservice.service;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.AuthenticationToken;
+import com.example.restservice.dataModels.Movie;
+
 import com.example.restservice.database.UserDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
 
-import com.example.restservice.dataModels.Movie;
+import com.example.restservice.service.ServiceErrors;
+import com.example.restservice.service.ServiceInputChecks;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import java.util.HashMap;
-import com.example.restservice.service.ServiceErrors;
-import com.example.restservice.service.ServiceInputChecks;
 @Service
 public class UserService {
     
@@ -28,7 +30,7 @@ public class UserService {
     /**
      * Authenticates user when trying to login
      * @param user
-     * @return token, userId, isAdmin
+     * @return token, userId, isAdminz
      */
     public JSONObject authenticateUser(User user) {
 
@@ -140,6 +142,42 @@ public class UserService {
 
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+
+    }
+
+    /**
+     * Updates the wishlist of a user
+     * @param token
+     * @param movieId 
+     * @param addRemove
+     * @return {}
+     */
+    public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
+
+        // TODO: check inputs for errors
+        if (!ServiceInputChecks.checkId(movieId)) {
+            return ServiceErrors.invalidInputError();
+        }
+
+        // TODO: search through list of tokens and find corresponding userId. Check against token.getToken() string. If matching string, return userId
+        // if (userID not found) {
+        //     return ServiceErrors.invalidTokenError();
+        // }
+
+        // TODO: add/remove movie from wishlist
+        // if addRemove == true
+        if (addRemove) {    
+            // TODO: add movie to wishlist
+
+        }
+        // if addRemove == false
+        else {
+            //TODO: remove from wishlist
+
+        }
+
+        JSONObject responseJson = new JSONObject();
         return responseJson;
 
     }
