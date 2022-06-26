@@ -1,9 +1,9 @@
 openapi: 3.0.0
 servers:
-  - url: https://comp3900-lawnchair.herokuapp.com/
-    description: Production server
   - url: https://comp3900-lawnchair-back.herokuapp.com/
     description: Test server
+  - url: https://comp3900-lawnchair.herokuapp.com/
+    description: Production server
 info:
   description: This is a simple API
   version: "1.0.0"
