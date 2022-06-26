@@ -6,7 +6,7 @@ servers:
     description: Production server
 info:
   description: This is a simple API
-  version: "1.0.0"
+  version: 1.0.0
   title: Movie Finder API
 tags:
   - name: Auth
@@ -25,7 +25,7 @@ paths:
       requestBody:
         required: true
         content:
-          application-json:
+          application/json:
             schema:
               type: object
               properties:
@@ -34,10 +34,10 @@ paths:
                 password:
                   $ref: '#/components/schemas/Password'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -47,7 +47,7 @@ paths:
                     $ref: '#/components/schemas/UserId'
                   isAdmin:
                     $ref: '#/components/schemas/IsAdmin'
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
   /api/user/register:
     post:
@@ -58,7 +58,7 @@ paths:
       requestBody:
         required: true
         content:
-          application-json:
+          application/json:
             schema:
               type: object
               properties:
@@ -69,10 +69,10 @@ paths:
                 password:
                   $ref: '#/components/schemas/Password'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -80,7 +80,7 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
   /api/movie/getMovie:
     get:
@@ -91,10 +91,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/MovieIdParam'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -121,9 +121,9 @@ paths:
                     maxItems: 10
                     items:
                       $ref: '#/components/schemas/Review'
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
-        404:
+        '404':
           $ref: '#/components/responses/NotFoundError'
   /api/movie/search:
     get:
@@ -134,10 +134,10 @@ paths:
       parameters:
         - $ref: '#/components/parameters/MovieNameParam'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -145,23 +145,23 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieSummary'
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
-        404:
+        '404':
           $ref: '#/components/responses/NotFoundError'
   /api/user/wishlist:
     get:
       tags:
         - Users
       summary: Get the wishlist of a specific user
-      description: Returns the wishlist of a specific 
+      description: Returns the wishlist of a specific
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
                 properties:
@@ -169,9 +169,9 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieSummary'
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
-        404:
+        '404':
           $ref: '#/components/responses/NotFoundError'
     put:
       security:
@@ -183,7 +183,7 @@ paths:
       requestBody:
         required: true
         content:
-          application-json:
+          application/json:
             schema:
               type: object
               properties:
@@ -192,15 +192,15 @@ paths:
                 turnon:
                   $ref: '#/components/schemas/TurnOn'
       responses:
-        200:
+        '200':
           description: OK
           content:
-            application-json:
+            application/json:
               schema:
                 type: object
-        400:
+        '400':
           $ref: '#/components/responses/InputError'
-        403:
+        '403':
           $ref: '#/components/responses/AccessError'
 components:
   securitySchemes:
@@ -259,24 +259,26 @@ components:
       type: string
       description: Genre of a movie
       enum:
-      - Action
-      - Horror
-      - Comedy
-      - Fantasy
+        - Action
+        - Horror
+        - Comedy
+        - Fantasy
       example: Action
     Genres:
       type: array
       items:
         $ref: '#/components/schemas/Genre'
-      example: [Action, Fantasy]
+      example:
+        - Action
+        - Fantasy
     ContentRating:
       type: string
       description: Content rating of a movie
       enum:
-      - G
-      - PG
-      - PG-13
-      - R
+        - G
+        - PG
+        - PG-13
+        - R
       example: PG
     AverageRating:
       type: number
@@ -291,7 +293,7 @@ components:
       example: Johnny Depp, Will Smith
     Review:
       type: object
-      properties: 
+      properties:
         user:
           $ref: '#/components/schemas/UserId'
         review:
@@ -353,7 +355,7 @@ components:
     InputError:
       description: Input error
       content:
-        application-json:
+        application/json:
           schema:
             type: object
             properties:
@@ -363,7 +365,7 @@ components:
     AccessError:
       description: Access error
       content:
-        application-json:
+        application/json:
           schema:
             type: object
             properties:
@@ -373,7 +375,7 @@ components:
     NotFoundError:
       description: Not found error
       content:
-        application-json:
+        application/json:
           schema:
             type: object
             properties:
