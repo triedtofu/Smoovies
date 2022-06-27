@@ -16,7 +16,8 @@ public class ServiceInputChecks {
         CharacterIterator it = new StringCharacterIterator(name);
         
         while (it.current() != CharacterIterator.DONE){
-            if (((int)it.current() > 47 && (int)it.current() < 58) || ((int)it.current() > 64 && (int)it.current() < 91) || ((int)it.current() > 96 && (int)it.current() < 122)){
+            if (((int)it.current() > 47 && (int)it.current() < 58) || ((int)it.current() > 64 && (int)it.current() < 91) || ((int)it.current() > 96 && (int)it.current() < 123)){
+                it.next();
                 continue;
             }
             else {
