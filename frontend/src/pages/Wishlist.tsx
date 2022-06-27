@@ -2,9 +2,8 @@ import React from 'react';
 
 import Container from '@mui/material/Container';
 import MakePage from '../components/MakePage';
-import LoginForm from '../components/LoginForm';
 
-function Wishlist() {
+const Wishlist = () => {
   const [noMovieMessage, setNoMovieMessage] = React.useState('');
   const [movieWishlist, setMovieWishlist] = React.useState([]);
 
