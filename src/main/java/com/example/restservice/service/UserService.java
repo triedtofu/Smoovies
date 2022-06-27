@@ -54,8 +54,6 @@ public class UserService {
         else {
             return ServiceErrors.invalidInputError();
         }
-
-
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -66,7 +64,7 @@ public class UserService {
      * @param isAdmin
      * @return token, userID
      */
-    public JSONObject addUser(User user, Boolean isAdmin) {
+    public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
         if (!ServiceInputChecks.checkName(user.getName()) || !ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {

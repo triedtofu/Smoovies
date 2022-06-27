@@ -36,7 +36,6 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         try{
-            // if user is successfully added, put user in dbUser
             Movie dbMovie = movieDAO.save(movie);
 
             // set return response values

@@ -39,10 +39,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> addUser(@RequestBody User user) {
+    public ResponseEntity<Object> Register(@RequestBody User user) {
 
         // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
-        JSONObject response = userService.addUser(user, false);
+        JSONObject response = userService.register(user, false);
 
         return ControllerResponses.responseInputOnly(response);
     }
