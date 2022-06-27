@@ -82,6 +82,24 @@ paths:
                     $ref: '#/components/schemas/UserId'
         '400':
           $ref: '#/components/responses/InputError'
+  /api/movie/homepage:
+    get:
+      tags:
+        - Movies
+      summary: Get the list of movies for the home page
+      description: Returns the list of movies for the home page
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
   /api/movie/getMovie:
     get:
       tags:
@@ -188,7 +206,7 @@ paths:
               type: object
               properties:
                 token:
-                  $ref: '#/components/schemas/Token'                
+                  $ref: '#/components/schemas/Token'
                 movieId:
                   $ref: '#/components/schemas/MovieId'
                 turnon:
