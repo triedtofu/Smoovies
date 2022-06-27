@@ -30,5 +30,13 @@ export const apiAuthRegister = (name: string, email: string, password: string) =
 // Movies
 
 export const apiMovieHomepage = () => {
+  // TODO update once api is done
+  return movielist;
+}
+
+// Users
+
+// TODO update once api is done
+export const apiUserWishlist = () => {
   return movielist;
 }

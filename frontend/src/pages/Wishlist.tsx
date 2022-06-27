@@ -1,11 +1,15 @@
 import React from 'react';
 
 import Container from '@mui/material/Container';
+
 import MakePage from '../components/MakePage';
+import MovieResultCard from '../components/MovieResultCard';
+
+import { apiUserWishlist } from '../util/api';
 
 const Wishlist = () => {
-  const [noMovieMessage, setNoMovieMessage] = React.useState('');
-  const [movieWishlist, setMovieWishlist] = React.useState([]);
+  // const [noMovieMessage, setNoMovieMessage] = React.useState('');
+  // const [movieWishlist, setMovieWishlist] = React.useState([]);
 
   // const getMovieWishlist = async () => {
   //   const init = {
@@ -36,16 +40,23 @@ const Wishlist = () => {
   //   );
   // };
 
+  const data = apiUserWishlist();
+
   return (
-    <div>
+    <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
-      {/* <div>
-        {noMovieMessage}
-        {movieWishlist.map((movie) => {
-          <li>{movie}</li>;
-        })}
-      </div> */}
-    </div>
+      {data.movies.map((movie, index) => (
+          <MovieResultCard
+            key={index}
+            poster={movie.poster}
+            name={movie.name}
+            year={movie.year}
+            genres={movie.genres}
+            rating={movie.averageRating}
+          />
+        ))
+        }
+    </Container>
   );
 }
 
