@@ -4,9 +4,7 @@ import com.example.restservice.dataModels.Movie;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.*;
 import java.util.regex.*;  
-import java.util.Scanner;
 
 public class ServiceInputChecks {
 
