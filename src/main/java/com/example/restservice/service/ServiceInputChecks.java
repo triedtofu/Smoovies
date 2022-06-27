@@ -39,7 +39,8 @@ public class ServiceInputChecks {
         String regexPattern = "^(.+)@(\\S+)$";
         return patternMatches(email, regexPattern);
     }
-    // TODO: checks if password is valid format, true = valid
+    // Checks if password is valid format, true = valid
+    // Modified code from https://www.delftstack.com/howto/java/password-checker-java/
     public static Boolean checkPassword(String Password) {
         // Specify the minimum and maximum number of letters in a password
         final int min = 6; 
