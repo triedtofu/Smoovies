@@ -1,6 +1,8 @@
 const baseUrl = '';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com'
 
+import movielist from './movielist.json';
+
 /**
  * @param {string} path Path of api
  * @param {object} init
@@ -23,4 +25,10 @@ export const apiAuthRegister = (name: string, email: string, password: string) =
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password })
   });
+}
+
+// Movies
+
+export const apiMovieHomepage = () => {
+  return movielist;
 }
