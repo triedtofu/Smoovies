@@ -16,7 +16,7 @@ const Navbar = () => {
         <Link to="/">Home</Link>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/token/wishlist">Wishlist</Link>
+        <Link to="/user/1/wishlist">Wishlist</Link>
         <Link to="/login">Login</Link>
         <Link to="/register">Register</Link>
       </div>
