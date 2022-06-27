@@ -4,6 +4,9 @@ import com.example.restservice.dataModels.Movie;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.*;
+import java.util.regex.*;  
+import java.util.Scanner;
 
 public class ServiceInputChecks {
 
@@ -26,9 +29,16 @@ public class ServiceInputChecks {
         }
         return true;
     }
+    // Pattern Matching for Email Validation
+    public static boolean patternMatches(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+          .matcher(emailAddress)
+          .matches();
+    }
     // TODO: checks if email is valid format, true = valid
     public static Boolean checkEmail(String email) {
-        return true;
+        String regexPattern = "^(.+)@(\\S+)$";
+        return patternMatches(email, regexPattern);
     }
     // TODO: checks if password is valid format, true = valid
     public static Boolean checkPassword(String Password) {
