@@ -2,14 +2,27 @@ package com.example.restservice.service;
 
 import com.example.restservice.dataModels.Movie;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
+
 public class ServiceInputChecks {
 
     // TODO: checks if id is valid format, true = valid
     public static Boolean checkId(long id) {
-        return true;
+        return id > 0;
     }
     // TODO: checks if name is valid format, true = valid
     public static Boolean checkName(String name) {
+        CharacterIterator it = new StringCharacterIterator(name);
+        
+        while (it.current() != CharacterIterator.DONE){
+            if (((int)it.current() > 47 && (int)it.current() < 58) || ((int)it.current() > 64 && (int)it.current() < 91) || ((int)it.current() > 96 && (int)it.current() < 122)){
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
         return true;
     }
     // TODO: checks if email is valid format, true = valid
