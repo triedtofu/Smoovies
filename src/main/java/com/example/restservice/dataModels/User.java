@@ -15,7 +15,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "name")
     private  String name;
     
@@ -28,6 +28,9 @@ public class User {
     @Column(name = "isAdmin")
     private Boolean isAdmin;
 
+    @Column(name = "token")
+    private String token;
+
     public User() {
         super();
     }
@@ -36,15 +39,17 @@ public class User {
                 @JsonProperty("name") String name,
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String password,
+                @JsonProperty("token") String token,
                 Boolean isAdmin) {
         super();
         this.name = name;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.token = token;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -66,5 +71,13 @@ public class User {
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

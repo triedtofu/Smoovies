@@ -1,6 +1,7 @@
 package com.example.restservice.api;
 
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.UserLoginDetails;
 import com.example.restservice.service.UserService;
 
 
@@ -32,9 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> authenticateUser(@RequestBody User user) {
-        JSONObject response = userService.authenticateUser(user);
-
+    public ResponseEntity<Object> Login(@RequestBody UserLoginDetails loginDetails) {
+        JSONObject response = userService.UserLogin(loginDetails.getEmail(), loginDetails.getPassword());
         return ControllerResponses.responseInputOnly(response);
     }
 
