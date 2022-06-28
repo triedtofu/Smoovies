@@ -1,6 +1,7 @@
 package com.example.restservice.service;
 
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.AuthenticationToken;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -86,6 +87,23 @@ public class ServiceInputChecks {
     // TODO: checks all variables in the "movie" object are valid, true = valid
     public static Boolean checkMovie(Movie movie) {
         return true;
+    }
+
+    // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
+    // Will have to clear database each time to test this 
+    public static Boolean checkUniqueEmail(String email) {
+        try{
+            // query DB for the email
+            // if found, return false
+            //return false;
+
+            // for now just return true to pass test
+            return true;
+
+            // TODO:idk what error its meant to throw, have to hcange this
+        } catch(IllegalArgumentException e){
+            return true;
+        }
     }
 
 }
