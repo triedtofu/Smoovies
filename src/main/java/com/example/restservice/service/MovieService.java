@@ -75,7 +75,7 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         
         // TODO: Query the database by movie id, need to get actors(cast), genres and reviews as well
-        Movie dbMovie = new Movie();
+        Movie dbMovie = movieDAO.findMovieByID(id);
         // TODO: if movie found
         if (dbMovie != null) {
             returnMessage.put("name", dbMovie.getName());
