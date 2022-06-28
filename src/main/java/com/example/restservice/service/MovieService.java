@@ -36,7 +36,6 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         try{
-            // if user is successfully added, put user in dbUser
             Movie dbMovie = movieDAO.save(movie);
 
             // set return response values
@@ -76,7 +75,7 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         
         // TODO: Query the database by movie id, need to get actors(cast), genres and reviews as well
-        Movie dbMovie = new Movie();
+        Movie dbMovie = movieDAO.findMovieByID(id);
         // TODO: if movie found
         if (dbMovie != null) {
             returnMessage.put("name", dbMovie.getName());
@@ -86,7 +85,6 @@ public class MovieService {
             returnMessage.put("director", dbMovie.getDirector());
             //TODO: add genres
             returnMessage.put("contentRating", dbMovie.getContentRating());
-            returnMessage.put("averageRating", dbMovie.getAverageRating());
             //TODO: add cast
             //TODO: add reviews
         }
@@ -98,6 +96,34 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
+    }
+    public JSONObject homepage() {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        //Stores the movie's used for homepage.
+        JSONArray homepageList = new JSONArray();
+        //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
+        List<Movie> movies = this.trending();
+        if (movies.size() > 0) {
+            for (int i=0; i < movies.size(); i++) {
+                Movie movie = movies.get(i);
+                //Puts the fields into a Hashmap --> JSON Object
+                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
+                dbMovieDetails.put("id", movie.getId());
+                dbMovieDetails.put("name", movie.getName());
+                dbMovieDetails.put("year", movie.getYear());
+                dbMovieDetails.put("poster", movie.getPoster());
+                dbMovieDetails.put("description", movie.getDescription());
+                //Make it into a JSONObject
+                JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
+                //Put the object into the JSONArray
+                homepageList.put(movieDetailsJson);
+            }
+        } else {
+            return ServiceErrors.notFoundError();
+        }
+        returnMessage.put("movies", homepageList);
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
     }
 
     /**
@@ -117,8 +143,7 @@ public class MovieService {
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
 
-        // TODO: Query the database by movie name, need to get genres as well
-        List<Movie> dbMovies = new ArrayList<Movie>();
+        List<Movie> dbMovies = movieDAO.searchMovieByName(name);
         // TODO: if valid movies are found (list of movies is larger than size 0)
         if (dbMovies.size() > 0) {
             for(int i = 0; i < dbMovies.size(); i++) {
@@ -130,8 +155,6 @@ public class MovieService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 //TODO: add genres
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
-
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
@@ -144,7 +167,16 @@ public class MovieService {
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
+    }
+    /**
+     * Determines what movie's are "trending"
+     * The homepage has 12 movie's on it.
+     * @return
+     */
+    public List<Movie> trending() {
+        //TODO: Write an algorithm which will find the trending movie's.
+        List<Movie> movieList = movieDAO.trending();
+        return movieList;
     }
 
 }

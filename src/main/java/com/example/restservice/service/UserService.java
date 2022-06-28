@@ -18,43 +18,44 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import com.example.restservice.service.ServiceErrors;
 import com.example.restservice.service.ServiceInputChecks;
+import com.fasterxml.jackson.annotation.JsonProperty;
 @Service
 public class UserService {
     
     
     @Autowired
 	private UserDataAccessService userDAO;
-
     /**
-     * Authenticates user when trying to login
-     * @param user
-     * @return token, userId, isAdmin
+     * Logs a user in based on their email and password.
+     * @param email
+     * @param password
+     * @return userID, isAdmin, token
      */
-    public JSONObject authenticateUser(User user) {
+    public JSONObject UserLogin(String email, String password) {
 
         // TODO: check user values for errors
-        if (!ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {
+        if (!ServiceInputChecks.checkEmail(email) || !ServiceInputChecks.checkPassword(password)) {
             return ServiceErrors.invalidInputError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        // TODO: Query the database by email to find a matching user, put user in "dbUser"
-        User dbUser = user;
-        // TODO: if user found
-        if (dbUser != null) {
-            // TODO: Add token implementation
-            returnMessage.put("userId", dbUser.getId());
-            returnMessage.put("isAdmin", dbUser.getIsAdmin());
+        User user = userDAO.findUserByEmail(email);
+        //Password verification step
+        if (!password.equals(user.getPassword())) {
+            return ServiceErrors.invalidInputError();
         }
-        // otherwise return error
+        if (user != null) {
+            // TODO: Add token implementation
+            returnMessage.put("userId", user.getId());
+            returnMessage.put("isAdmin", user.getIsAdmin());
+            //returnMessage.put("token", user.getToken());
+        }
+        // otherwise return error (SHOULD THIS BE A DIFFERENT ERROR?)
         else {
             return ServiceErrors.invalidInputError();
         }
-
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
     }
 
     /**
@@ -63,23 +64,21 @@ public class UserService {
      * @param isAdmin
      * @return token, userID
      */
-    public JSONObject addUser(User user, Boolean isAdmin) {
+    public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
         if (!ServiceInputChecks.checkName(user.getName()) || !ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {
             return ServiceErrors.invalidInputError();
         }
-
+        
         user.setIsAdmin(isAdmin);
-
+        
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         try{
             // if user is successfully added, put user in dbUser
-            User dbUser = userDAO.save(user);
-
             // set return response values
             // TODO: Add token implementation
+            User dbUser = userDAO.save(user);
             returnMessage.put("userId", dbUser.getId());
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
@@ -127,8 +126,6 @@ public class UserService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 //TODO: add genres
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
-
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
