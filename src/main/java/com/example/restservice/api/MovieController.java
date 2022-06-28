@@ -59,9 +59,8 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(String name) {
+    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
         JSONObject response = movieService.searchMovieByName(name);
-
         return ControllerResponses.responseInputAndSearch(response);
     }
 }

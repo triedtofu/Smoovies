@@ -143,8 +143,7 @@ public class MovieService {
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
 
-        // TODO: Query the database by movie name, need to get genres as well
-        List<Movie> dbMovies = new ArrayList<Movie>();
+        List<Movie> dbMovies = movieDAO.searchMovieByName(name);
         // TODO: if valid movies are found (list of movies is larger than size 0)
         if (dbMovies.size() > 0) {
             for(int i = 0; i < dbMovies.size(); i++) {
@@ -168,7 +167,6 @@ public class MovieService {
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
     }
     /**
      * Determines what movie's are "trending"
