@@ -11,3 +11,7 @@ Week 2
 Week 3
 - Assisted parter with creating diagram of system architecture
 - Further refined assigned user stories to conform to lecture guide 
+
+Week 4
+ - Completed assigned sections in project proposal (section 3 in report)
+ - Began working on setting up backend in project

@@ -11,3 +11,12 @@ Monday
 - Planned quite a bit of the frontend pages with my partner and discussed with all other group members where we're up to.
 - Understanding how to use AWS to implement the frontend on
 - Complete all other slides that my group members suggested as well as fix up user Stories
+
+Thursday
+- Pitched my progress to the rest of the team. Had to fix up and add user stories for authentication and admin
+- Finalised and fixed some issues with interface
+- Listened to my teammates parts and assisted them when they needed help
+- Discuessed an online meeting for sunday 1pm to finalise things before the proposal
+
+Sunday
+- Finished all parts along with tiny changes about formatting the proposal document
