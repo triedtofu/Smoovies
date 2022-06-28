@@ -44,6 +44,7 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
     }
+    
     @GetMapping("/homepage")
     public ResponseEntity<Object> homepage() {
         JSONObject response = movieService.homepage();

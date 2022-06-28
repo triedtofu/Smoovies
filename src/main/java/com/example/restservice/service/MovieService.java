@@ -85,7 +85,6 @@ public class MovieService {
             returnMessage.put("director", dbMovie.getDirector());
             //TODO: add genres
             returnMessage.put("contentRating", dbMovie.getContentRating());
-            returnMessage.put("averageRating", dbMovie.getAverageRating());
             //TODO: add cast
             //TODO: add reviews
         }
@@ -97,6 +96,37 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
+    }
+    public JSONObject homepage() {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        //Stores the movie's used for homepage.
+        JSONArray homepageList = new JSONArray();
+        //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
+        List<Movie> movies = this.trending();
+        if (movies.size() > 0) {
+            for (int i=0; i < movies.size(); i++) {
+                Movie movie = movies.get(i);
+                //Puts the fields into a Hashmap --> JSON Object
+                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
+                dbMovieDetails.put("id", movie.getId());
+                dbMovieDetails.put("name", movie.getName());
+                dbMovieDetails.put("year", movie.getYear());
+                dbMovieDetails.put("poster", movie.getPoster());
+                dbMovieDetails.put("description", movie.getDescription());
+                //Make it into a JSONObject
+                JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
+                //Put the object into the JSONArray
+                homepageList.put(movieDetailsJson);
+            }
+        } else {
+            return ServiceErrors.notFoundError();
+        }
+        returnMessage.put("movies", homepageList);
+        JSONObject responseJson = new JSONObject(returnMessage);
+       
+
+
+        return responseJson;
     }
 
     /**
@@ -129,8 +159,6 @@ public class MovieService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 //TODO: add genres
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
-
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
@@ -144,6 +172,15 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
+    }
+    /**
+     * Determines what movie's are "trending"
+     * @return
+     */
+    public List<Movie> trending() {
+        //TODO: Write an algorithm which will find the trending movie's.
+        List<Movie> movieList = new ArrayList<Movie>();
+        return movieList;
     }
 
 }
