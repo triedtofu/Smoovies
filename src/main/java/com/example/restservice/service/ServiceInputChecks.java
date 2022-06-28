@@ -1,6 +1,7 @@
 package com.example.restservice.service;
 
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.AuthenticationToken;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;

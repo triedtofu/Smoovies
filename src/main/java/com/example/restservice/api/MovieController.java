@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.http.ResponseEntity;
 
 import org.json.JSONObject;
@@ -62,5 +66,6 @@ public class MovieController {
     public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
         JSONObject response = movieService.searchMovieByName(name);
         return ControllerResponses.responseInputAndSearch(response);
+
     }
 }
