@@ -126,8 +126,6 @@ public class UserService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 //TODO: add genres
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
-
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }

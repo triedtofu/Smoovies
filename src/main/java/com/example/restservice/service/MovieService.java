@@ -123,9 +123,6 @@ public class MovieService {
         }
         returnMessage.put("movies", homepageList);
         JSONObject responseJson = new JSONObject(returnMessage);
-       
-
-
         return responseJson;
     }
 
@@ -175,11 +172,12 @@ public class MovieService {
     }
     /**
      * Determines what movie's are "trending"
+     * The homepage has 12 movie's on it.
      * @return
      */
     public List<Movie> trending() {
         //TODO: Write an algorithm which will find the trending movie's.
-        List<Movie> movieList = new ArrayList<Movie>();
+        List<Movie> movieList = movieDAO.trending();
         return movieList;
     }
 
