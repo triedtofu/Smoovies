@@ -53,7 +53,7 @@ public class UserService {
         if (!password.equals(user.getPassword())) {
             return ServiceErrors.invalidInputError();
         }
-        
+
         if (user != null) {
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", user.getId());
@@ -77,7 +77,10 @@ public class UserService {
     public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
-        if (!ServiceInputChecks.checkName(user.getName()) || !ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {
+        if (!ServiceInputChecks.checkName(user.getName()) || 
+            !ServiceInputChecks.checkEmail(user.getEmail()) || 
+            !ServiceInputChecks.checkPassword(user.getPassword()) ||
+            !ServiceInputChecks.checkUniqueEmail(user.getEmail())) {
             return ServiceErrors.invalidInputError();
         }
         

@@ -18,7 +18,7 @@ public class ServiceJWTHelper {
     //Sample method to construct a JWT
     public static String generateJWT(String id, String subject) {
         
-        long ttlMillis = timeTakenInMilliSeconds();
+        long ttlMillis = tokenTimeInMilliSeconds();
 
         //The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -62,7 +62,7 @@ public class ServiceJWTHelper {
         }
     }
 
-    private static long timeTakenInMilliSeconds() {
+    private static long tokenTimeInMilliSeconds() {
         // currently 1 hr
         return 60 * 60 * 1000; 
     }
