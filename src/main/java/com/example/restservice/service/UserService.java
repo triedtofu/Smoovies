@@ -2,12 +2,18 @@ package com.example.restservice.service;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.AuthenticationToken;
+import com.example.restservice.dataModels.Movie;
+
 import com.example.restservice.database.UserDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
 
-import com.example.restservice.dataModels.Movie;
+import com.example.restservice.service.ServiceErrors;
+import com.example.restservice.service.ServiceInputChecks;
+import com.example.restservice.service.ServiceJWTHelper;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +25,15 @@ import java.util.HashMap;
 import com.example.restservice.service.ServiceErrors;
 import com.example.restservice.service.ServiceInputChecks;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 @Service
 public class UserService {
     
     
     @Autowired
 	private UserDataAccessService userDAO;
+  
     /**
      * Logs a user in based on their email and password.
      * @param email
@@ -44,8 +53,9 @@ public class UserService {
         if (!password.equals(user.getPassword())) {
             return ServiceErrors.invalidInputError();
         }
+
         if (user != null) {
-            // TODO: Add token implementation
+            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", user.getId());
             returnMessage.put("isAdmin", user.getIsAdmin());
             //returnMessage.put("token", user.getToken());
@@ -67,7 +77,10 @@ public class UserService {
     public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
-        if (!ServiceInputChecks.checkName(user.getName()) || !ServiceInputChecks.checkEmail(user.getEmail()) || !ServiceInputChecks.checkPassword(user.getPassword())) {
+        if (!ServiceInputChecks.checkName(user.getName()) || 
+            !ServiceInputChecks.checkEmail(user.getEmail()) || 
+            !ServiceInputChecks.checkPassword(user.getPassword()) ||
+            !ServiceInputChecks.checkUniqueEmail(user.getEmail())) {
             return ServiceErrors.invalidInputError();
         }
         
@@ -77,8 +90,9 @@ public class UserService {
         try{
             // if user is successfully added, put user in dbUser
             // set return response values
-            // TODO: Add token implementation
             User dbUser = userDAO.save(user);
+            // TODO: Add token implementation
+            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", dbUser.getId());
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
@@ -137,6 +151,44 @@ public class UserService {
 
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+
+    }
+
+    /**
+     * Updates the wishlist of a user
+     * @param token
+     * @param movieId 
+     * @param addRemove
+     * @return {}
+     */
+    public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
+
+        // TODO: check inputs for errors
+        if (!ServiceInputChecks.checkId(movieId)) {
+            return ServiceErrors.invalidInputError();
+        }
+
+        // verify the token and extract the users email
+        String userEmail = ServiceJWTHelper.verifyJWT(token.getToken());
+        if (userEmail == null) {
+            return ServiceErrors.invalidTokenError();
+        }
+
+        // TODO: add/remove movie from wishlist
+        // you have the users email, query db for their wishlisht
+        // if addRemove == true
+        if (addRemove) {    
+            // TODO: add movie to wishlist
+
+        }
+        // if addRemove == false
+        else {
+            //TODO: remove from wishlist
+
+        }
+
+        JSONObject responseJson = new JSONObject();
         return responseJson;
 
     }

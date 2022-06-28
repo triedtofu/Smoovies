@@ -22,7 +22,7 @@ public class Review {
     @Column(name = "review")
     private  String review;
 
-    @Column(name = "raing")
+    @Column(name = "rating")
     private int rating;
 
     public Review() {
