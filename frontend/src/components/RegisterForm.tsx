@@ -7,7 +7,7 @@ import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
 
 interface RegisterProps {
-  success: (name: string, email: string, password: string) => Promise<void>;
+  submit: (name: string, email: string, password: string) => Promise<void>;
 }
 
 const RegisterForm = (props: RegisterProps) => {
@@ -19,7 +19,7 @@ const RegisterForm = (props: RegisterProps) => {
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    props.success(name, email, password1);
+    props.submit(name, email, password1);
   }
 
   return (

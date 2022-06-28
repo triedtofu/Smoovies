@@ -1,5 +1,6 @@
-const baseUrl = '';
-// const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com'
+// const baseUrl = '';
+// const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import movielist from './movielist.json';
 import specificMovie from './specificmovie.json';
@@ -10,7 +11,7 @@ const apiFetch = (path: string, init: object) => {
     .then(data => {
       if (data && data.error) throw Error(data.error);
       return data;
-    })
+    });
 }
 
 // Auth
@@ -20,6 +21,14 @@ export const apiAuthRegister = (name: string, email: string, password: string) =
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password })
+  });
+}
+
+export const apiAuthLogin = (email: string, password: string) => {
+  return apiFetch('/user/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
   });
 }
 

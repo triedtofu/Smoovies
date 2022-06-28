@@ -23,30 +23,6 @@
         "Fantasy"
       ],
       "averageRating": 3.14
-    },
-    {
-      "id": 6175,
-      "name": "Morbius 2",
-      "year": 2022,
-      "poster": "https://i.imgur.com/CBC2V7j.jpeg",
-      "description": "Biochemist Michael Morbius tries to cure himself of a rare blood disease, but he inadvertently infects himself with a form of vampirism instead.",
-      "genres": [
-        "Action",
-        "Fantasy"
-      ],
-      "averageRating": 3.14
-    },
-    {
-      "id": 6175,
-      "name": "Morbius 2",
-      "year": 2022,
-      "poster": "https://i.imgur.com/CBC2V7j.jpeg",
-      "description": "Biochemist Michael Morbius tries to cure himself of a rare blood disease, but he inadvertently infects himself with a form of vampirism instead.",
-      "genres": [
-        "Action",
-        "Fantasy"
-      ],
-      "averageRating": 3.14
     }
   ]
 }

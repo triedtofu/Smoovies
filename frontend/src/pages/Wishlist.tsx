@@ -45,17 +45,16 @@ const Wishlist = () => {
   return (
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
-      {data.movies.map((movie, index) => (
-          <MovieResultCard
-            key={index}
-            poster={movie.poster}
-            name={movie.name}
-            year={movie.year}
-            genres={movie.genres}
-            rating={movie.averageRating}
-          />
-        ))
-        }
+      {data.movies.map((movie) => (
+        <MovieResultCard
+          key={movie.id}
+          poster={movie.poster}
+          name={movie.name}
+          year={movie.year}
+          genres={movie.genres}
+          rating={movie.averageRating}
+        />
+      ))}
     </Container>
   );
 }

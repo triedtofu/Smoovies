@@ -7,10 +7,17 @@ import MyFormControl from './MyFormControl';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
 
-const LoginForm = () => {
+interface LoginProps {
+  submit: (email: string, password: string) => Promise<void>;
+}
+
+const LoginForm = (props: LoginProps) => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
   const loginSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log('TODO Submit');
+    props.submit(email, password);
   };
 
   return (
@@ -21,8 +28,8 @@ const LoginForm = () => {
             name="email"
             label="Email"
             type="email"
-            // value={email}
-            // onChange={e => setEmail(e.target.value)}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
           />
         </MyFormControl>
         <MyFormControl>
@@ -30,8 +37,8 @@ const LoginForm = () => {
             name="password"
             label="Enter your password"
             type="password"
-            // value={password}
-            // onChange={e => setPassword(e.target.value)}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
           />
         </MyFormControl>
         <MyFormControl>
