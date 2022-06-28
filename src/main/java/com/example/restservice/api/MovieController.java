@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 
 import org.json.JSONObject;
 
+import java.lang.ModuleLayer.Controller;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import com.example.restservice.api.ControllerResponses;
 
@@ -41,6 +43,11 @@ public class MovieController {
     @GetMapping("/getAllMovies")
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
+    }
+    @GetMapping("/homepage")
+    public ResponseEntity<Object> homepage() {
+        JSONObject response = movieService.homepage();
+        return ControllerResponses.responseInputOnly(response);
     }
 
     @GetMapping("/getMovie")
