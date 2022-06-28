@@ -1,6 +1,7 @@
 package com.example.restservice.api;
 
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.MovieIdRequest;
 import com.example.restservice.service.MovieService;
 
 
@@ -57,15 +58,15 @@ public class MovieController {
     }
 
     @GetMapping("/getMovie")
-    public ResponseEntity<Object> getMovie(@RequestParam(name = "id") long id) {
-        JSONObject response = movieService.getMovieDetails(id);
-        return ControllerResponses.responseInputAndSearch(response);
+    public ResponseEntity<Object> getMovie(@RequestBody MovieIdRequest movieIdRequest) {
+        JSONObject response = movieService.getMovieDetails(movieIdRequest.getMovieId());
+        return ControllerResponses.responseInputAndSearchDatabase(response);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
-        JSONObject response = movieService.searchMovieByName(name);
-        return ControllerResponses.responseInputAndSearch(response);
+    public ResponseEntity<Object> searchMovieByName(@RequestBody Movie movie) {
+        JSONObject response = movieService.searchMovieByName(movie.getName());
+        return ControllerResponses.responseInputAndSearchDatabase(response);
 
     }
 }

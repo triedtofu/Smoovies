@@ -13,6 +13,7 @@ import com.example.restservice.database.MovieDataAccessService;
 
 import com.example.restservice.service.ServiceErrors;
 import com.example.restservice.service.ServiceInputChecks;
+import com.example.restservice.service.ServiceJWTHelper;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import com.example.restservice.service.ServiceErrors;
 import com.example.restservice.service.ServiceInputChecks;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Service
 public class UserService {
@@ -51,8 +53,9 @@ public class UserService {
         if (!password.equals(user.getPassword())) {
             return ServiceErrors.invalidInputError();
         }
+        
         if (user != null) {
-            // TODO: Add token implementation
+            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", user.getId());
             returnMessage.put("isAdmin", user.getIsAdmin());
             //returnMessage.put("token", user.getToken());
@@ -84,8 +87,9 @@ public class UserService {
         try{
             // if user is successfully added, put user in dbUser
             // set return response values
-            // TODO: Add token implementation
             User dbUser = userDAO.save(user);
+            // TODO: Add token implementation
+            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", dbUser.getId());
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
@@ -162,12 +166,14 @@ public class UserService {
             return ServiceErrors.invalidInputError();
         }
 
-        // TODO: search through list of tokens and find corresponding userId. Check against token.getToken() string. If matching string, return userId
-        // if (userID not found) {
-        //     return ServiceErrors.invalidTokenError();
-        // }
+        // verify the token and extract the users email
+        String userEmail = ServiceJWTHelper.verifyJWT(token.getToken());
+        if (userEmail == null) {
+            return ServiceErrors.invalidTokenError();
+        }
 
         // TODO: add/remove movie from wishlist
+        // you have the users email, query db for their wishlisht
         // if addRemove == true
         if (addRemove) {    
             // TODO: add movie to wishlist

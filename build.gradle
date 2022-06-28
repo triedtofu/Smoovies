@@ -22,6 +22,11 @@ dependencies {
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'org.json:json:20171018'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+
 }
 
 tasks.named('test') {
