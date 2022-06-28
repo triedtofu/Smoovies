@@ -34,11 +34,6 @@ public class Movie {
     @Column(name = "contentRating")
     private String contentRating;
 
-    @Column(name = "averageRating")
-    private String averageRating;
-
-
-
     public Movie() {
         super();
     }
@@ -49,8 +44,7 @@ public class Movie {
                 @JsonProperty("poster") String poster,
                 @JsonProperty("description") String description,
                 @JsonProperty("director") String director,
-                @JsonProperty("contentRating") String contentRating,
-                @JsonProperty("averageRating") String averageRating) {
+                @JsonProperty("contentRating") String contentRating) {
         super();
         this.name = name;
         this.year = year;
@@ -58,7 +52,6 @@ public class Movie {
         this.description = description;
         this.director = director;
         this.contentRating = contentRating;
-        this.averageRating = averageRating;
 
     }
 
@@ -88,10 +81,6 @@ public class Movie {
 
     public String getContentRating() {
         return contentRating;
-    }
-
-    public String getAverageRating() {
-        return averageRating;
     }
 
 
