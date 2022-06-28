@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 
 import org.json.JSONObject;
 
+import java.lang.ModuleLayer.Controller;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import com.example.restservice.api.ControllerResponses;
 
@@ -42,18 +45,22 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
     }
+    
+    @GetMapping("/homepage")
+    public ResponseEntity<Object> homepage() {
+        JSONObject response = movieService.homepage();
+        return ControllerResponses.responseInputOnly(response);
+    }
 
     @GetMapping("/getMovie")
-    public ResponseEntity<Object> getMovie(long id) {
+    public ResponseEntity<Object> getMovie(@RequestParam(name = "id") long id) {
         JSONObject response = movieService.getMovieDetails(id);
-
         return ControllerResponses.responseInputAndSearch(response);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(String name) {
+    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
         JSONObject response = movieService.searchMovieByName(name);
-
         return ControllerResponses.responseInputAndSearch(response);
     }
 }
