@@ -69,6 +69,22 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
     setAnchorEl(null);
   };
 
+  const gotoProfilePage = () => {
+    navigate('/');
+  };
+
+  const gotoWishlist = () => {
+    navigate('/user/1/wishlist');
+  };
+
+  const gotoBanlist = () => {
+    navigate('/');
+  };
+
+  const logout = () => {
+    // TODO
+  };
+
   return (
     <nav className={styles.nav}>
       <div className={styles.logoAndSearch}>
@@ -94,7 +110,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/">Higher or Lower</Link>
+        <Link to="/higherorlower">Higher or Lower</Link>
         <div>|</div>
         <div>
           <Button
@@ -115,11 +131,11 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
               'aria-labelledby': 'basic-button',
             }}
           >
-            <MenuItem onClick={handleClose}>My Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My Wishlist</MenuItem>
-            <MenuItem onClick={handleClose}>My Banlist</MenuItem>
+            <MenuItem onClick={gotoProfilePage}>My Profile</MenuItem>
+            <MenuItem onClick={gotoWishlist}>My Wishlist</MenuItem>
+            <MenuItem onClick={gotoBanlist}>My Banlist</MenuItem>
             &nbsp;&nbsp;&nbsp;&nbsp;<span>-----</span>
-            <MenuItem onClick={handleClose}>Logout</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </div>
       </div>
