@@ -1,14 +1,20 @@
 package com.example.restservice.service;
 
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.User;
+import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.UserDataAccessService;
 import com.example.restservice.dataModels.AuthenticationToken;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.regex.*;  
+import java.util.regex.*;
+
+import org.springframework.beans.factory.annotation.Autowired;  
 
 public class ServiceInputChecks {
-
+    
+    
     // Checks if id is valid format, true = valid
     public static Boolean checkId(long id) {
         return id > 0;
@@ -91,19 +97,8 @@ public class ServiceInputChecks {
 
     // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
     // Will have to clear database each time to test this 
-    public static Boolean checkUniqueEmail(String email) {
-        try{
-            // query DB for the email
-            // if found, return false
-            //return false;
-
-            // for now just return true to pass test
-            return true;
-
-            // TODO:idk what error its meant to throw, have to hcange this
-        } catch(IllegalArgumentException e){
-            return true;
-        }
+    public static Boolean checkUniqueEmail(String email, UserDataAccessService userDAO) {
+        return userDAO.uniqueEmail(email);
     }
 
 }

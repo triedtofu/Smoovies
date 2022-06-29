@@ -33,6 +33,8 @@ public class UserService {
     
     @Autowired
 	private UserDataAccessService userDAO;
+
+    private ServiceInputChecks inputChecks;
   
     /**
      * Logs a user in based on their email and password.
@@ -81,7 +83,7 @@ public class UserService {
         if (!ServiceInputChecks.checkName(user.getName()) || 
             !ServiceInputChecks.checkEmail(user.getEmail()) || 
             !ServiceInputChecks.checkPassword(user.getPassword()) ||
-            !ServiceInputChecks.checkUniqueEmail(user.getEmail())) {
+            !ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
             return ServiceErrors.invalidInputError();
         }
         
