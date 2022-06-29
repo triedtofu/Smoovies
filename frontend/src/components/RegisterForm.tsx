@@ -18,7 +18,11 @@ const RegisterForm = (props: RegisterProps) => {
 
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
-    props.submit(name, email, password1);
+    if (password1 === password2) {
+      props.submit(name, email, password1);
+    } else {
+      // TODO return an error message modal
+    }
   };
 
   return (
