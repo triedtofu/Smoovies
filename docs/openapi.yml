@@ -364,7 +364,7 @@ components:
       schema:
         $ref: '#/components/schemas/UserId'
     MovieIdParam:
-      name: movieId
+      name: id
       in: query
       description: ID of the movie
       required: true
