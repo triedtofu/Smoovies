@@ -2,6 +2,8 @@ openapi: 3.0.0
 servers:
   - url: https://comp3900-lawnchair-back.herokuapp.com/
     description: Test server
+  - url: https://comp3900-lawnchair-front.herokuapp.com/
+    description: Test server
   - url: https://comp3900-lawnchair.herokuapp.com/
     description: Production server
 info:
@@ -45,6 +47,8 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
+                  name:
+                    $ref: '#/components/schemas/Name'
                   isAdmin:
                     $ref: '#/components/schemas/IsAdmin'
         '400':
@@ -80,6 +84,8 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
+                  name:
+                    $ref: '#/components/schemas/Name'
         '400':
           $ref: '#/components/responses/InputError'
   /api/movie/homepage:
@@ -358,7 +364,7 @@ components:
       schema:
         $ref: '#/components/schemas/UserId'
     MovieIdParam:
-      name: movieId
+      name: id
       in: query
       description: ID of the movie
       required: true
