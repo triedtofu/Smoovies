@@ -1,6 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
 import movieLogo from '../logo.png';
+import styles from './Navbar.module.css';
+
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -9,8 +12,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-
-import styles from './Navbar.module.css';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -44,7 +45,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  // const [movieSearch, setMovieSearch] = React.useState('');
+  const navigate = useNavigate();
+
+  const [movieSearch, setMovieSearch] = React.useState('');
+
+  const submitSearch = () => {
+    navigate(`/search?name=${movieSearch}`);
+  }
 
   return (
     <nav className={styles.nav}>
@@ -58,11 +65,14 @@ const Navbar = () => {
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                // onChange={e => setMovieSearch(e.target.value)}
-              />
+              <form onSubmit={submitSearch}>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={movieSearch}
+                  onChange={e => setMovieSearch(e.target.value)}
+                />
+              </form>
             </Search>
           </div>
         </Box>

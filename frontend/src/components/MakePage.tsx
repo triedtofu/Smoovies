@@ -16,7 +16,7 @@ const MakePage = (Component: React.ElementType) => {
     
     return (
       <>
-        {cookies.token ? <NavbarLoggedIn id={cookies.token} /> : <Navbar />}
+        {cookies.token ? <NavbarLoggedIn name={cookies.name} /> : <Navbar />}
         <Component />
       </>
     )

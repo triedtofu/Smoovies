@@ -11,5 +11,6 @@ module.exports = {
   rules: {
     'indent': ['warn', 2],
     'jsx-quotes': ['warn', 'prefer-double'],
+    'no-console': ['warn'],
   },
 };

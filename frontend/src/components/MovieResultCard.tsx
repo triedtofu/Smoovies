@@ -13,7 +13,8 @@ interface MovieResultCardProps {
   poster: string;
   name: string;
   year: number;
-  genres: Array<string>;
+  button: boolean
+  // genres: Array<string>;
   rating: number;
 }
 
@@ -33,15 +34,18 @@ const MovieResultCard = (props: MovieResultCardProps) => {
         <div>
           Rating {props.rating}
         </div>
-        <div>
+        {/* <div>
           {props.genres.map((genre, index) => (
             <Chip key={index} label={genre} sx={{margin: '5px'}}/>
           ))}
-        </div>
+        </div> */}
       </CardContent>
-      <Button variant="outlined" color="error" sx={{ margin: '10px' }}>
-        Remove
-      </Button>
+      {props.button ?
+        <Button variant="outlined" color="error" sx={{ margin: '10px' }}>
+          Remove
+        </Button> : 
+        <div></div>
+      }
     </Card>
   );
 }

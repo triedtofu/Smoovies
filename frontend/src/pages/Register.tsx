@@ -16,10 +16,10 @@ const Register = () => {
   const register = async (name: string, email: string, password: string) => {
     try {
       const data = await apiAuthRegister(name, email, password);
-      setCookie('token', data.userId, { path: '/' });
+      setCookie('token', data.token, { path: '/' });
+      setCookie('name', data.name, { path: '/' });
       navigate('/');
 
-      // console.log(data);
     } catch (err) {
       console.log(err);
     }

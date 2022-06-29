@@ -16,9 +16,10 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       const data = await apiAuthLogin(email, password);
-      setCookie('token', data.userId, { path: '/' });
+      setCookie('token', data.token, { path: '/' });
+      setCookie('name', data.name, { path: '/' });
       navigate('/');
-      // console.log(data);
+      
     } catch (err) {
       console.log(err);
     }
@@ -27,7 +28,6 @@ const Login = () => {
   return (
     <Container maxWidth="sm">
       <h1>Login</h1>
-
       <LoginForm submit={login} />
     </Container>
   );

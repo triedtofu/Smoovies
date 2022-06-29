@@ -51,7 +51,8 @@ const Wishlist = () => {
           poster={movie.poster}
           name={movie.name}
           year={movie.year}
-          genres={movie.genres}
+          button={true}
+          // genres={movie.genres}
           rating={movie.averageRating}
         />
       ))}

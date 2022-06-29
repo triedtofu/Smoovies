@@ -10,7 +10,7 @@ interface MovieCardProps {
   poster: string;
   name: string;
   year: number;
-  genres: Array<string>;
+  // genres: Array<string>;
   rating: number;
 }
 
@@ -30,11 +30,11 @@ const MovieCard = (props: MovieCardProps) => {
         <div>
           Rating {props.rating}
         </div>
-        <div>
+        {/* <div>
           {props.genres.map((genre, index) => (
             <Chip key={index} label={genre} sx={{margin: '5px'}}/>
           ))}
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

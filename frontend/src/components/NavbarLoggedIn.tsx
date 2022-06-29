@@ -5,7 +5,7 @@ import movieLogo from '../logo.png';
 import styles from './NavbarLoggedIn.module.css';
 
 interface NavbarLoggedInProps {
-  id: number
+  name: string;
 }
 
 const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
@@ -20,9 +20,9 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         <Link to="/">Home</Link>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/token/wishlist">Wishlist</Link>
+        <Link to="/user/1/wishlist">Wishlist</Link>
         <Link to="/higherorlower">Higher or Lower</Link>
-        <div>User: {props.id}</div>
+        <div>User: {props.name}</div>
       </div>
     </nav>
   );
