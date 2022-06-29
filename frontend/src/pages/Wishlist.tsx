@@ -20,7 +20,8 @@ const Wishlist = () => {
   //       Authorization: `Bearer ${token}`,
   //     },
   //   };
-  //   fetch('http://localhost:3000/' + token + '/wishlist', init).then(
+
+  //   fetch(/user/register + token + '/wishlist', init).then(
   //     (response) => {
   //       if (response.status === 400) {
   //         alert('ERROR, Invalid Input');
@@ -46,18 +47,17 @@ const Wishlist = () => {
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
       {data.movies.map((movie, index) => (
-          <MovieResultCard
-            key={index}
-            poster={movie.poster}
-            name={movie.name}
-            year={movie.year}
-            genres={movie.genres}
-            rating={movie.averageRating}
-          />
-        ))
-        }
+        <MovieResultCard
+          key={index}
+          poster={movie.poster}
+          name={movie.name}
+          year={movie.year}
+          genres={movie.genres}
+          rating={movie.averageRating}
+        />
+      ))}
     </Container>
   );
-}
+};
 
 export default MakePage(Wishlist);
