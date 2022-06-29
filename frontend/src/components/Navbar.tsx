@@ -45,13 +45,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   const [movieSearch, setMovieSearch] = React.useState('');
+  const navigate = useNavigate();
 
   const submitSearch = () => {
     navigate(`/search?name=${movieSearch}`);
-  }
+  };
 
   return (
     <nav className={styles.nav}>
@@ -70,7 +69,7 @@ const Navbar = () => {
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
                   value={movieSearch}
-                  onChange={e => setMovieSearch(e.target.value)}
+                  onChange={(e) => setMovieSearch(e.target.value)}
                 />
               </form>
             </Search>
