@@ -1,28 +1,127 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import movieLogo from '../logo.png';
+import { useNavigate, Link } from 'react-router-dom';
 
+import movieLogo from '../logo.png';
 import styles from './NavbarLoggedIn.module.css';
+
+import { styled, alpha } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  backgroundColor: alpha(theme.palette.common.white, 0.35),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: '100%',
+  borderRadius: '20px',
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+  },
+  width: '98%',
+}));
 
 interface NavbarLoggedInProps {
   name: string;
 }
 
 const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [movieSearch, setMovieSearch] = React.useState('');
+
+  const submitSearch = () => {
+    navigate(`/search?name=${movieSearch}`);
+  };
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <nav className={styles.nav}>
-      <nav>
-        <div>
+      <div className={styles.logoAndSearch}>
+        <div className={styles.logoBox}>
           <img src={movieLogo} className={styles.logo} alt="loading" />
         </div>
-      </nav>
-      <div>
-        <Link to="/">Home</Link>
+        <Box className={styles.searchBox}>
+          <div className={styles.searchBar}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <form onSubmit={submitSearch}>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={movieSearch}
+                  onChange={(e) => setMovieSearch(e.target.value)}
+                />
+              </form>
+            </Search>
+          </div>
+        </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/user/1/wishlist">Wishlist</Link>
-        <Link to="/higherorlower">Higher or Lower</Link>
-        <div>User: {props.name}</div>
+        <Link to="/">Higher or Lower</Link>
+        <div>|</div>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            Dashboard
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={handleClose}>My Profile</MenuItem>
+            <MenuItem onClick={handleClose}>My Wishlist</MenuItem>
+            <MenuItem onClick={handleClose}>My Banlist</MenuItem>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span>-----</span>
+            <MenuItem onClick={handleClose}>Logout</MenuItem>
+          </Menu>
+        </div>
       </div>
     </nav>
   );
