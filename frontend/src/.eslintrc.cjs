@@ -8,4 +8,9 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
   ],
+  rules: {
+    'indent': ['warn', 2],
+    'jsx-quotes': ['warn', 'prefer-double'],
+    'no-console': ['warn'],
+  },
 };

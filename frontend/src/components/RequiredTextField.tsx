@@ -1,8 +1,9 @@
 import React from 'react';
+import { CookiesProvider } from 'react-cookie';
 
-import TextField from '@mui/material/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 
-const RequiredTextField = (props: any): JSX.Element => {
+const RequiredTextField = (props: TextFieldProps): JSX.Element => {
   return (
     <TextField
       required

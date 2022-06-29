@@ -9,36 +9,45 @@ import MovieCard from '../components/MovieCard';
 import { apiMovieHomepage } from '../util/api';
 
 import Container from '@mui/material/Container';
+import Movie from './Movie';
 
-function Homepage() {
-  // const navigate = useNavigate();
+interface MovieInfo {
+  id: number;
+  name: string;
+  year: number;
+  poster: string;
+  genres: Array<string>;
+  averageRating: number;
+}
 
-  // code for when I can get token
-  // React.useEffect(() => {
-  //   if (!token) {
-  //     navigate('/login');
-  //   }
-  // });
+const Homepage = () => {
+  const [movies, setMovies] = React.useState<Array<MovieInfo>>([]);
 
-  const data = apiMovieHomepage();
+  React.useEffect(() => {
+    try {
+      apiMovieHomepage().then(data => setMovies(data.movies));
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   return (
     <Container maxWidth="lg">
       <h1>Home Page</h1>
 
-      <div className={styles.container}>
-        {data.movies.map((movie, index) => (
+      {movies.length > 0 && <div className={styles.container}>
+        {movies.map((movie, index) => (
           <MovieCard
             key={index}
             poster={movie.poster}
             name={movie.name}
             year={movie.year}
-            genres={movie.genres}
+            // genres={movie.genres}
             rating={movie.averageRating}
           />
         ))
         }
-      </div>
+      </div>}
     </Container>
   );
 }

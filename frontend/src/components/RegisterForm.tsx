@@ -7,7 +7,7 @@ import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
 
 interface RegisterProps {
-  success: (name: string, email: string, password: string) => Promise<void>;
+  submit: (name: string, email: string, password: string) => Promise<void>;
 }
 
 const RegisterForm = (props: RegisterProps) => {
@@ -18,9 +18,8 @@ const RegisterForm = (props: RegisterProps) => {
 
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    props.success(name, email, password1);
-  }
+    props.submit(name, email, password1);
+  };
 
   return (
     <>
@@ -30,7 +29,9 @@ const RegisterForm = (props: RegisterProps) => {
             name="name"
             label="Name"
             value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}  
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
@@ -39,7 +40,9 @@ const RegisterForm = (props: RegisterProps) => {
             label="Email"
             type="email"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
@@ -48,7 +51,9 @@ const RegisterForm = (props: RegisterProps) => {
             label="Enter your password"
             type="password"
             value={password1}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword1(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
@@ -57,19 +62,26 @@ const RegisterForm = (props: RegisterProps) => {
             label="Confirm your password"
             type="password"
             value={password2}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword2(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
-          <Button variant="contained" type="submit">Register</Button>
+          <Button variant="contained" type="submit">
+            Register
+          </Button>
         </MyFormControl>
       </form>
 
       <div className={styles.box}>
-        Already have an account? <Link className={styles.box_link} to="/login">Login</Link>
+        Already have an account?{' '}
+        <Link className={styles.box_link} to="/login">
+          Login
+        </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default RegisterForm;

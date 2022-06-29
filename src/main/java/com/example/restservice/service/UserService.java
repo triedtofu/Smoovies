@@ -58,6 +58,7 @@ public class UserService {
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", user.getId());
             returnMessage.put("isAdmin", user.getIsAdmin());
+            returnMessage.put("name", user.getName());
             //returnMessage.put("token", user.getToken());
         }
         // otherwise return error (SHOULD THIS BE A DIFFERENT ERROR?)
@@ -94,6 +95,7 @@ public class UserService {
             // TODO: Add token implementation
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", dbUser.getId());
+            returnMessage.put("name", dbUser.getName());
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }

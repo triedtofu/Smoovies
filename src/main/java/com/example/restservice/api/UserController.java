@@ -60,8 +60,8 @@ public class UserController {
 
 
     @GetMapping("/wishlist")
-    public ResponseEntity<Object> getUserWishlist(@RequestBody UserIdRequest UserIdRequest) {
-        JSONObject response = userService.getUserWishlist(UserIdRequest.getUserId());
+    public ResponseEntity<Object> getUserWishlist(@PathVariable(name = "userId") long id) {
+        JSONObject response = userService.getUserWishlist(id);
 
         return ControllerResponses.responseInputAndSearchDatabase(response);
     }

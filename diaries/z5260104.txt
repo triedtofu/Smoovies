@@ -18,7 +18,6 @@ week 4:
  -Created ER diagram
  -Create SQL Schema's
  -Work out backend functionality to system and interactions of springboot java to heroku.
- 
 
 week 5:
  -
