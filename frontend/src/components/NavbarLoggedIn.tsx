@@ -50,6 +50,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 interface NavbarLoggedInProps {
   name: string;
+  logout: () => void;
 }
 
 const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
@@ -80,10 +81,6 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
 
   const gotoBanlist = () => {
     navigate('/');
-  };
-
-  const logout = () => {
-    // TODO
   };
 
   return (
@@ -137,7 +134,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             <MenuItem onClick={gotoWishlist}>My Wishlist</MenuItem>
             <MenuItem onClick={gotoBanlist}>My Banlist</MenuItem>
             &nbsp;&nbsp;&nbsp;&nbsp;<span>-----</span>
-            <MenuItem onClick={logout}>Logout</MenuItem>
+            <MenuItem onClick={props.logout}>Logout</MenuItem>
           </Menu>
         </div>
       </div>
