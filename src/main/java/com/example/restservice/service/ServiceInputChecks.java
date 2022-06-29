@@ -22,9 +22,10 @@ public class ServiceInputChecks {
     // Checks if name is valid format, true = valid
     public static Boolean checkName(String name) {
         CharacterIterator it = new StringCharacterIterator(name);
-        
+
         while (it.current() != CharacterIterator.DONE){
-            if (((int)it.current() > 47 && (int)it.current() < 58) || ((int)it.current() > 64 && (int)it.current() < 91) || ((int)it.current() > 96 && (int)it.current() < 123)){
+            if (((int)it.current() == 32) || ((int)it.current() > 47 && (int)it.current() < 58) || 
+                ((int)it.current() > 64 && (int)it.current() < 91) || ((int)it.current() > 96 && (int)it.current() < 123)){
                 it.next();
                 continue;
             }
@@ -95,10 +96,10 @@ public class ServiceInputChecks {
         return true;
     }
 
-    // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
+        // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
     // Will have to clear database each time to test this 
     public static Boolean checkUniqueEmail(String email, UserDataAccessService userDAO) {
         return userDAO.uniqueEmail(email);
     }
-
+    
 }

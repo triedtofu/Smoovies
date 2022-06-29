@@ -75,11 +75,15 @@ public class UserService {
     public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
-        if (!ServiceInputChecks.checkName(user.getName()) || 
-            !ServiceInputChecks.checkEmail(user.getEmail()) || 
-            !ServiceInputChecks.checkPassword(user.getPassword()) ||
-            !ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
-            return ServiceErrors.invalidInputError();
+
+        if (!ServiceInputChecks.checkName(user.getName())) {
+            return ServiceErrors.invalidNameError();
+        } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
+            return ServiceErrors.invalidEmailError();
+        } else if (!ServiceInputChecks.checkPassword(user.getPassword())) {
+            return ServiceErrors.invalidPasswordError();
+        } else if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
+            return ServiceErrors.invalidUniqueEmailError();
         }
         
         user.setIsAdmin(isAdmin);
