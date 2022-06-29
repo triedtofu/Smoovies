@@ -15,6 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -120,6 +121,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
+            <ArrowDropDownIcon />
             Dashboard
           </Button>
           <Menu
