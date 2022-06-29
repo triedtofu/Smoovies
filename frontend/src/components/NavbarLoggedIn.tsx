@@ -113,7 +113,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
       <div className={styles.nav_right}>
         <Link to="/higherorlower">Higher or Lower</Link>
         <div>|</div>
-        <div>
+        <div className={styles.dashboard}>
           <Button
             id="basic-button"
             aria-controls={open ? 'basic-menu' : undefined}
@@ -122,7 +122,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             onClick={handleClick}
           >
             <ArrowDropDownIcon />
-            Dashboard
+            Hello {props.name}
           </Button>
           <Menu
             id="basic-menu"
@@ -136,7 +136,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             <MenuItem onClick={gotoProfilePage}>My Profile</MenuItem>
             <MenuItem onClick={gotoWishlist}>My Wishlist</MenuItem>
             <MenuItem onClick={gotoBanlist}>My Banlist</MenuItem>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span>-----</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span>---</span>
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </div>
