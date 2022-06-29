@@ -47,6 +47,8 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
+                  name:
+                    $ref: '#/components/schemas/Name'
                   isAdmin:
                     $ref: '#/components/schemas/IsAdmin'
         '400':
@@ -82,6 +84,8 @@ paths:
                     $ref: '#/components/schemas/Token'
                   userId:
                     $ref: '#/components/schemas/UserId'
+                  name:
+                    $ref: '#/components/schemas/Name'
         '400':
           $ref: '#/components/responses/InputError'
   /api/movie/homepage:
