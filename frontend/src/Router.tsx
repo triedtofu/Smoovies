@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
 import Movie from './pages/Movie';
 import Search from './pages/Search';
+import HigherOrLower from './pages/HigherOrLower';
 
 const Router = () => {
   return (
@@ -16,7 +17,8 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
       <Route path="/movie/:id" element={<Movie />} />
-      <Route path="/search/" element={<Search />} />
+      <Route path="/search" element={<Search />} />
+      <Route path="/higherorlower" element={<HigherOrLower />} />
     </Routes>
   );
 };
