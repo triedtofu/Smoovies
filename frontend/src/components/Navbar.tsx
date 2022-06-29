@@ -70,7 +70,7 @@ const Navbar = () => {
       <div className={styles.nav_right}>
         <Link to="/">Home</Link>
         <div>|</div>
-        <Link to="/token/wishlist">Wishlist</Link>
+        <Link to="/user/1/wishlist">Wishlist</Link>
         <div>|</div>
         <Link to="/login">Login</Link>
         <div>|</div>
