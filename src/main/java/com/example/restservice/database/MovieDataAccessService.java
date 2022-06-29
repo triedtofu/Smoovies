@@ -18,5 +18,4 @@ public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
     public Movie findMovieByID(@Param("id") long id);
     @Query(value = "SELECT * FROM movies m WHERE m.name iLIKE %:name%", nativeQuery = true)
     public List<Movie> searchMovieByName(@Param("name") String name);
-
 }

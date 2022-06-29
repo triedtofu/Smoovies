@@ -60,9 +60,8 @@ public class UserController {
 
 
     @GetMapping("/wishlist")
-    public ResponseEntity<Object> getUserWishlist(@PathVariable(name = "userId") long id) {
+    public ResponseEntity<Object> getUserWishlist(@RequestParam(name = "userId") long id) {
         JSONObject response = userService.getUserWishlist(id);
-
         return ControllerResponses.responseInputAndSearchDatabase(response);
     }
 
@@ -70,7 +69,6 @@ public class UserController {
     public ResponseEntity<Object> updateUserWishlist(@RequestBody UpdateWishlistRequest updateWishlistRequest) {
         AuthenticationToken authenticationToken = new AuthenticationToken(updateWishlistRequest.getToken());
         JSONObject response = userService.updateUserWishlist(authenticationToken, updateWishlistRequest.getMovieId(), updateWishlistRequest.getAddRemove());
-
         return ControllerResponses.responseInputAndSearchToken(response);
     }
 
