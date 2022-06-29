@@ -68,14 +68,10 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-<<<<<<< HEAD
         <Link to="/">Home</Link>
         <div>|</div>
         <Link to="/token/wishlist">Wishlist</Link>
         <div>|</div>
-=======
-        <Link to="/user/1/wishlist">Wishlist</Link>
->>>>>>> fbdd5be159ff81c1096ca1d152d1c0b9fd9ad9ea
         <Link to="/login">Login</Link>
         <div>|</div>
         <Link to="/register">Register</Link>
