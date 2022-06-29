@@ -10,7 +10,7 @@ import { apiMovieHomepage } from '../util/api';
 
 import Container from '@mui/material/Container';
 
-function Homepage() {
+const Homepage = () => {
   // const navigate = useNavigate();
 
   // code for when I can get token

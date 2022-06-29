@@ -5,6 +5,7 @@ import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
+import Movie from './pages/Movie';
 
 const Router = () => {
   return (
@@ -12,7 +13,8 @@ const Router = () => {
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/token/wishlist" element={<Wishlist />} />
+      <Route path="/user/:id/wishlist" element={<Wishlist />} />
+      <Route path="/movie/:id" element={<Movie />} />
     </Routes>
   );
 };

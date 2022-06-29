@@ -1,20 +1,17 @@
-const baseUrl = '';
-// const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com'
+// const baseUrl = '';
+// const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import movielist from './movielist.json';
+import specificMovie from './specificmovie.json';
 
-/**
- * @param {string} path Path of api
- * @param {object} init
- * @returns {Promise<object>}
- */
- const apiFetch = (path: string, init: object) => {
+const apiFetch = (path: string, init: object) => {
   return fetch(baseUrl + '/api' + path, init)
     .then(res => res.json())
     .then(data => {
       if (data && data.error) throw Error(data.error);
       return data;
-    })
+    });
 }
 
 // Auth
@@ -27,11 +24,24 @@ export const apiAuthRegister = (name: string, email: string, password: string) =
   });
 }
 
+export const apiAuthLogin = (email: string, password: string) => {
+  return apiFetch('/user/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+}
+
 // Movies
 
 export const apiMovieHomepage = () => {
   // TODO update once api is done
   return movielist;
+}
+
+// TODO update once api is done
+export const apiGetMovie = () => {
+  return specificMovie;
 }
 
 // Users

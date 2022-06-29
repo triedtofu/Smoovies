@@ -1,0 +1,22 @@
+{
+  "name": "Morbius",
+  "year": 2022,
+  "poster": "https://i.imgur.com/CBC2V7j.jpeg",
+  "trailer": "SQK-QxxtE8Y",
+  "description": "Biochemist Michael Morbius tries to cure himself of a rare blood disease, but he inadvertently infects himself with a form of vampirism instead.",
+  "director": "Steven Spielberg",
+  "genres": [
+    "Action",
+    "Fantasy"
+  ],
+  "contentRating": "PG-13",
+  "averageRating": 3.14,
+  "cast": "Johnny Depp, Will Smith",
+  "reviews": [
+    {
+      "user": 1729,
+      "review": "It's Morbin Time",
+      "rating": 5
+    }
+  ]
+}
