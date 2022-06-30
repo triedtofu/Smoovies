@@ -38,16 +38,16 @@ const MovieResultCard = (props: MovieResultCardProps) => {
           </Typography>
         </Link>
         <div>
+          {["Action", "Fantasy"].map((genre, index) => (
+            <Chip key={index} label={genre} sx={{margin: '5px'}}/>
+          ))}
+        </div>
+        <div>
           <b>Rating:</b> {props.rating}
         </div>
         <div>
           <b>Descripton:</b> {props.description}
         </div>
-        {/* <div>
-          {props.genres.map((genre, index) => (
-            <Chip key={index} label={genre} sx={{margin: '5px'}}/>
-          ))}
-        </div> */}
       </CardContent>
       {props.button ?
         <Button
