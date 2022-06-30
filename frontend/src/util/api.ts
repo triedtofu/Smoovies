@@ -1,6 +1,6 @@
-const baseUrl = '';
+// const baseUrl = '';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import movielist from './movielist.json';
 import specificMovie from './specificmovie.json';

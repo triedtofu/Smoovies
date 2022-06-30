@@ -15,10 +15,7 @@ interface movieInfo {
 }
 
 const Movie = () => {
-<<<<<<< HEAD
   const [addedToWishlist, setAddedToWishlist] = React.useState(false);
-  const data = apiGetMovie();
-=======
   const params = useParams();
 
   const [movie, setMovie] = React.useState<any>({});
@@ -40,7 +37,6 @@ const Movie = () => {
   }, []);
 
   if (Object.keys(movie).length === 0) return <></>;
->>>>>>> c98900f8d822581b86b3d43d6f689c46fbf283c1
 
   const addMovieToWishlist = () => {
     try {
@@ -56,9 +52,8 @@ const Movie = () => {
 
   return (
     <Container maxWidth="md">
-<<<<<<< HEAD
       <h1>
-        {data.name} ({data.year})
+        {movie.name} ({movie.year})
         <Button
           style={{ marginLeft: '30px' }}
           variant="outlined"
@@ -75,9 +70,6 @@ const Movie = () => {
           Remove From Wishlist
         </Button>
       </h1>
-=======
-      <h1>{movie.name} ({movie.year})</h1>
->>>>>>> c98900f8d822581b86b3d43d6f689c46fbf283c1
 
       <div style={{ maxWidth: '740px' }}>
         <Youtube code={movie.trailer} />
@@ -86,11 +78,7 @@ const Movie = () => {
       <br />
 
       <div style={{ display: 'flex' }}>
-<<<<<<< HEAD
-        <img src={data.poster} style={{ width: '200px' }} />
-=======
         <img src={movie.poster} style={{ width: '200px' }}/>
->>>>>>> c98900f8d822581b86b3d43d6f689c46fbf283c1
 
         <div style={{ width: '100%', textAlign: 'center' }}>
           <h2>{movie.name}</h2>
@@ -99,13 +87,8 @@ const Movie = () => {
 
       <h3>Movie Info</h3>
 
-<<<<<<< HEAD
-      <p>{data.description}</p>
-=======
       <p>{movie.description}</p>
 
-
->>>>>>> c98900f8d822581b86b3d43d6f689c46fbf283c1
     </Container>
   );
 };
