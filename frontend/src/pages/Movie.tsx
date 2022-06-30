@@ -124,15 +124,9 @@ const Movie = () => {
     }
 
     try {
-<<<<<<< HEAD
-      apiPutUserWishlist(cookies.token, parseInt(idStr), true).catch((err) =>
-        console.log(err)
-      );
-=======
       apiPutUserWishlist(cookies.token, parseInt(idStr), true)
         .then(_ => setButton(2))
         .catch(err => console.log(err));
->>>>>>> dd258e57b91d4d874db502350a383ce896de0a59
     } catch (err) {
       console.log(err);
     }
