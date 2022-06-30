@@ -20,4 +20,9 @@ week 4:
  -Work out backend functionality to system and interactions of springboot java to heroku.
 
 week 5:
- -
+ -Set up database connection to the server side.
+ -Worked on funcationality for:
+    -USer login, register, Wishlists
+    -Movie put, get
+-Wrote the query logic for extracting from database.
+-Checked controller routes, API Routes
