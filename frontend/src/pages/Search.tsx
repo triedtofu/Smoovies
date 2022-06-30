@@ -29,8 +29,8 @@ const Search = () => {
 
     try {
       apiMovieSearch(name)
-        .then(res => setMovies(res.movies))
-        .catch(err => setMovies([]));
+        .then((res) => setMovies(res.movies))
+        .catch((err) => setMovies([]));
     } catch (err) {
       console.log(err);
       setMovies([]);
@@ -40,20 +40,23 @@ const Search = () => {
   return (
     <Container maxWidth="lg">
       <h1>Results: {searchParams.get('name')}</h1>
-      
-      {movies.length > 0 && movies.map((movie) => (
-        <MovieResultCard
-          key={movie.id}
-          poster={movie.poster}
-          name={movie.name}
-          year={movie.year}
-          button={false}
-          // genres={movie.genres}
-          rating={movie.averageRating}
-        />
-      ))}
+      {movies.length > 0 &&
+        movies.map((movie) => (
+          <MovieResultCard
+            key={movie.id}
+            poster={movie.poster}
+            name={movie.name}
+            year={movie.year}
+            button={false}
+            // genres={movie.genres}
+            rating={movie.averageRating}
+          />
+        ))}
+      {/* {movies.length === 0 && (
+        <h1>Sorry, No results found for "{searchParams.get('name')}"</h1>
+      )} */}
     </Container>
   );
-}
+};
 
 export default MakePage(Search);

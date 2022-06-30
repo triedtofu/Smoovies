@@ -56,7 +56,12 @@ const Navbar = () => {
     <nav className={styles.nav}>
       <div className={styles.logoAndSearch}>
         <div className={styles.logoBox}>
-          <img src={movieLogo} className={styles.logo} alt="loading" />
+          <img
+            src={movieLogo}
+            className={styles.logo}
+            onClick={(e) => navigate('/')}
+            alt="loading"
+          />
         </div>
         <Box className={styles.searchBox}>
           <div className={styles.searchBar}>
@@ -79,7 +84,7 @@ const Navbar = () => {
       <div className={styles.nav_right}>
         <Link to="/">Home</Link>
         <div>|</div>
-        <Link to="/user/1/wishlist">Wishlist</Link>
+        <Link to="/higherorlower">Higher Or Lower</Link>
         <div>|</div>
         <Link to="/login">Login</Link>
         <div>|</div>

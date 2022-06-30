@@ -54,6 +54,17 @@ export const apiGetMovie = () => {
 // Users
 
 // TODO update once api is done
-export const apiUserWishlist = () => {
-  return movielist;
+export const apiUserWishlist = (id: bigint) => {
+  return apiFetch('/user/wishlist', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id }),
+  });
+};
+
+export const apiPUTUserWishlist = () => {
+  return apiFetch('/user/wishlist', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+  });
 };

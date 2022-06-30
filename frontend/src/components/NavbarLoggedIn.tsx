@@ -16,6 +16,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Divider from '@mui/material/Divider';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -71,7 +72,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
   };
 
   const gotoProfilePage = () => {
-    navigate('/');
+    // TODO
   };
 
   const gotoWishlist = () => {
@@ -79,7 +80,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
   };
 
   const gotoBanlist = () => {
-    navigate('/');
+    // TODO
   };
 
   const logout = () => {
@@ -136,7 +137,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             <MenuItem onClick={gotoProfilePage}>My Profile</MenuItem>
             <MenuItem onClick={gotoWishlist}>My Wishlist</MenuItem>
             <MenuItem onClick={gotoBanlist}>My Banlist</MenuItem>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span>---</span>
+            <Divider variant="middle" />
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </div>
