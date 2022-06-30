@@ -2,6 +2,7 @@ import React, { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
+import FormLabel from '@mui/material/FormLabel';
 
 import MyFormControl from './MyFormControl';
 import RequiredTextField from './RequiredTextField';
@@ -9,6 +10,7 @@ import styles from './AuthForm.module.css';
 
 interface LoginProps {
   submit: (email: string, password: string) => Promise<void>;
+  error: string;
 }
 
 const LoginForm = (props: LoginProps) => {
@@ -23,6 +25,7 @@ const LoginForm = (props: LoginProps) => {
   return (
     <>
       <form onSubmit={loginSubmit}>
+        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="email"

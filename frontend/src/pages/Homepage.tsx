@@ -36,12 +36,13 @@ const Homepage = () => {
       <h1>Home Page</h1>
 
       {movies.length > 0 && <div className={styles.container}>
-        {movies.map((movie, index) => (
+        {movies.map(movie => (
           <MovieCard
-            key={index}
+            key={movie.id}
             poster={movie.poster}
             name={movie.name}
             year={movie.year}
+            id={movie.id}
             // genres={movie.genres}
             rating={movie.averageRating}
           />
