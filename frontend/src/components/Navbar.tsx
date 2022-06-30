@@ -59,7 +59,7 @@ const Navbar = () => {
           <img
             src={movieLogo}
             className={styles.logo}
-            onClick={(e) => navigate('/')}
+            onClick={_ => navigate('/')}
             alt="loading"
           />
         </div>

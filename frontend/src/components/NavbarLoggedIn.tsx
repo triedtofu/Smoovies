@@ -51,6 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 interface NavbarLoggedInProps {
   name: string;
+  id: number;
   logout: () => void;
 }
 
@@ -77,7 +78,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
   };
 
   const gotoWishlist = () => {
-    navigate('/user/1/wishlist');
+    navigate(`/user/${props.id}/wishlist`);
   };
 
   const gotoBanlist = () => {
@@ -88,7 +89,12 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
     <nav className={styles.nav}>
       <div className={styles.logoAndSearch}>
         <div className={styles.logoBox}>
-          <img src={movieLogo} className={styles.logo} alt="loading" />
+          <img
+            src={movieLogo}
+            className={styles.logo}
+            alt="loading"
+            onClick={_ => navigate('/')}
+          />
         </div>
         <Box className={styles.searchBox}>
           <div className={styles.searchBar}>

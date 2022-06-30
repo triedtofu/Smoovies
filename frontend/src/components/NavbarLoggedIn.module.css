@@ -26,6 +26,10 @@
   justify-content: space-between;
 }
 
+.logoBox > img:hover {
+  cursor: pointer;
+}
+
 .searchBox {
   width: 75%;
   display: flex;

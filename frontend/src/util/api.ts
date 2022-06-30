@@ -1,6 +1,6 @@
-// const baseUrl = '';
+const baseUrl = '';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import movielist from './movielist.json';
 import specificMovie from './specificmovie.json';
@@ -69,17 +69,14 @@ export const apiGetMovie = (id: number) => {
 // Users
 
 // TODO update once api is done
-export const apiUserWishlist = (id: bigint) => {
-  return apiFetch('/user/wishlist', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id }),
-  });
+export const apiUserWishlist = (id: number) => {
+  return apiFetch(`/user/wishlist?userId=${id}`, {});
 };
 
-export const apiPUTUserWishlist = () => {
+export const apiPutUserWishlist = (token: string, movieId: number, turnon: boolean) => {
   return apiFetch('/user/wishlist', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, turnon }),
   });
 };

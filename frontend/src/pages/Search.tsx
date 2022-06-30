@@ -48,6 +48,7 @@ const Search = () => {
             name={movie.name}
             year={movie.year}
             button={false}
+            id={movie.id}
             // genres={movie.genres}
             rating={movie.averageRating}
           />

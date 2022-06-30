@@ -1,12 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 import MakePage from '../components/MakePage';
 import Youtube from '../components/Youtube';
 import Button from '@mui/material/Button';
 // import { useNavigate } from 'react-router-dom';
 
-import { apiGetMovie, apiPUTUserWishlist } from '../util/api';
+import { apiGetMovie, apiPutUserWishlist } from '../util/api';
 
 import Container from '@mui/material/Container';
 
@@ -15,6 +16,8 @@ interface movieInfo {
 }
 
 const Movie = () => {
+  const [cookies] = useCookies();
+
   const [addedToWishlist, setAddedToWishlist] = React.useState(false);
   const params = useParams();
 
@@ -39,8 +42,16 @@ const Movie = () => {
   if (Object.keys(movie).length === 0) return <></>;
 
   const addMovieToWishlist = () => {
+    const idStr = params.id ?? '';
+
+    if (idStr === '') {
+      // TODO handle error
+      return;
+    }
+
     try {
-      apiPUTUserWishlist().then((body) => setAddedToWishlist(body.turnon));
+      apiPutUserWishlist(cookies.token, parseInt(idStr), true)
+        .catch(err => console.log(err));
     } catch (err) {
       console.log(err);
     }

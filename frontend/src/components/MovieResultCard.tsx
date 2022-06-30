@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -15,6 +16,7 @@ interface MovieResultCardProps {
   year: number;
   button: boolean
   // genres: Array<string>;
+  id: number;
   rating: number;
 }
 
@@ -28,9 +30,11 @@ const MovieResultCard = (props: MovieResultCardProps) => {
         id={styles.card_media}
       />
       <CardContent className={styles.card_content}>
-        <Typography gutterBottom variant="h5" component="div">
-          {`${props.name} (${props.year})`}
-        </Typography>
+        <Link to={`/movie/${props.id}`}>
+          <Typography gutterBottom variant="h5" component="div">
+            {`${props.name} (${props.year})`}
+          </Typography>
+        </Link>
         <div>
           Rating {props.rating}
         </div>

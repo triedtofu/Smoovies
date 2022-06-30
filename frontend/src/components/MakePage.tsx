@@ -4,6 +4,8 @@ import { useCookies } from 'react-cookie';
 import Navbar from './Navbar';
 import NavbarLoggedIn from './NavbarLoggedIn';
 
+import { parseJwt } from '../util/helper';
+
 // const Nav = (token) => {
 //   if (token)
 //     return <NavbarLoggedIn />
@@ -25,6 +27,7 @@ const MakePage = (Component: React.ElementType) => {
           <NavbarLoggedIn
             name={cookies.name}
             logout={logout}
+            id={parseInt(parseJwt(cookies.token).jti)}
           /> :
           <Navbar />
         }
