@@ -1,6 +1,6 @@
-const baseUrl = '';
+// const baseUrl = '';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 // import movielist from './movielist.json';
 // import specificMovie from './specificmovie.json';
@@ -70,7 +70,8 @@ export const apiGetMovie = (id: number) => {
 
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
-  return apiFetch(`/user/wishlist?userId=${id}`, {});
+  return apiFetch(`/user/wishlist?userId=${id}`, {})
+    .catch(err => {return { 'movies': [] }});
 };
 
 export const apiPutUserWishlist = (token: string, movieId: number, turnon: boolean) => {

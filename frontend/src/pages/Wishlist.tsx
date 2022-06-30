@@ -15,6 +15,7 @@ const Wishlist = () => {
   const [cookies] = useCookies();
 
   const [movies, setMovies] = React.useState<any>([]);
+  const [fetched, setFetched] = React.useState(false);
 
   const removeMovie = (movieId: number) => {
     try {
@@ -39,7 +40,10 @@ const Wishlist = () => {
 
     try {
       apiUserWishlist(parseInt(idStr))
-        .then(data => setMovies(data.movies));
+        .then(data => {
+          setMovies(data.movies);
+          setFetched(true);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -59,10 +63,13 @@ const Wishlist = () => {
     return true;
   }
 
+  console.log(fetched, movies.length);
+
   return (
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
-      {movies.map((movie: any) => (
+      {fetched && movies.length === 0 && <p>No movies in wishlist.</p>}
+      {movies.length > 0 && movies.map((movie: any) => (
         <MovieResultCard
           key={movie.id}
           id={movie.id}
