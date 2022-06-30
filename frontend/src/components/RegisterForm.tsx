@@ -1,13 +1,16 @@
-import React, { ChangeEvent, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
-import Button from '@mui/material/Button';
 import RequiredTextField from './RequiredTextField';
 import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
 
+import Button from '@mui/material/Button';
+import FormLabel from '@mui/material/FormLabel';
+
 interface RegisterProps {
   submit: (name: string, email: string, password: string) => Promise<void>;
+  error: string;
 }
 
 const RegisterForm = (props: RegisterProps) => {
@@ -28,6 +31,7 @@ const RegisterForm = (props: RegisterProps) => {
   return (
     <>
       <form onSubmit={signupSubmit}>
+        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="name"

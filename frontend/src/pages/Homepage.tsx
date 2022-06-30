@@ -35,6 +35,7 @@ const Homepage = () => {
     <Container maxWidth="lg">
       <h1>Home Page</h1>
 
+<<<<<<< HEAD
       {movies.length > 0 && (
         <div className={styles.container}>
           {movies.map((movie, index) => (
@@ -49,6 +50,22 @@ const Homepage = () => {
           ))}
         </div>
       )}
+=======
+      {movies.length > 0 && <div className={styles.container}>
+        {movies.map(movie => (
+          <MovieCard
+            key={movie.id}
+            poster={movie.poster}
+            name={movie.name}
+            year={movie.year}
+            id={movie.id}
+            // genres={movie.genres}
+            rating={movie.averageRating}
+          />
+        ))
+        }
+      </div>}
+>>>>>>> c98900f8d822581b86b3d43d6f689c46fbf283c1
     </Container>
   );
 };
