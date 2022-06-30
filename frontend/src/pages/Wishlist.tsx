@@ -1,18 +1,32 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 import Container from '@mui/material/Container';
 
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
-import { apiUserWishlist } from '../util/api';
+import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
 
 const Wishlist = () => {
   const params = useParams();
-  // const data = apiUserWishlist();
+  const [cookies] = useCookies();
 
   const [movies, setMovies] = React.useState<any>([]);
+
+  const removeMovie = (movieId: number) => {
+    try {
+      apiPutUserWishlist(cookies.token, movieId, false)
+        .then(_ => {
+          // delete movie
+          setMovies(movies.filter((movie: any) => movie.id != movieId));
+        })
+        .catch(err => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   React.useEffect(() => {
     const idStr = params.id ?? '';
@@ -24,7 +38,7 @@ const Wishlist = () => {
 
     try {
       apiUserWishlist(parseInt(idStr))
-        .then(data => setMovies(data));
+        .then(data => setMovies(data.movies));
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +55,9 @@ const Wishlist = () => {
           name={movie.name}
           year={movie.year}
           button={true}
+          buttonClick={() => removeMovie(movie.id)}
           // genres={movie.genres}
+          description={movie.description}
           rating={movie.averageRating}
         />
       ))}

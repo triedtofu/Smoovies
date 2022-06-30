@@ -58,7 +58,19 @@ const Movie = () => {
   };
 
   const removeMovieFromWishlist = () => {
-    // TODO
+    const idStr = params.id ?? '';
+
+    if (idStr === '') {
+      // TODO handle error
+      return;
+    }
+
+    try {
+      apiPutUserWishlist(cookies.token, parseInt(idStr), false)
+        .catch(err => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

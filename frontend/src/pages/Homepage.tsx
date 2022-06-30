@@ -44,7 +44,7 @@ const Homepage = () => {
             year={movie.year}
             id={movie.id}
             // genres={movie.genres}
-            rating={movie.averageRating}
+            rating={0}
           />
         ))
         }

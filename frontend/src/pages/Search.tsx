@@ -15,6 +15,7 @@ interface MovieInfo {
   poster: string;
   genres: Array<string>;
   averageRating: number;
+  description: string;
 }
 
 const Search = () => {
@@ -48,8 +49,10 @@ const Search = () => {
             name={movie.name}
             year={movie.year}
             button={false}
+            buttonClick={null}
             id={movie.id}
             // genres={movie.genres}
+            description={movie.description}
             rating={movie.averageRating}
           />
         ))}
