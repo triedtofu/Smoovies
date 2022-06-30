@@ -15,3 +15,9 @@ Week 3
 Week 4
  - Completed assigned sections in project proposal (section 3 in report)
  - Began working on setting up backend in project
+
+Week 5
+- Implemented backend file structure
+- Wrote out api routes and server backend logic
+- Assisted backend group with writing out database logic
+- Communicated with frontend to establish overall functionality
