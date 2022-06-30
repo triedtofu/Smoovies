@@ -25,7 +25,9 @@ const Homepage = () => {
 
   React.useEffect(() => {
     try {
-      apiMovieHomepage().then((data) => setMovies(data.movies));
+      apiMovieHomepage().then((data) => {
+      setMovies(data.movies)
+    });
     } catch (err) {
       console.log(err);
     }

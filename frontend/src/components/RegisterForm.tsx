@@ -27,7 +27,7 @@ const RegisterForm = (props: RegisterProps) => {
       setPasswordErr('');
       props.submit(name, email, password1);
     } else {
-      setPasswordErr('Password and confirm password don\'t match');
+      setPasswordErr('Passwords don\'t match');
     }
   };
 
