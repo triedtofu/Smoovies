@@ -19,6 +19,7 @@ const MakePage = (Component: React.ElementType) => {
     const logout = () => {
       removeCookie('token', { path: '/' });
       removeCookie('name', { path: '/' });
+      window.location.reload();
     }
     
     return (

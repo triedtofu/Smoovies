@@ -32,7 +32,7 @@ const MovieCard = (props: MovieCardProps) => {
           </Typography>
         </Link>
         <div>
-          Rating {props.rating}
+          Rating: {props.rating}
         </div>
         {/* <div>
           {props.genres.map((genre, index) => (

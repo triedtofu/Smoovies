@@ -19,12 +19,15 @@ const RegisterForm = (props: RegisterProps) => {
   const [password1, setPassword1] = React.useState('');
   const [password2, setPassword2] = React.useState('');
 
+  const [passwordErr, setPasswordErr] = React.useState('');
+
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (password1 === password2) {
+      setPasswordErr('');
       props.submit(name, email, password1);
     } else {
-      // TODO return an error message modal
+      setPasswordErr('Password and confirm password don\'t match');
     }
   };
 
@@ -62,6 +65,7 @@ const RegisterForm = (props: RegisterProps) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword1(e.target.value)
             }
+            error={Boolean(passwordErr)}
           />
         </MyFormControl>
         <MyFormControl>
@@ -73,8 +77,10 @@ const RegisterForm = (props: RegisterProps) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword2(e.target.value)
             }
+            error={Boolean(passwordErr)}
           />
         </MyFormControl>
+        <FormLabel error={Boolean(passwordErr)}>{passwordErr}</FormLabel>
         <MyFormControl>
           <Button variant="contained" type="submit">
             Register

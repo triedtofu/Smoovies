@@ -15,14 +15,17 @@ interface MovieInfo {
   poster: string;
   genres: Array<string>;
   averageRating: number;
+  description: string;
 }
 
 const Search = () => {
   const [searchParams] = useSearchParams();
 
   const [movies, setMovies] = React.useState<Array<MovieInfo>>([]);
+  const [found, setFound] = React.useState(true);
 
   React.useEffect(() => {
+    setFound(true);
     const name = searchParams.get('name') ?? '';
 
     if (name === '') return;
@@ -30,7 +33,10 @@ const Search = () => {
     try {
       apiMovieSearch(name)
         .then((res) => setMovies(res.movies))
-        .catch((err) => setMovies([]));
+        .catch((err) => {
+          setMovies([]);
+          setFound(false);
+        });
     } catch (err) {
       console.log(err);
       setMovies([]);
@@ -40,6 +46,7 @@ const Search = () => {
   return (
     <Container maxWidth="lg">
       <h1>Results: {searchParams.get('name')}</h1>
+      {!found && movies.length === 0 && <p>No movies found.</p>}
       {movies.length > 0 &&
         movies.map((movie) => (
           <MovieResultCard
@@ -48,8 +55,10 @@ const Search = () => {
             name={movie.name}
             year={movie.year}
             button={false}
+            buttonClick={null}
             id={movie.id}
             // genres={movie.genres}
+            description={movie.description}
             rating={movie.averageRating}
           />
         ))}

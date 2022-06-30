@@ -14,7 +14,9 @@ interface MovieResultCardProps {
   poster: string;
   name: string;
   year: number;
-  button: boolean
+  button: boolean;
+  buttonClick: any;
+  description: string;
   // genres: Array<string>;
   id: number;
   rating: number;
@@ -36,7 +38,10 @@ const MovieResultCard = (props: MovieResultCardProps) => {
           </Typography>
         </Link>
         <div>
-          Rating {props.rating}
+          <b>Rating:</b> {props.rating}
+        </div>
+        <div>
+          <b>Descripton:</b> {props.description}
         </div>
         {/* <div>
           {props.genres.map((genre, index) => (
@@ -45,7 +50,12 @@ const MovieResultCard = (props: MovieResultCardProps) => {
         </div> */}
       </CardContent>
       {props.button ?
-        <Button variant="outlined" color="error" sx={{ margin: '10px' }}>
+        <Button
+          variant="outlined"
+          color="error"
+          sx={{ margin: '10px' }}
+          onClick={props.buttonClick}
+        >
           Remove
         </Button> : 
         <div></div>
