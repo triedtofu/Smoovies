@@ -48,7 +48,22 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch(`/movie/getMovie?id=${id}`, {});
+  return apiFetch(`/movie/getMovie?id=${id}`, {})
+    .then(data => {
+      data.trailer = 'SQK-QxxtE8Y';
+      data.reviews = [
+        {
+          "user": 1729,
+          "review": "It's Morbin Time",
+          "rating": 5
+        }
+      ];
+      data.genres = [
+        "Action",
+        "Fantasy"
+      ];
+      return data;
+    });
 };
 
 // Users
