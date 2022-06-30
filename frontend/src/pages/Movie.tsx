@@ -7,32 +7,27 @@ import MakePage from '../components/MakePage';
 import Youtube from '../components/Youtube';
 
 import Button from '@mui/material/Button';
-<<<<<<< HEAD
 import Rating from '@mui/material/Rating';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ReviewCard from '../components/ReviewCard';
 // import { useNavigate } from 'react-router-dom';
-=======
 import Container from '@mui/material/Container';
->>>>>>> dd258e57b91d4d874db502350a383ce896de0a59
 
 import { apiGetMovie, apiUserWishlist, apiPutUserWishlist } from '../util/api';
 import { parseJwt } from '../util/helper';
-
 
 interface movieInfo {
   name: string;
 }
 
-<<<<<<< HEAD
 interface reviewInfo {
   user: number;
   review: string;
   rating: number;
-=======
+}
+
 interface buttonProps {
   state: number;
->>>>>>> dd258e57b91d4d874db502350a383ce896de0a59
 }
 
 const Movie = () => {
@@ -55,16 +50,8 @@ const Movie = () => {
     }
 
     try {
-<<<<<<< HEAD
-      apiGetMovie(parseInt(idStr)).then((data) => {
-        setMovie(data);
-        setReviews(data.reviews);
-      });
-=======
       const id = parseInt(idStr);
-      apiGetMovie(id)
-        .then(data => setMovie({ ...data, id }));
->>>>>>> dd258e57b91d4d874db502350a383ce896de0a59
+      apiGetMovie(id).then((data) => setMovie({ ...data, id }));
     } catch (error) {
       console.log(error);
     }
@@ -74,44 +61,45 @@ const Movie = () => {
     if (Object.keys(movie).length === 0 || !cookies.token) return;
 
     try {
-      apiUserWishlist(parseInt(parseJwt(cookies.token).jti))
-        .then(data => {
-          if (data.movies.find((m: any) => m.id  === movie.id)) {
-            setButton(2);
-          } else {
-            setButton(1);
-          }
-        });
+      apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
+        if (data.movies.find((m: any) => m.id === movie.id)) {
+          setButton(2);
+        } else {
+          setButton(1);
+        }
+      });
     } catch (error) {
       console.log(error);
     }
   }, [movie]);
 
   const WishlistButton = ({ state }: buttonProps) => {
-    console.log("State = " + state);
-    if (state === 1) return (
-      <Button
-        style={{ marginLeft: '30px' }}
-        variant="outlined"
-        onClick={addMovieToWishlist}
-      >
-        Add To Wishlist
-      </Button>
-    );
-  
-    if (state === 2) return (
-      <Button
-        style={{ marginLeft: '30px' }}
-        variant="outlined"
-        color="error"
-        onClick={removeMovieFromWishlist}
-      >
-        Remove From Wishlist
-      </Button>
-    );
-  
+    console.log('State = ' + state);
+    if (state === 1)
+      return (
+        <Button
+          style={{ marginLeft: '30px' }}
+          variant="outlined"
+          onClick={addMovieToWishlist}
+        >
+          Add To Wishlist
+        </Button>
+      );
+
+    if (state === 2)
+      return (
+        <Button
+          style={{ marginLeft: '30px' }}
+          variant="outlined"
+          color="error"
+          onClick={removeMovieFromWishlist}
+        >
+          Remove From Wishlist
+        </Button>
+      );
+
     return <></>;
-  }  
+  };
 
   if (Object.keys(movie).length === 0) return <></>;
 
@@ -125,8 +113,8 @@ const Movie = () => {
 
     try {
       apiPutUserWishlist(cookies.token, parseInt(idStr), true)
-        .then(_ => setButton(2))
-        .catch(err => console.log(err));
+        .then((_) => setButton(2))
+        .catch((err) => console.log(err));
     } catch (err) {
       console.log(err);
     }
@@ -142,8 +130,8 @@ const Movie = () => {
 
     try {
       apiPutUserWishlist(cookies.token, parseInt(idStr), false)
-        .then(_ => setButton(1))
-        .catch(err => console.log(err));
+        .then((_) => setButton(1))
+        .catch((err) => console.log(err));
     } catch (err) {
       console.log(err);
     }
@@ -155,9 +143,7 @@ const Movie = () => {
 
   return (
     <Container maxWidth="md">
-
       <h1>
-        {console.log(movie)}
         {movie.name} ({movie.year})
         <Button
           style={{ marginLeft: '30px' }}
@@ -177,13 +163,8 @@ const Movie = () => {
       </h1>
 
       <div className={styles.title_div}>
-        <h1>
-          {movie.name} ({movie.year})
-        </h1>
-
         <WishlistButton state={button} />
       </div>
-
 
       <div style={{ maxWidth: '740px' }}>
         <Youtube code={movie.trailer} />
