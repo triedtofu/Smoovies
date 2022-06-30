@@ -16,3 +16,9 @@ Week 3
 - Worked with group to finish the project proposal
 - Set up the project on heroku
 - Worked on the login and register page
+
+Week 4
+
+- Worked with Raymond to complete the frontend functionality
+- Attended team meeting on Wednesday on our progress for Demo A
+- Communicated with backend on their work on the api
