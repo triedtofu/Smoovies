@@ -23,7 +23,13 @@ const Login = () => {
       setCookie('name', data.name, { path: '/' });
       navigate('/');
     } catch (error) {
-      setLoginErr(getErrorMessage(error));
+      const errStr = getErrorMessage(error);
+
+      if (errStr === 'Invalid input') {
+        setLoginErr('Email and password don\'t match');
+      } else {
+        setLoginErr(getErrorMessage(error));
+      }
     }
   };
 

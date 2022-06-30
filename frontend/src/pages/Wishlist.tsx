@@ -8,6 +8,7 @@ import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
 import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
+import { parseJwt } from '../util/helper';
 
 const Wishlist = () => {
   const params = useParams();
@@ -44,6 +45,20 @@ const Wishlist = () => {
     }
   }, []);
 
+  // returns whether the remove from wishlist button should be shown
+  const showButton = () => {
+    const idStr = params.id ?? '';
+
+    if (idStr === '') {
+      // TODO handle error
+      return false;
+    }
+
+    if (!cookies.token || idStr !== parseJwt(cookies.token).jti) return false;
+
+    return true;
+  }
+
   return (
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
@@ -54,7 +69,7 @@ const Wishlist = () => {
           poster={movie.poster}
           name={movie.name}
           year={movie.year}
-          button={true}
+          button={showButton()}
           buttonClick={() => removeMovie(movie.id)}
           // genres={movie.genres}
           description={movie.description}
