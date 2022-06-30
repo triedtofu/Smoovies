@@ -1,11 +1,15 @@
 package com.example.restservice.dataModels;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +37,9 @@ public class Movie {
 
     @Column(name = "contentRating")
     private String contentRating;
+
+    @ManyToMany(mappedBy = "wishList")
+    private Set<User> userWishlists = new HashSet<>();
 
     public Movie() {
         super();
@@ -82,6 +89,12 @@ public class Movie {
     public String getContentRating() {
         return contentRating;
     }
+
+    public Set<User> getUserWishlist() {
+        return this.userWishlists;
+    }
+
+   
 
 
 }

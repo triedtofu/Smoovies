@@ -9,6 +9,9 @@
   gap: 8px;
   justify-content: right;
   align-content: flex-end;
+  align-items: center;
+  margin-bottom: 1%;
+  padding-right: 20px;
 }
 
 .logo {
@@ -21,6 +24,10 @@
 .logoBox {
   display: flex;
   justify-content: space-between;
+}
+
+.logoBox > img:hover {
+  cursor: pointer;
 }
 
 .searchBox {

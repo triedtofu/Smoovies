@@ -45,19 +45,23 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   const [movieSearch, setMovieSearch] = React.useState('');
+  const navigate = useNavigate();
 
   const submitSearch = () => {
     navigate(`/search?name=${movieSearch}`);
-  }
+  };
 
   return (
     <nav className={styles.nav}>
       <div className={styles.logoAndSearch}>
         <div className={styles.logoBox}>
-          <img src={movieLogo} className={styles.logo} alt="loading" />
+          <img
+            src={movieLogo}
+            className={styles.logo}
+            onClick={_ => navigate('/')}
+            alt="loading"
+          />
         </div>
         <Box className={styles.searchBox}>
           <div className={styles.searchBar}>
@@ -70,7 +74,7 @@ const Navbar = () => {
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
                   value={movieSearch}
-                  onChange={e => setMovieSearch(e.target.value)}
+                  onChange={(e) => setMovieSearch(e.target.value)}
                 />
               </form>
             </Search>
@@ -80,7 +84,7 @@ const Navbar = () => {
       <div className={styles.nav_right}>
         <Link to="/">Home</Link>
         <div>|</div>
-        <Link to="/user/1/wishlist">Wishlist</Link>
+        <Link to="/higherorlower">Higher Or Lower</Link>
         <div>|</div>
         <Link to="/login">Login</Link>
         <div>|</div>

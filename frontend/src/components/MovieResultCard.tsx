@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -13,8 +14,11 @@ interface MovieResultCardProps {
   poster: string;
   name: string;
   year: number;
-  button: boolean
+  button: boolean;
+  buttonClick: any;
+  description: string;
   // genres: Array<string>;
+  id: number;
   rating: number;
 }
 
@@ -28,11 +32,16 @@ const MovieResultCard = (props: MovieResultCardProps) => {
         id={styles.card_media}
       />
       <CardContent className={styles.card_content}>
-        <Typography gutterBottom variant="h5" component="div">
-          {`${props.name} (${props.year})`}
-        </Typography>
+        <Link to={`/movie/${props.id}`}>
+          <Typography gutterBottom variant="h5" component="div">
+            {`${props.name} (${props.year})`}
+          </Typography>
+        </Link>
         <div>
-          Rating {props.rating}
+          <b>Rating:</b> {props.rating}
+        </div>
+        <div>
+          <b>Descripton:</b> {props.description}
         </div>
         {/* <div>
           {props.genres.map((genre, index) => (
@@ -41,7 +50,12 @@ const MovieResultCard = (props: MovieResultCardProps) => {
         </div> */}
       </CardContent>
       {props.button ?
-        <Button variant="outlined" color="error" sx={{ margin: '10px' }}>
+        <Button
+          variant="outlined"
+          color="error"
+          sx={{ margin: '10px' }}
+          onClick={props.buttonClick}
+        >
           Remove
         </Button> : 
         <div></div>

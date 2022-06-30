@@ -25,7 +25,7 @@ const Homepage = () => {
 
   React.useEffect(() => {
     try {
-      apiMovieHomepage().then(data => setMovies(data.movies));
+      apiMovieHomepage().then((data) => setMovies(data.movies));
     } catch (err) {
       console.log(err);
     }
@@ -34,22 +34,23 @@ const Homepage = () => {
   return (
     <Container maxWidth="lg">
       <h1>Home Page</h1>
-
+      
       {movies.length > 0 && <div className={styles.container}>
-        {movies.map((movie, index) => (
+        {movies.map(movie => (
           <MovieCard
-            key={index}
+            key={movie.id}
             poster={movie.poster}
             name={movie.name}
             year={movie.year}
+            id={movie.id}
             // genres={movie.genres}
-            rating={movie.averageRating}
+            rating={0}
           />
         ))
         }
       </div>}
     </Container>
   );
-}
+};
 
 export default MakePage(Homepage);

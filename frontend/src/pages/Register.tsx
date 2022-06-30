@@ -8,10 +8,13 @@ import MakePage from '../components/MakePage';
 import RegisterForm from '../components/RegisterForm';
 
 import { apiAuthRegister } from '../util/api';
+import { getErrorMessage } from '../util/helper';
 
 const Register = () => {
   const navigate = useNavigate();
   const [, setCookie] = useCookies();
+
+  const [registerErr, setRegisterErr] = React.useState('');
 
   const register = async (name: string, email: string, password: string) => {
     try {
@@ -19,9 +22,8 @@ const Register = () => {
       setCookie('token', data.token, { path: '/' });
       setCookie('name', data.name, { path: '/' });
       navigate('/');
-
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      setRegisterErr(getErrorMessage(error));
     }
   };
 
@@ -29,7 +31,7 @@ const Register = () => {
     <Container maxWidth="sm">
       <h1>Register</h1>
 
-      <RegisterForm submit={register} />
+      <RegisterForm submit={register} error={registerErr} />
     </Container>
   );
 }

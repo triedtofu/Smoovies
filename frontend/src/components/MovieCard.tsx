@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -10,6 +11,7 @@ interface MovieCardProps {
   poster: string;
   name: string;
   year: number;
+  id: number;
   // genres: Array<string>;
   rating: number;
 }
@@ -24,11 +26,13 @@ const MovieCard = (props: MovieCardProps) => {
         alt={`Movie poster for ${props.name}`}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center' }}>
-          {`${props.name} (${props.year})`}
-        </Typography>
+        <Link to={`/movie/${props.id}`}>
+          <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center' }}>
+            {`${props.name} (${props.year})`}
+          </Typography>
+        </Link>
         <div>
-          Rating {props.rating}
+          Rating: {props.rating}
         </div>
         {/* <div>
           {props.genres.map((genre, index) => (
