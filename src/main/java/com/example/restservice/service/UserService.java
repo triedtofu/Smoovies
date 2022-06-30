@@ -1,30 +1,23 @@
 package com.example.restservice.service;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
-import com.example.restservice.dataModels.User;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.Movie;
-
-import com.example.restservice.database.UserDataAccessService;
+import com.example.restservice.dataModels.User;
 import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.UserDataAccessService;
 
-import com.example.restservice.service.ServiceErrors;
-import com.example.restservice.service.ServiceInputChecks;
-import com.example.restservice.service.ServiceJWTHelper;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
-
-import java.util.HashMap;
-import com.example.restservice.service.ServiceErrors;
-import com.example.restservice.service.ServiceInputChecks;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.jsonwebtoken.Claims;
 
 
 @Service
@@ -33,7 +26,11 @@ public class UserService {
     
     @Autowired
 	private UserDataAccessService userDAO;
-  
+
+    @Autowired
+    private MovieDataAccessService movieDAO;
+
+
     /**
      * Logs a user in based on their email and password.
      * @param email
@@ -78,11 +75,15 @@ public class UserService {
     public JSONObject register(User user, Boolean isAdmin) {
 
         // TODO: check user values for errors
-        if (!ServiceInputChecks.checkName(user.getName()) || 
-            !ServiceInputChecks.checkEmail(user.getEmail()) || 
-            !ServiceInputChecks.checkPassword(user.getPassword()) ||
-            !ServiceInputChecks.checkUniqueEmail(user.getEmail())) {
-            return ServiceErrors.invalidInputError();
+
+        if (!ServiceInputChecks.checkName(user.getName())) {
+            return ServiceErrors.invalidNameError();
+        } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
+            return ServiceErrors.invalidEmailError();
+        } else if (!ServiceInputChecks.checkPassword(user.getPassword())) {
+            return ServiceErrors.invalidPasswordError();
+        } else if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
+            return ServiceErrors.invalidUniqueEmailError();
         }
         
         user.setIsAdmin(isAdmin);
@@ -123,18 +124,16 @@ public class UserService {
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.invalidInputError();
         }
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
-
-        // TODO: Query the database for the movies in the users wishlist
-        List<Movie> dbMovies = new ArrayList<Movie>();
-        // TODO: if valid movies are found (list of movies is larger than size 0)
-        if (dbMovies.size() > 0) {
-            for(int i = 0; i < dbMovies.size(); i++) {
-                Movie dbMovie = dbMovies.get(i);
+        User user = userDAO.findById(id).get();
+        Set<Movie> wishlist = user.getWishlistMovies();
+        List<Movie> wish = new ArrayList<>(wishlist);
+        //TODO: Sort alphabetically
+        if (wishlist.size() > 0) {
+            for(int i = 0; i < wishlist.size(); i++) {
+                Movie dbMovie = wish.get(i);
                 HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
                 dbMovieDetails.put("id", dbMovie.getId());
                 dbMovieDetails.put("name", dbMovie.getName());
@@ -146,15 +145,14 @@ public class UserService {
                 moviesArray.put(dbMovieDetailsJson);
             }
         } 
-        // otherwise if no movies found, return not found error
+        // TODO: Return a different error
         else {
             return ServiceErrors.notFoundError();
         }
-
+        
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
     }
 
     /**
@@ -172,27 +170,23 @@ public class UserService {
         }
 
         // verify the token and extract the users email
-        String userEmail = ServiceJWTHelper.verifyJWT(token.getToken());
-        if (userEmail == null) {
+        Long user_id = ServiceJWTHelper.getTokenId(token.getToken());
+        if (user_id == null) {
             return ServiceErrors.invalidTokenError();
         }
-
-        // TODO: add/remove movie from wishlist
-        // you have the users email, query db for their wishlisht
-        // if addRemove == true
-        if (addRemove) {    
-            // TODO: add movie to wishlist
-
+        Movie movie = movieDAO.findById(movieId).get();
+        User user = userDAO.findById(user_id).get();
+        if (movie != null) {
+            if (addRemove) {
+                user.addToWishlist(movie);
+                userDAO.save(user);
+            } else {
+                user.removeWishlist(movie);
+                userDAO.save(user);
+            }
         }
-        // if addRemove == false
-        else {
-            //TODO: remove from wishlist
-
-        }
-
-        JSONObject responseJson = new JSONObject();
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
     }
-
 }
