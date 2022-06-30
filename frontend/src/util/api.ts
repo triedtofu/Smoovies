@@ -1,14 +1,14 @@
-const baseUrl = '';
+// const baseUrl = '';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import movielist from './movielist.json';
 import specificMovie from './specificmovie.json';
 
 const apiFetch = (path: string, init: object) => {
   return fetch(baseUrl + '/api' + path, init)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data && data.error) throw Error(data.error);
       return data;
     });
@@ -48,22 +48,21 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch(`/movie/getMovie?id=${id}`, {})
-    .then(data => {
-      data.trailer = 'SQK-QxxtE8Y';
-      data.reviews = [
-        {
-          "user": 1729,
-          "review": "It's Morbin Time",
-          "rating": 5
-        }
-      ];
-      data.genres = [
-        "Action",
-        "Fantasy"
-      ];
-      return data;
-    });
+  return apiFetch(`/movie/getMovie?id=${id}`, {}).then((data) => {
+    data.trailer = 'SQK-QxxtE8Y';
+    data.cast = 'Chris Hemsworth, Natalie Portman, Tom Hiddleston';
+    data.avgRating = 3.14;
+    data.runTime = 114;
+    data.reviews = [
+      {
+        user: 1729,
+        review: "It's Morbin Time",
+        rating: 5,
+      },
+    ];
+    data.genres = ['Action', 'Fantasy'];
+    return data;
+  });
 };
 
 // Users
@@ -73,7 +72,11 @@ export const apiUserWishlist = (id: number) => {
   return apiFetch(`/user/wishlist?userId=${id}`, {});
 };
 
-export const apiPutUserWishlist = (token: string, movieId: number, turnon: boolean) => {
+export const apiPutUserWishlist = (
+  token: string,
+  movieId: number,
+  turnon: boolean
+) => {
   return apiFetch('/user/wishlist', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
