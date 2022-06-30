@@ -1,12 +1,19 @@
 package com.example.restservice.dataModels;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -30,6 +37,15 @@ public class User {
 
     @Column(name = "token")
     private String token;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name="Wishlist",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    Set<Movie> wishList = new HashSet<>();
 
     public User() {
         super();
@@ -79,5 +95,16 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Set<Movie> getWishlistMovies() {
+        return wishList;
+    }
+    public void addToWishlist(Movie movie) {
+        wishList.add(movie);
+    }
+
+    public void removeWishlist(Movie movie) {
+        wishList.remove(movie);
     }
 }

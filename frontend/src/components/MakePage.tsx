@@ -12,11 +12,22 @@ import NavbarLoggedIn from './NavbarLoggedIn';
 
 const MakePage = (Component: React.ElementType) => {
   const page = () => {
-    const [cookies] = useCookies();
+    const [cookies, , removeCookie] = useCookies();
+
+    const logout = () => {
+      removeCookie('token', { path: '/' });
+      removeCookie('name', { path: '/' });
+    }
     
     return (
       <>
-        {cookies.token ? <NavbarLoggedIn name={cookies.name} /> : <Navbar />}
+        {cookies.token ?
+          <NavbarLoggedIn
+            name={cookies.name}
+            logout={logout}
+          /> :
+          <Navbar />
+        }
         <Component />
       </>
     )
