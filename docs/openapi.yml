@@ -128,6 +128,8 @@ paths:
                     $ref: '#/components/schemas/MovieYear'
                   poster:
                     $ref: '#/components/schemas/MoviePoster'
+                  trailer:
+                    $ref: '#/components/schemas/YoutubeVideoId'
                   description:
                     $ref: '#/components/schemas/MovieDescription'
                   director:
@@ -277,6 +279,10 @@ components:
       format: url
       description: Image url
       example: https://i.imgur.com/CBC2V7j.jpeg
+    YoutubeVideoId:
+      type: string
+      description: The YouTube video id is a unique identifier of every video on YouTube
+      example: dQw4w9WgXcQ
     Director:
       type: string
       description: Name of a director
@@ -322,6 +328,8 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/UserId'
+        name:
+          $ref: '#/components/schemas/Name'
         review:
           type: string
           description: A review of a movie
