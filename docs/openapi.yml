@@ -175,6 +175,53 @@ paths:
           $ref: '#/components/responses/InputError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/movie/addMovie:
+    post:
+      tags:
+        - Movies
+      summary: Add a movie
+      description: Route for admin to add a movie to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                name:
+                  $ref: '#/components/schemas/MovieName'
+                year:
+                  $ref: '#/components/schemas/MovieYear'
+                poster:
+                  $ref: '#/components/schemas/MoviePoster'
+                trailer:
+                  $ref: '#/components/schemas/YoutubeVideoId'
+                description:
+                  $ref: '#/components/schemas/MovieDescription'
+                director:
+                  $ref: '#/components/schemas/Director'
+                genres:
+                  $ref: '#/components/schemas/Genres'
+                contentRating:
+                  $ref: '#/components/schemas/ContentRating'
+                cast:
+                  $ref: '#/components/schemas/Cast'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/MovieId'
+                  name:
+                    $ref: '#/components/schemas/MovieName'
+        '400':
+          $ref: '#/components/responses/InputError'
   /api/user/wishlist:
     get:
       tags:
