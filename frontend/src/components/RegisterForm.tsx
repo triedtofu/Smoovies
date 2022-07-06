@@ -1,13 +1,16 @@
-import React, { ChangeEvent, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
-import Button from '@mui/material/Button';
 import RequiredTextField from './RequiredTextField';
 import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
 
+import Button from '@mui/material/Button';
+import FormLabel from '@mui/material/FormLabel';
+
 interface RegisterProps {
-  success: (name: string, email: string, password: string) => Promise<void>;
+  submit: (name: string, email: string, password: string) => Promise<void>;
+  error: string;
 }
 
 const RegisterForm = (props: RegisterProps) => {
@@ -16,21 +19,30 @@ const RegisterForm = (props: RegisterProps) => {
   const [password1, setPassword1] = React.useState('');
   const [password2, setPassword2] = React.useState('');
 
+  const [passwordErr, setPasswordErr] = React.useState('');
+
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    props.success(name, email, password1);
-  }
+    if (password1 === password2) {
+      setPasswordErr('');
+      props.submit(name, email, password1);
+    } else {
+      setPasswordErr('Passwords don\'t match');
+    }
+  };
 
   return (
     <>
       <form onSubmit={signupSubmit}>
+        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="name"
             label="Name"
             value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}  
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
@@ -39,7 +51,9 @@ const RegisterForm = (props: RegisterProps) => {
             label="Email"
             type="email"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
           />
         </MyFormControl>
         <MyFormControl>
@@ -48,7 +62,10 @@ const RegisterForm = (props: RegisterProps) => {
             label="Enter your password"
             type="password"
             value={password1}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword1(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword1(e.target.value)
+            }
+            error={Boolean(passwordErr)}
           />
         </MyFormControl>
         <MyFormControl>
@@ -57,19 +74,28 @@ const RegisterForm = (props: RegisterProps) => {
             label="Confirm your password"
             type="password"
             value={password2}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword2(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword2(e.target.value)
+            }
+            error={Boolean(passwordErr)}
           />
         </MyFormControl>
+        <FormLabel error={Boolean(passwordErr)}>{passwordErr}</FormLabel>
         <MyFormControl>
-          <Button variant="contained" type="submit">Register</Button>
+          <Button variant="contained" type="submit">
+            Register
+          </Button>
         </MyFormControl>
       </form>
 
       <div className={styles.box}>
-        Already have an account? <Link className={styles.box_link} to="/login">Login</Link>
+        Already have an account?{' '}
+        <Link className={styles.box_link} to="/login">
+          Login
+        </Link>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default RegisterForm;

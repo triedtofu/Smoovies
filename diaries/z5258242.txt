@@ -20,3 +20,8 @@ Thursday
 
 Sunday
 - Finished all parts along with tiny changes about formatting the proposal document
+
+Week 5
+Thursday
+- Completed in tandem with frontend partner on the visual aspects and api calling of wishlist, specific movie details page and profile page
+- Did a little bit on the api call functions

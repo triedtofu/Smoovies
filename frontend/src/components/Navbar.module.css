@@ -1,15 +1,48 @@
 .nav {
   display: flex;
   justify-content: space-between;
+  background-color: #d3d3d3;
 }
 
 .nav_right {
   display: flex;
   gap: 8px;
+  justify-content: right;
+  align-content: flex-end;
+  align-items: center;
+  margin-bottom: 1%;
+  padding-right: 20px;
 }
 
 .logo {
   margin-left: 10px;
-  height: 15%;
-  width: 15%;
+  display: flex;
+  height: 70px;
+  width: 70px;
+}
+
+.logoBox {
+  display: flex;
+  justify-content: space-between;
+}
+
+.logoBox > img:hover {
+  cursor: pointer;
+}
+
+.searchBox {
+  width: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchBar {
+  /* background-color: gray; */
+  width: 80%;
+}
+
+.logoAndSearch {
+  display: flex;
+  flex: 1;
 }
