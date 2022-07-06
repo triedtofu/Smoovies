@@ -1,5 +1,8 @@
 # run this with different apiKey's and push to github after, should add movies to completeMovieData.csv and update sortedMovieByVotesWithCheck.csv
 
+# make sure you open the DataGathering folder otherwise script wont find the data files
+# should stop automatically with an error (something like keyError "title" etc) when req limit is reached
+
 from __future__ import generator_stop
 from asyncio.base_subprocess import WriteSubprocessPipeProto
 from pdb import post_mortem
@@ -20,6 +23,8 @@ movieListPath = "sortedMovieByVotesWithCheck.csv"
 outputPath = "completeMovieData.csv"
 
 # change this for daily limits
+# 100 req daily limit for MDBlist API per key
+# 500 req month limit for movieDetails API per key
 apiKey = "1202e10ab1msh8a83f4ffdb0cafep12e0e3jsn3633742505d6"
 
 
@@ -31,6 +36,7 @@ for index, row in movieList.iterrows():
 		ttValue = row['tconst']
 		print(ttValue)
 
+		# get MDBList API data
 		url = "https://mdblist.p.rapidapi.com/"
 		querystring = {"i":ttValue}
 		headers = {
@@ -45,7 +51,7 @@ for index, row in movieList.iterrows():
 		description =  response.json()["description"]
 		contentRating =  response.json()["certification"]
 
-
+		# get movieDetails API data
 		url = "https://movie-details1.p.rapidapi.com/imdb_api/movie"
 		querystring = {"id":ttValue}
 		headers = {
