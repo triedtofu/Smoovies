@@ -16,7 +16,6 @@ public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
     public List<Movie> trending();
     @Query(value = "SELECT * FROM movies m WHERE m.id = :id", nativeQuery = true)
     public Movie findMovieByID(@Param("id") long id);
-    @Query(value = "SELECT * FROM movies m WHERE m.name LIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * FROM movies m WHERE m.name iLIKE %:name%", nativeQuery = true)
     public List<Movie> searchMovieByName(@Param("name") String name);
-
 }

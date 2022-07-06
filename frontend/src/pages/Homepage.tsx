@@ -1,19 +1,58 @@
 import React from 'react';
 
+import styles from './Homepage.module.css';
+
 import MakePage from '../components/MakePage';
-import { useNavigate } from 'react-router-dom';
+import MovieCard from '../components/MovieCard';
+// import { useNavigate } from 'react-router-dom';
 
-function Homepage() {
-  const navigate = useNavigate();
+import { apiMovieHomepage } from '../util/api';
 
-  // code for when I can get token
-  // React.useEffect(() => {
-  //   if (!token) {
-  //     navigate('/login');
-  //   }
-  // });
+import Container from '@mui/material/Container';
+import Movie from './Movie';
 
-  return <h1>Home Page</h1>;
+interface MovieInfo {
+  id: number;
+  name: string;
+  year: number;
+  poster: string;
+  genres: Array<string>;
+  averageRating: number;
 }
+
+const Homepage = () => {
+  const [movies, setMovies] = React.useState<Array<MovieInfo>>([]);
+
+  React.useEffect(() => {
+    try {
+      apiMovieHomepage().then((data) => {
+      setMovies(data.movies)
+    });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  return (
+    <Container maxWidth="lg">
+      <h1>Home Page</h1>
+      
+      {movies.length > 0 && <div className={styles.container}>
+        {movies.map(movie => (
+          <MovieCard
+            key={movie.id}
+            poster={movie.poster}
+            name={movie.name}
+            year={movie.year}
+            id={movie.id}
+            // genres={movie.genres}
+            rating={0}
+          />
+        ))
+        }
+      </div>}
+    </Container>
+  );
+};
 
 export default MakePage(Homepage);

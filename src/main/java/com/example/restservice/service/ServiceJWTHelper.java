@@ -48,7 +48,7 @@ public class ServiceJWTHelper {
     }
 
     //Sample method to validate and read the JWT
-    public static String verifyJWT(String jwt) {
+    private static Claims verifyJWT(String jwt) {
     
         //This line will throw an exception if it is not a signed JWS (as expected)
         try {
@@ -56,7 +56,7 @@ public class ServiceJWTHelper {
             .setSigningKey(DatatypeConverter.parseBase64Binary("sercretKeyMustBeThisLonggggggggggggggggggggggggggggg"))
             .build()
             .parseClaimsJws(jwt).getBody();
-            return claims.getSubject();
+            return claims;
         } catch (JwtException e) {
             return null;
         }
@@ -65,5 +65,22 @@ public class ServiceJWTHelper {
     private static long tokenTimeInMilliSeconds() {
         // currently 1 hr
         return 60 * 60 * 1000; 
+    }
+
+    public static String getTokenEmail(String jwt) {
+        Claims claims = verifyJWT(jwt);
+        if (claims != null) {
+            return claims.getSubject();
+        }
+        return null;
+        
+    }
+
+    public static Long getTokenId(String jwt) {
+        Claims claims = verifyJWT(jwt);
+        if (claims != null) {
+            return Long.valueOf(claims.getId());
+        }
+        return null;
     }
 }
