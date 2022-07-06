@@ -222,12 +222,74 @@ paths:
                     $ref: '#/components/schemas/MovieName'
         '400':
           $ref: '#/components/responses/InputError'
+  /api/movie/deleteMovie:
+    post:
+      tags:
+        - Movies
+      summary: Delete movie
+      description: Route for admin to delete a movie from the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/movie/addReview:
+    post:
+      tags:
+        - Movies
+      summary: Add a review to a movie
+      description: Add a review to a movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                review:
+                  $ref: '#/components/schemas/ReviewString'
+                rating:
+                  $ref: '#/components/schemas/ReviewRating'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
   /api/user/wishlist:
     get:
       tags:
         - Users
       summary: Get the wishlist of a specific user
-      description: Returns the wishlist of a specific
+      description: Returns the wishlist of a specific movie
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
       responses:
@@ -277,6 +339,31 @@ paths:
           $ref: '#/components/responses/InputError'
         '403':
           $ref: '#/components/responses/AccessError'
+  /api/user/reviews:
+    get:
+      tags:
+        - Users
+      summary: Get the reviews of a specific user
+      description: Returns the reviews of a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    maxItems: 10
+                    items:
+                      $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes:
     bearerAuth:
@@ -370,6 +457,14 @@ components:
       type: string
       description: Cast of a movie
       example: Johnny Depp, Will Smith
+    ReviewString:
+      type: string
+      description: A review of a movie
+      example: It's Morbin Time
+    ReviewRating:
+      type: integer
+      description: A rating of a movie
+      example: 5
     Review:
       type: object
       properties:
@@ -378,13 +473,9 @@ components:
         name:
           $ref: '#/components/schemas/Name'
         review:
-          type: string
-          description: A review of a movie
-          example: It's Morbin Time
+          $ref: '#/components/schemas/ReviewString'
         rating:
-          type: integer
-          description: A rating of a movie
-          example: 5
+          $ref: '#/components/schemas/ReviewRating'
     TurnOn:
       type: boolean
       description: True if should add/enable, false if should remove/disable
