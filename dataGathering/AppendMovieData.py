@@ -82,7 +82,7 @@ for index, row in movieList.iterrows():
 		actorsString = actorsString[:-1]
 
 		# append to completeMovieData csv file
-		with open(outputPath,'a', newline='') as outputFile:
+		with open(outputPath,'a', newline='', encoding="utf-8") as outputFile:
 			writer = csv.writer(outputFile)
 			writer.writerow([name,year,poster,trailer,description,directorsString,genresString,contentRating,actorsString])
 
