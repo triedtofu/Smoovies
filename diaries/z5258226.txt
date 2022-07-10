@@ -22,3 +22,7 @@ Week 4
 - Worked with Raymond to complete the frontend functionality
 - Attended team meeting on Wednesday on our progress for Demo A
 - Communicated with backend on their work on the api
+
+Week 5 (Flex week)
+
+- Attended team meeting for Retrospective A

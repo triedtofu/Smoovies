@@ -1,16 +1,16 @@
 package com.example.restservice.service;
 
 import com.example.restservice.dataModels.Movie;
-import com.example.restservice.dataModels.User;
-import com.example.restservice.database.MovieDataAccessService;
+//import com.example.restservice.dataModels.User;
+
 import com.example.restservice.database.UserDataAccessService;
-import com.example.restservice.dataModels.AuthenticationToken;
+//import com.example.restservice.dataModels.AuthenticationToken;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.regex.*;
 
-import org.springframework.beans.factory.annotation.Autowired;  
+//import org.springframework.beans.factory.annotation.Autowired;  
 
 public class ServiceInputChecks {
     
