@@ -1,26 +1,40 @@
 package com.example.restservice.service;
 
-import java.util.List;
-import java.util.ArrayList;
-
-
-import com.example.restservice.database.MovieDataAccessService;
-import com.example.restservice.dataModels.Movie;
-
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
-
+import java.util.Arrays;
 import java.util.HashMap;
-import com.example.restservice.service.ServiceErrors;
+import java.util.List;
+//import java.util.ArrayList;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.restservice.dataModels.Actor;
+import com.example.restservice.dataModels.DeleteMovieRequest;
+import com.example.restservice.dataModels.Director;
+import com.example.restservice.dataModels.Genre;
+import com.example.restservice.dataModels.Movie;
+import com.example.restservice.database.ActorDataAccessService;
+import com.example.restservice.database.DirectorDataAccessService;
+import com.example.restservice.database.GenreDataAccessService;
+import com.example.restservice.database.MovieDataAccessService;
+//import com.example.restservice.service.ServiceErrors;
 @Service
 public class MovieService {
     
     @Autowired
 	private MovieDataAccessService movieDAO;
 
+    @Autowired
+    private ActorDataAccessService actorDAO;
+
+    @Autowired
+    private DirectorDataAccessService directorDAO;
+
+    @Autowired
+    private GenreDataAccessService genreDAO;
     /**
      * Adds a movie to the database
      * @param movie
@@ -28,18 +42,68 @@ public class MovieService {
      */
     public JSONObject addMovie(Movie movie) {
 
+        
         // TODO: check movie values for errors
+        //TODO: Add token checker in this function
         if (!ServiceInputChecks.checkMovie(movie)) {
             return ServiceErrors.invalidInputError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         try{
             Movie dbMovie = movieDAO.save(movie);
-
-            // set return response values
-            // TODO: Add token implementation
+            String cast = movie.getCast();
+            String directors = movie.getDirectors();
+            List<String> genres = movie.getGenreString();
+            //Add actors when adding movie
+            if (!cast.isEmpty()) {
+                //Change the cast to an array of strings.
+                List<String> actorList = Arrays.asList(cast.split(",[ ]*"));
+                //Make a new actor for each string
+                for (String a: actorList) {
+                    //Check if the actor exists in the database first.
+                    if (actorDAO.findActorByName(a) != null) {
+                        Actor dbActor = actorDAO.findActorByName(a);
+                        dbMovie.addActorToCast(dbActor);
+                        movieDAO.save(dbMovie);
+                    } else {
+                        Actor actor = new Actor(a);
+                        actorDAO.save(actor);
+                        dbMovie.addActorToCast(actor);
+                        movieDAO.save(dbMovie);
+                    }
+                }
+            }
+            //Add directors when adding movie
+            if (!directors.isEmpty()) {
+                List<String> directorsList = Arrays.asList(directors.split(",[ ]*"));
+                for (String d: directorsList) {
+                    if (directorDAO.findDirectorByName(d) != null) {
+                        Director dbDirector = directorDAO.findDirectorByName(d);
+                        dbMovie.addDirector(dbDirector);
+                        movieDAO.save(dbMovie);
+                    } else {
+                        Director director = new Director(d);
+                        directorDAO.save(director);
+                        dbMovie.addDirector(director);
+                        movieDAO.save(dbMovie);
+                    }
+                }
+            }
+            if (!genres.isEmpty() && genres != null) {
+                for (String g : genres) {
+                    Genre genre = new Genre(g);
+                    if (genreDAO.findGenreByName(genre.getName()) != null) {
+                        //This means the Genre is in the database, so it is a valid genre.
+                        Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                        dbMovie.addGenreToDB(dbGenre);
+                        movieDAO.save(dbMovie);
+                    } else {
+                        //Return an invalid input error.
+                        return ServiceErrors.invalidInputError();
+                    }
+                }
+            }
             returnMessage.put("movieId", dbMovie.getId());
             returnMessage.put("name", dbMovie.getName());
             returnMessage.put("year", dbMovie.getYear());
@@ -74,18 +138,23 @@ public class MovieService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         
-        // TODO: Query the database by movie id, need to get actors(cast), genres and reviews as well
         Movie dbMovie = movieDAO.findMovieByID(id);
-        // TODO: if movie found
+
         if (dbMovie != null) {
             returnMessage.put("name", dbMovie.getName());
             returnMessage.put("year", dbMovie.getYear());
             returnMessage.put("poster", dbMovie.getPoster());
+            returnMessage.put("trailer", dbMovie.getTrailer());
             returnMessage.put("description", dbMovie.getDescription());
-            returnMessage.put("director", dbMovie.getDirector());
-            //TODO: add genres
+            returnMessage.put("director", dbMovie.getDirectors());
             returnMessage.put("contentRating", dbMovie.getContentRating());
-            //TODO: add cast
+            returnMessage.put("cast", dbMovie.getCast()); 
+            JSONArray genreList = new JSONArray();
+            Set<Genre> movieGenres = dbMovie.getGenreList();
+            for (Genre g : movieGenres) {
+                genreList.put(g.getName());
+            }
+            returnMessage.put("genres", genreList);
             //TODO: add reviews
         }
         // otherwise if movie not found, return error 
@@ -178,5 +247,19 @@ public class MovieService {
         List<Movie> movieList = movieDAO.trending();
         return movieList;
     }
+    public JSONObject deleteMovie (DeleteMovieRequest request) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        //Token checking here??
+        //Delete movie from database by id. 
+        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
+        if (dbMovie != null) {
+            movieDAO.deleteById(dbMovie.getId());
+        } else {
+            ServiceErrors.invalidInputError();
+        }
 
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.restservice.dataModels;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,9 +12,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "directors")
-public class Director {
+@Table(name = "genres")
+public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -23,14 +23,14 @@ public class Director {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "directorsInMovie")
-    Set<Movie> directorIsIn = new HashSet<>();
+    @ManyToMany(mappedBy = "movieGenres")
+    Set<Movie> moviesInGenre = new HashSet<>();
 
-    public Director() {
+    public Genre() {
         super();
     }
-    public Director( 
-                @JsonProperty("name") String name) {
+
+    public Genre(@JsonProperty("name") String name) {
         super();
         this.name = name;
     }
@@ -38,8 +38,6 @@ public class Director {
     public String getName() {
         return this.name;
     }
-
-    public void setName (String name) {
-        this.name = name;
-    }
+        
+    
 }

@@ -1,6 +1,8 @@
 package com.example.restservice.dataModels;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -8,9 +10,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -33,13 +39,50 @@ public class Movie {
     private String description;
 
     @Column(name = "director")
-    private String director;
+    private String directors;
 
     @Column(name = "contentRating")
     private String contentRating;
 
     @ManyToMany(mappedBy = "wishList")
     private Set<User> userWishlists = new HashSet<>();
+
+    @Column(name = "actorCast")
+    private String cast;
+
+    @Transient
+    private List<String> genres = new ArrayList<>();
+
+    @Column(name = "trailer") 
+    private String trailer;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "actorsIsIn",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<Actor> actorsInMovie = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "directorsIsIn",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "director_id")
+    )
+    private Set<Director> directorsInMovie = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "movie_genres",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> movieGenres = new HashSet<>();
+  
 
     public Movie() {
         super();
@@ -50,15 +93,21 @@ public class Movie {
                 @JsonProperty("year") int year,
                 @JsonProperty("poster") String poster,
                 @JsonProperty("description") String description,
-                @JsonProperty("director") String director,
-                @JsonProperty("contentRating") String contentRating) {
+                @JsonProperty("director") String directors,
+                @JsonProperty("contentRating") String contentRating,
+                @JsonProperty("cast") String cast,
+                @JsonProperty("genres") List<String> genres,
+                @JsonProperty("trailer") String trailer) {
         super();
         this.name = name;
         this.year = year;
         this.poster = poster;
         this.description = description;
-        this.director = director;
+        this.directors = directors;
         this.contentRating = contentRating;
+        this.cast = cast;
+        this.genres = genres;
+        this.trailer = trailer;
 
     }
 
@@ -82,18 +131,53 @@ public class Movie {
         return description;
     }
 
-    public String getDirector() {
-        return director;
+    public String getDirectors() {
+        return directors;
     }
 
     public String getContentRating() {
         return contentRating;
     }
 
+    public String getCast() {
+        return cast;
+    }
+
     public Set<User> getUserWishlist() {
         return this.userWishlists;
     }
 
+    public void addActorToCast(Actor actor) {
+        this.actorsInMovie.add(actor);
+    }
+
+    public void addDirector(Director director) {
+        this.directorsInMovie.add(director);
+    }
+
+    public List<String> getGenreString() {
+        return this.genres;
+    }
+
+    public void addGenreToDB(Genre g) {
+        this.movieGenres.add(g);
+    } 
+
+    public String getTrailer() {
+        return this.trailer;
+    }
+
+    public Set<Genre> getGenreList() {
+        return this.movieGenres;
+    }
+    /**
+     * Clears the sets of actors, directors, reviews, 
+     */
+    public void deleteMovieDependencies() {
+        this.actorsInMovie.clear();
+        this.directorsInMovie.clear();
+        this.movieGenres.clear();
+    }
    
 
 

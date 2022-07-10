@@ -1,7 +1,7 @@
 package com.example.restservice.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,7 @@ import com.example.restservice.dataModels.User;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
-import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.Claims;
 
 
 @Service
@@ -73,9 +73,6 @@ public class UserService {
      * @return token, userID
      */
     public JSONObject register(User user, Boolean isAdmin) {
-
-        // TODO: check user values for errors
-
         if (!ServiceInputChecks.checkName(user.getName())) {
             return ServiceErrors.invalidNameError();
         } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {

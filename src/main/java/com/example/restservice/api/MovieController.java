@@ -1,30 +1,28 @@
 package com.example.restservice.api;
 
-import com.example.restservice.dataModels.Movie;
-import com.example.restservice.dataModels.MovieIdRequest;
-import com.example.restservice.service.MovieService;
+//import java.lang.ModuleLayer.Controller;
+import java.util.List;
+//import java.util.ResourceBundle.Control;
 
-
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+
+//import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.PathVariable;
+import com.example.restservice.dataModels.DeleteMovieRequest;
+import com.example.restservice.dataModels.Movie;
+//import com.example.restservice.dataModels.MovieIdRequest;
+import com.example.restservice.service.MovieService;
 
-import org.springframework.http.ResponseEntity;
-
-import org.json.JSONObject;
-
-import java.lang.ModuleLayer.Controller;
-import java.util.List;
-import java.util.ResourceBundle.Control;
-
-import com.example.restservice.api.ControllerResponses;
+//import com.example.restservice.api.ControllerResponses;
 
 @RestController
 @RequestMapping("/api/movie")
@@ -36,7 +34,7 @@ public class MovieController {
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
-
+    
     @PostMapping("/addMovie")
     public ResponseEntity<Object> addMovie(@RequestBody Movie movie) {
 
@@ -67,5 +65,11 @@ public class MovieController {
     public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
         JSONObject response = movieService.searchMovieByName(name);
         return ControllerResponses.responseInputAndSearchDatabase(response);
+    }
+
+    @PostMapping("/deleteMovie")
+    public ResponseEntity<Object> deleteMovie(@RequestBody DeleteMovieRequest request) {
+        JSONObject response = movieService.deleteMovie(request);
+        return ControllerResponses.responseInputOnly(response);
     }
 }
