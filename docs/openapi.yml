@@ -128,6 +128,8 @@ paths:
                     $ref: '#/components/schemas/MovieYear'
                   poster:
                     $ref: '#/components/schemas/MoviePoster'
+                  trailer:
+                    $ref: '#/components/schemas/YoutubeVideoId'
                   description:
                     $ref: '#/components/schemas/MovieDescription'
                   director:
@@ -173,12 +175,137 @@ paths:
           $ref: '#/components/responses/InputError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/movie/genres:
+    get:
+      tags:
+        - Movies
+      summary: Get the possible genres
+      description: Returns the list of possible genres
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  genres:
+                    $ref: '#/components/schemas/Genres'
+  /api/movie/addMovie:
+    post:
+      tags:
+        - Movies
+      summary: Add a movie
+      description: Route for admin to add a movie to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                name:
+                  $ref: '#/components/schemas/MovieName'
+                year:
+                  $ref: '#/components/schemas/MovieYear'
+                poster:
+                  $ref: '#/components/schemas/MoviePoster'
+                trailer:
+                  $ref: '#/components/schemas/YoutubeVideoId'
+                description:
+                  $ref: '#/components/schemas/MovieDescription'
+                director:
+                  $ref: '#/components/schemas/Director'
+                genres:
+                  $ref: '#/components/schemas/Genres'
+                contentRating:
+                  $ref: '#/components/schemas/ContentRating'
+                cast:
+                  $ref: '#/components/schemas/Cast'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/MovieId'
+                  name:
+                    $ref: '#/components/schemas/MovieName'
+        '400':
+          $ref: '#/components/responses/InputError'
+  /api/movie/deleteMovie:
+    post:
+      tags:
+        - Movies
+      summary: Delete movie
+      description: Route for admin to delete a movie from the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/movie/addReview:
+    post:
+      tags:
+        - Movies
+      summary: Add a review to a movie
+      description: Add a review to a movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                review:
+                  $ref: '#/components/schemas/ReviewString'
+                rating:
+                  $ref: '#/components/schemas/ReviewRating'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
   /api/user/wishlist:
     get:
       tags:
         - Users
       summary: Get the wishlist of a specific user
-      description: Returns the wishlist of a specific
+      description: Returns the wishlist of a specific movie
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
       responses:
@@ -228,6 +355,31 @@ paths:
           $ref: '#/components/responses/InputError'
         '403':
           $ref: '#/components/responses/AccessError'
+  /api/user/reviews:
+    get:
+      tags:
+        - Users
+      summary: Get the reviews of a specific user
+      description: Returns the reviews of a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    maxItems: 10
+                    items:
+                      $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes:
     bearerAuth:
@@ -277,6 +429,10 @@ components:
       format: url
       description: Image url
       example: https://i.imgur.com/CBC2V7j.jpeg
+    YoutubeVideoId:
+      type: string
+      description: The YouTube video id is a unique identifier of every video on YouTube
+      example: dQw4w9WgXcQ
     Director:
       type: string
       description: Name of a director
@@ -317,19 +473,25 @@ components:
       type: string
       description: Cast of a movie
       example: Johnny Depp, Will Smith
+    ReviewString:
+      type: string
+      description: A review of a movie
+      example: It's Morbin Time
+    ReviewRating:
+      type: integer
+      description: A rating of a movie
+      example: 5
     Review:
       type: object
       properties:
         user:
           $ref: '#/components/schemas/UserId'
+        name:
+          $ref: '#/components/schemas/Name'
         review:
-          type: string
-          description: A review of a movie
-          example: It's Morbin Time
+          $ref: '#/components/schemas/ReviewString'
         rating:
-          type: integer
-          description: A rating of a movie
-          example: 5
+          $ref: '#/components/schemas/ReviewRating'
     TurnOn:
       type: boolean
       description: True if should add/enable, false if should remove/disable
