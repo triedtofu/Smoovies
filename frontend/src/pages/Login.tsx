@@ -26,7 +26,7 @@ const Login = () => {
       const errStr = getErrorMessage(error);
 
       if (errStr === 'Invalid input') {
-        setLoginErr('Email and password don\'t match');
+        setLoginErr("Email and password don't match");
       } else {
         setLoginErr(getErrorMessage(error));
       }
@@ -39,6 +39,6 @@ const Login = () => {
       <LoginForm submit={login} error={loginErr} />
     </Container>
   );
-}
+};
 
 export default MakePage(Login);

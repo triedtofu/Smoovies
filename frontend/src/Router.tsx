@@ -8,6 +8,7 @@ import Wishlist from './pages/Wishlist';
 import Movie from './pages/Movie';
 import Search from './pages/Search';
 import HigherOrLower from './pages/HigherOrLower';
+import AddMovie from './pages/AddMovie';
 
 const Router = () => {
   return (
@@ -19,6 +20,7 @@ const Router = () => {
       <Route path="/movie/:id" element={<Movie />} />
       <Route path="/search" element={<Search />} />
       <Route path="/higherorlower" element={<HigherOrLower />} />
+      <Route path="/addmovie" element={<AddMovie />} />
     </Routes>
   );
 };
