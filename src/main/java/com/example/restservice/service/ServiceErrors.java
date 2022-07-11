@@ -62,6 +62,10 @@ public class ServiceErrors {
         return generateErrorMessage("Email already in use");
     }
 
+    public static JSONObject notAdminError() {
+        return generateErrorMessage("User is not an admin");
+    }
+
     private static JSONObject generateErrorMessage(String error) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("error", error);
