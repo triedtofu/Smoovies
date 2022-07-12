@@ -7,28 +7,21 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
-interface MovieCardProps {
-  poster: string;
-  name: string;
-  year: number;
-  id: number;
-  // genres: Array<string>;
-  rating: number;
-}
+import { MovieSummary } from '../util/interface';
 
-const MovieCard = (props: MovieCardProps) => {
+const MovieCard = ({ movie }: { movie: MovieSummary}) => {
   return (
     <Card sx={{ width: '200px', margin: '10px' }}>
       <CardMedia
         component="img"
         height="300"
-        image={props.poster}
-        alt={`Movie poster for ${props.name}`}
+        image={movie.poster}
+        alt={`Movie poster for ${movie.name}`}
       />
       <CardContent>
-        <Link to={`/movie/${props.id}`}>
+        <Link to={`/movie/${movie.id}`}>
           <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center' }}>
-            {`${props.name} (${props.year})`}
+            {`${movie.name} (${movie.year})`}
           </Typography>
         </Link>
         <div>
@@ -37,7 +30,7 @@ const MovieCard = (props: MovieCardProps) => {
           ))}
         </div>
         <div>
-          Rating: {props.rating}
+          Rating: {movie.averageRating}
         </div>
       </CardContent>
     </Card>
