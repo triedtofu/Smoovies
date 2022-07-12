@@ -13,13 +13,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.restservice.dataModels.Actor;
 import com.example.restservice.dataModels.DeleteMovieRequest;
+import com.example.restservice.dataModels.AddMovieRequest;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.User;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.UserDataAccessService;
+
 //import com.example.restservice.service.ServiceErrors;
 @Service
 public class MovieService {
@@ -35,18 +39,31 @@ public class MovieService {
 
     @Autowired
     private GenreDataAccessService genreDAO;
+
+    @Autowired
+    private UserDataAccessService userDAO;
+
     /**
      * Adds a movie to the database
      * @param movie
      * @return movie id, name, year
      */
-    public JSONObject addMovie(Movie movie) {
+    public JSONObject addMovie(AddMovieRequest movie) {
 
         
         // TODO: check movie values for errors
-        //TODO: Add token checker in this function
         if (!ServiceInputChecks.checkMovie(movie)) {
             return ServiceErrors.invalidInputError();
+        }
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(movie.getToken());
+        if (user_id == null) {
+            return ServiceErrors.invalidTokenError();
+        } 
+        // get the users isAdmin permission, if not admin, return error
+        User user = userDAO.findById(user_id).get();
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.notAdminError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -249,7 +266,18 @@ public class MovieService {
     }
     public JSONObject deleteMovie (DeleteMovieRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-        //Token checking here??
+
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        if (user_id == null) {
+            return ServiceErrors.invalidTokenError();
+        } 
+        // get the users isAdmin permission, if not admin, return error
+        User user = userDAO.findById(user_id).get();
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.notAdminError();
+        }
+
         //Delete movie from database by id. 
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
