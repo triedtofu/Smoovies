@@ -140,6 +140,8 @@ paths:
                     $ref: '#/components/schemas/ContentRating'
                   averageRating:
                     $ref: '#/components/schemas/AverageRating'
+                  runTime:
+                    $ref: '#/components/schemas/RunTime'
                   cast:
                     $ref: '#/components/schemas/Cast'
                   reviews:
@@ -469,6 +471,10 @@ components:
       multipleOf: 0.01
       description: Average number rating
       example: 3.14
+    RunTime:
+      type: number
+      description: The runtime in minutes
+      example: 100
     Cast:
       type: string
       description: Cast of a movie
