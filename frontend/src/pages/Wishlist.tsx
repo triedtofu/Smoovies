@@ -64,8 +64,6 @@ const Wishlist = () => {
     return true;
   }
 
-  console.log(fetched, movies.length);
-
   return (
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
