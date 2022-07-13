@@ -17,7 +17,7 @@ import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
 
 import * as ScrollMagic from 'scrollmagic';
-import { gsap, TimelineMax, TweenMax } from 'gsap';
+import { TimelineMax, TweenMax } from 'gsap';
 import { ScrollMagicPluginGsap } from 'scrollmagic-plugin-gsap';
 
 interface buttonProps {
@@ -25,6 +25,8 @@ interface buttonProps {
 }
 
 const TestingUI = () => {
+  ScrollMagicPluginGsap(ScrollMagic, TweenMax, TimelineMax);
+
   const [cookies] = useCookies();
 
   const params = useParams();
@@ -142,14 +144,15 @@ const TestingUI = () => {
     // TODO
   };
 
-  // const controller = new ScrollMagic.Controller();
+  const controller = new ScrollMagic.Controller();
 
-  // const scene = new ScrollMagic.Scene({
-  //   triggerElement: '#trigger1',
-  // })
-  //   .setTween('#animate1', 0.5, { backgroundColor: 'green', scale: 2.5 }) // trigger a TweenMax.to tween
-  //   .addIndicators({ name: '1 (duration: 0)' }) // add indicators (requires plugin)
-  //   .addTo(controller);
+  const scene = new ScrollMagic.Scene({
+    triggerElement: '#trigger1',
+  }) as any;
+  
+  scene.setTween('#animate1', 0.5, { backgroundColor: 'green', scale: 2.5 }) // trigger a TweenMax.to tween
+    .addIndicators({ name: '1 (duration: 0)' }) // add indicators (requires plugin)
+    .addTo(controller);
 
   if (!movie) return <></>;
 
