@@ -39,34 +39,33 @@ public class UserService {
      */
     public JSONObject UserLogin(String email, String password) {
 
-        // TODO: check user values for errors
-        if (!ServiceInputChecks.checkEmail(email) || !ServiceInputChecks.checkPassword(password)) {
-            return ServiceErrors.invalidInputError();
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // checks inputs for errors (in terms of formatting)
+        if (!ServiceInputChecks.checkEmail(email)) {
+            return ServiceErrors.userEmailInvalidError();
+        } 
+        // TODO: Should this check even be here? we dont need to check if the password is correct format when trying to login?
+        if (!ServiceInputChecks.checkPassword(password)) {
+            return ServiceErrors.userPasswordInvalidError();
         }
 
         // find the user in database by their email
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         User user = userDAO.findUserByEmail(email);
         // Check that the email exists in the database
         if (user == null) {
-            return ServiceErrors.invalidEmailError();
+            return ServiceErrors.userEmailNotFoundError();
         }
         //Password verification step
         if (!password.equals(user.getPassword())) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userPasswordIncorrectError();
         }
 
-        if (user != null) {
-            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
-            returnMessage.put("userId", user.getId());
-            returnMessage.put("isAdmin", user.getIsAdmin());
-            returnMessage.put("name", user.getName());
-            //returnMessage.put("token", user.getToken());
-        }
-        // otherwise return error (SHOULD THIS BE A DIFFERENT ERROR?)
-        else {
-            return ServiceErrors.invalidInputError();
-        }
+        returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
+        returnMessage.put("userId", user.getId());
+        returnMessage.put("isAdmin", user.getIsAdmin());
+        returnMessage.put("name", user.getName());
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -79,13 +78,13 @@ public class UserService {
      */
     public JSONObject register(User user, Boolean isAdmin) {
         if (!ServiceInputChecks.checkName(user.getName())) {
-            return ServiceErrors.invalidNameError();
+            return ServiceErrors.userNameInvalidError();
         } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
-            return ServiceErrors.invalidEmailError();
+            return ServiceErrors.userEmailInvalidError();
         } else if (!ServiceInputChecks.checkPassword(user.getPassword())) {
-            return ServiceErrors.invalidPasswordError();
+            return ServiceErrors.userPasswordInvalidError();
         } else if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
-            return ServiceErrors.invalidUniqueEmailError();
+            return ServiceErrors.userEmailInUseError();
         }
         
         user.setIsAdmin(isAdmin);
@@ -95,7 +94,6 @@ public class UserService {
             // if user is successfully added, put user in dbUser
             // set return response values
             User dbUser = userDAO.save(user);
-            // TODO: Add token implementation
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", dbUser.getId());
             returnMessage.put("name", dbUser.getName());
@@ -124,7 +122,7 @@ public class UserService {
 
         // TODO: check id for errors
         if (!ServiceInputChecks.checkId(id)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userIdInvalidError();
         }
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
@@ -149,7 +147,7 @@ public class UserService {
         } 
         // TODO: Return a different error
         else {
-            return ServiceErrors.notFoundError();
+            return ServiceErrors.UserWishlistNotFoundError();
         }
         
         returnMessage.put("movies", moviesArray);
@@ -168,13 +166,13 @@ public class UserService {
 
         // TODO: check inputs for errors
         if (!ServiceInputChecks.checkId(movieId)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userIdInvalidError();
         }
 
         // verify the token and extract the users email
         Long user_id = ServiceJWTHelper.getTokenId(token.getToken());
         if (user_id == null) {
-            return ServiceErrors.invalidTokenError();
+            return ServiceErrors.userTokenInvalidError();
         }
         Movie movie = movieDAO.findById(movieId).get();
         User user = userDAO.findById(user_id).get();
