@@ -7,6 +7,7 @@ import styles from './NewMovieForm.module.css';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -59,6 +60,8 @@ const NewMovieForm = (props: NewMovieProps) => {
   const onLeave = () => {
     setHover(false);
   };
+
+  const allGenres = ['Action', 'Horror', 'Romance', 'Comedy'];
 
   // const fileToDataUrl = (file) => {
   //   const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -115,16 +118,16 @@ const NewMovieForm = (props: NewMovieProps) => {
               name="name"
               label="Title (required)"
               value={name}
-              inputProps={{ maxLength: 50 }}
+              // inputProps={{ maxLength: 50 }}
               onChange={(e) => {
                 setName(e.target.value);
                 setCountTitle(e.target.value.length);
               }}
-              onFocus={onFocusTitle}
-              onBlur={onBlurTitle}
+              // onFocus={onFocusTitle}
+              // onBlur={onBlurTitle}
             />
             &nbsp;
-            {focusedTitle && <p>{countTitle}/50</p>}
+            {/* {focusedTitle && <p>{countTitle}/50</p>} */}
             <RequiredTextField
               style={{ width: '20%', height: '10%' }}
               type="text"
@@ -162,18 +165,30 @@ const NewMovieForm = (props: NewMovieProps) => {
                 label="Maturity Rating"
                 onChange={handleChange}
               >
-                <MenuItem value={'G'}>G</MenuItem>
-                <MenuItem value={'PG'}>PG</MenuItem>
-                <MenuItem value={'13+'}>13+</MenuItem>
-                <MenuItem value={'14A'}>14A</MenuItem>
-                <MenuItem value={'16+'}>P16+</MenuItem>
-                <MenuItem value={'18A'}>18A</MenuItem>
-                <MenuItem value={'18+'}>18+</MenuItem>
-                <MenuItem value={'R'}>R</MenuItem>
-                <MenuItem value={'A'}>A</MenuItem>
+                {['G', 'PG', '13+', '14A', '16+', '18A', '18+', 'R', 'A'].map(rating => {
+                  return <MenuItem key={rating} value={rating}>{rating}</MenuItem>
+                })}
               </Select>
             </FormControl>
           </div>
+          <br />
+          <div>
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              options={allGenres}
+              autoHighlight
+              // getOptionLabel={(option) => option.title}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Genres"
+                  onSubmit={e => console.log(e)}
+                />
+              )}
+            />
+          </div>
+
           <br />
           <div className={styles.directorAndCast}>
             <RequiredTextField
