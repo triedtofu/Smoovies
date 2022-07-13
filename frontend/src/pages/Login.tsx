@@ -21,6 +21,7 @@ const Login = () => {
       const data = await apiAuthLogin(email, password);
       setCookie('token', data.token, { path: '/' });
       setCookie('name', data.name, { path: '/' });
+      if (data.isAdmin) setCookie('admin', data.isAdmin, { path: '/' });
       navigate('/');
     } catch (error) {
       const errStr = getErrorMessage(error);

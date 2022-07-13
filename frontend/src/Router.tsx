@@ -10,6 +10,8 @@ import Search from './pages/Search';
 import HigherOrLower from './pages/HigherOrLower';
 import AddMovie from './pages/AddMovie';
 import TestingUI from './pages/TestingUI';
+import Profile from './pages/Profile';
+import Page404 from './pages/Page404';
 
 const Router = () => {
   return (
@@ -23,6 +25,8 @@ const Router = () => {
       <Route path="/higherorlower" element={<HigherOrLower />} />
       <Route path="/addmovie" element={<AddMovie />} />
       <Route path="/movie/:id/testingui" element={<TestingUI />} />
+      <Route path="/user/:id" element={<Profile />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   );
 };
