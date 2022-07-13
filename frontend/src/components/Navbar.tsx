@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -71,7 +72,7 @@ const Navbar = () => {
               </SearchIconWrapper>
               <form onSubmit={submitSearch}>
                 <StyledInputBase
-                  placeholder="Search…"
+                  placeholder="Search by title, director, description…"
                   inputProps={{ 'aria-label': 'search' }}
                   value={movieSearch}
                   onChange={(e) => setMovieSearch(e.target.value)}
@@ -82,9 +83,10 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/">Home</Link>
-        <div>|</div>
-        <Link to="/higherorlower">Higher Or Lower</Link>
+        <Link to="/higherorlower" className={styles.linkWithLogo}>
+          <SwapVertIcon className={styles.higherorlower}></SwapVertIcon>
+          Higher Or Lower
+        </Link>
         <div>|</div>
         <Link to="/login">Login</Link>
         <div>|</div>

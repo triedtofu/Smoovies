@@ -104,7 +104,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
               </SearchIconWrapper>
               <form onSubmit={submitSearch}>
                 <StyledInputBase
-                  placeholder="Search…"
+                  placeholder="Search by title, director, description…"
                   inputProps={{ 'aria-label': 'search' }}
                   value={movieSearch}
                   onChange={(e) => setMovieSearch(e.target.value)}

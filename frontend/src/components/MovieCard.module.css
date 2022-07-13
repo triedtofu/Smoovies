@@ -1,0 +1,4 @@
+.movieCard:hover {
+  transform: scale(1.5);
+  transition: 0.2s linear 0.3s;
+}

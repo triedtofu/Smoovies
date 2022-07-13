@@ -9,9 +9,11 @@ import Chip from '@mui/material/Chip';
 
 import { MovieSummary } from '../util/interface';
 
-const MovieCard = ({ movie }: { movie: MovieSummary}) => {
+import styles from './MovieCard.module.css';
+
+const MovieCard = ({ movie }: { movie: MovieSummary }) => {
   return (
-    <Card sx={{ width: '200px', margin: '10px' }}>
+    <Card className={styles.movieCard} sx={{ width: '200px', margin: '10px' }}>
       <CardMedia
         component="img"
         height="300"
@@ -20,21 +22,24 @@ const MovieCard = ({ movie }: { movie: MovieSummary}) => {
       />
       <CardContent>
         <Link to={`/movie/${movie.id}`}>
-          <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center' }}>
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ textAlign: 'center' }}
+          >
             {`${movie.name} (${movie.year})`}
           </Typography>
         </Link>
         <div>
-          {["Action", "Fantasy"].map((genre, index) => (
-            <Chip key={index} label={genre} sx={{margin: '5px'}}/>
+          {['Action', 'Fantasy'].map((genre, index) => (
+            <Chip key={index} label={genre} sx={{ margin: '5px' }} />
           ))}
         </div>
-        <div>
-          Rating: {movie.averageRating}
-        </div>
+        <div>Rating: {movie.averageRating}</div>
       </CardContent>
     </Card>
   );
-}
+};
 
 export default MovieCard;
