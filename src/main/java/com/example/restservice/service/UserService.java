@@ -44,8 +44,13 @@ public class UserService {
             return ServiceErrors.invalidInputError();
         }
 
+        // find the user in database by their email
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         User user = userDAO.findUserByEmail(email);
+        // Check that the email exists in the database
+        if (user == null) {
+            return ServiceErrors.invalidEmailError();
+        }
         //Password verification step
         if (!password.equals(user.getPassword())) {
             return ServiceErrors.invalidInputError();
