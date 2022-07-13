@@ -14,7 +14,7 @@
     "@types/node": "^16.11.38",
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
-    "@types/scrollmagic": "^2.0.2",
+    "expo-linear-gradient": "^11.3.0",
     "gsap": "^3.10.4",
     "i": "^0.3.7",
     "imports-loader": "^4.0.0",

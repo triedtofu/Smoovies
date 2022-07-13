@@ -6,6 +6,7 @@ import styles from './Navbar.module.css';
 import Search from './Search';
 
 import Box from '@mui/material/Box';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -32,9 +33,10 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/">Home</Link>
-        <div>|</div>
-        <Link to="/higherorlower">Higher Or Lower</Link>
+        <Link to="/higherorlower" className={styles.linkWithLogo}>
+          <SwapVertIcon className={styles.higherorlower}></SwapVertIcon>
+          Higher Or Lower
+        </Link>
         <div>|</div>
         <Link to="/login">Login</Link>
         <div>|</div>

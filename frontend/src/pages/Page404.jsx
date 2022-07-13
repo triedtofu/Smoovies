@@ -8,7 +8,6 @@ const Page404 = () => {
   return (
     <Container maxWidth="sm">
       <h2>This page doesn't exist</h2>
-      <p>hi</p>
     </Container>
   );
 };
