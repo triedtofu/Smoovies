@@ -16,7 +16,6 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 interface NewMovieProps {
   submit: (
-    token: string,
     name: string,
     year: string,
     poster: string,
@@ -26,12 +25,11 @@ interface NewMovieProps {
     genres: string[],
     contentRating: string,
     cast: string
-  ) => Promise<void>;
+  ) => void;
   error: string;
 }
 
 const NewMovieForm = (props: NewMovieProps) => {
-  const [token, setToken] = React.useState('');
   const [name, setName] = React.useState('');
   const [year, setYear] = React.useState('');
   const [poster, setPoster] = React.useState('');
@@ -42,13 +40,13 @@ const NewMovieForm = (props: NewMovieProps) => {
   const [contentRating, setContentRating] = React.useState('');
   const [cast, setCast] = React.useState('');
 
-  const [focusedTitle, setFocusedTitle] = React.useState(false);
+  // const [focusedTitle, setFocusedTitle] = React.useState(false);
   const [focusedDescription, setFocusedDescription] = React.useState(false);
-  const [countTitle, setCountTitle] = React.useState(0);
+  // const [countTitle, setCountTitle] = React.useState(0);
   const [countDescription, setCountDescription] = React.useState(0);
 
-  const onFocusTitle = () => setFocusedTitle(true);
-  const onBlurTitle = () => setFocusedTitle(false);
+  // const onFocusTitle = () => setFocusedTitle(true);
+  // const onBlurTitle = () => setFocusedTitle(false);
   const onFocusDescription = () => setFocusedDescription(true);
   const onBlurDescription = () => setFocusedDescription(false);
 
@@ -90,7 +88,6 @@ const NewMovieForm = (props: NewMovieProps) => {
   const newMovieSubmit = (e: FormEvent) => {
     e.preventDefault();
     props.submit(
-      token,
       name,
       year,
       poster,
@@ -113,7 +110,7 @@ const NewMovieForm = (props: NewMovieProps) => {
         <form onSubmit={newMovieSubmit}>
           <div className={styles.title}>
             <RequiredTextField
-              style={{ width: '70%', height: '10%' }}
+              style={{ width: '75%' }}
               size="small"
               name="name"
               label="Title (required)"
@@ -121,7 +118,7 @@ const NewMovieForm = (props: NewMovieProps) => {
               // inputProps={{ maxLength: 50 }}
               onChange={(e) => {
                 setName(e.target.value);
-                setCountTitle(e.target.value.length);
+                // setCountTitle(e.target.value.length);
               }}
               // onFocus={onFocusTitle}
               // onBlur={onBlurTitle}
@@ -129,7 +126,7 @@ const NewMovieForm = (props: NewMovieProps) => {
             &nbsp;
             {/* {focusedTitle && <p>{countTitle}/50</p>} */}
             <RequiredTextField
-              style={{ width: '20%', height: '10%' }}
+              style={{ width: '25%' }}
               type="text"
               size="small"
               name="year"
@@ -178,7 +175,7 @@ const NewMovieForm = (props: NewMovieProps) => {
               id="tags-standard"
               options={allGenres}
               autoHighlight
-              // getOptionLabel={(option) => option.title}
+              size="small"
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -192,7 +189,7 @@ const NewMovieForm = (props: NewMovieProps) => {
           <br />
           <div className={styles.directorAndCast}>
             <RequiredTextField
-              style={{ width: '50%', height: '10%' }}
+              // style={{ width: '50%', height: '10%' }}
               size="small"
               name="name"
               label="Director"
@@ -204,7 +201,7 @@ const NewMovieForm = (props: NewMovieProps) => {
             />
             &nbsp;
             <RequiredTextField
-              style={{ width: '50%', height: '10%' }}
+              // style={{ width: '50%', height: '10%' }}
               size="small"
               name="name"
               label="Cast"
@@ -228,7 +225,25 @@ const NewMovieForm = (props: NewMovieProps) => {
           ) : (
             ''
           )}
-          <br />
+          <br/>
+          <div>
+            <RequiredTextField
+              label="Poster"
+              size="small"
+              fullWidth
+              placeholder="image url"
+            />
+          </div>
+          <br/>
+          <div>
+            <RequiredTextField
+              label="Trailer"
+              size="small"
+              fullWidth
+              placeholder="Youtube url"
+            />
+          </div>
+          <br/>
           <div>
             <RequiredTextField
               fullWidth

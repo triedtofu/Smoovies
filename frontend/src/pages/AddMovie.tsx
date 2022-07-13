@@ -8,8 +8,7 @@ import NewMovieForm from '../components/NewMovieForm';
 const AddMovie = () => {
   const [newMovieErr, setNewMovieErr] = React.useState('');
 
-  const newMovie = async (
-    token: string,
+  const newMovie = (
     name: string,
     year: string,
     poster: string,

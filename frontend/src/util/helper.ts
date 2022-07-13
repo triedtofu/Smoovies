@@ -12,3 +12,19 @@ export const parseJwt = (token: string) => {
 
   return JSON.parse(jsonPayload);
 };
+
+export const youtubeURLToCode = (url: string) => {
+  const patterns = [
+    /^(?:http[s]?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^#&?.]*)[^.]*$/,
+    /^(?:http[s]?:\/\/)?(?:www\.)?youtu\.be\/([^#&?.]*)[^.]*$/,
+    /^(?:http[s]?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^#&?.]*)[^.]*$/
+  ]
+  const len = patterns.length;
+
+  for (let i = 0; i < len; i++) {
+    const match = url.match(patterns[i]);
+    if (match && match.length > 1 && match[1].length === 11) return match[1];
+  }
+
+  return null;
+}
