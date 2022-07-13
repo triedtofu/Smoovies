@@ -15,10 +15,9 @@
 }
 
 .logo {
-  margin-left: 10px;
   display: flex;
   height: 70px;
-  width: 70px;
+  width: 120px;
 }
 
 .logoBox {

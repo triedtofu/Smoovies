@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-import movieLogo from '../logo.png';
+import movieLogo from '../logo2.png';
 import styles from './Navbar.module.css';
 
 import { styled, alpha } from '@mui/material/styles';
@@ -59,7 +59,7 @@ const Navbar = () => {
           <img
             src={movieLogo}
             className={styles.logo}
-            onClick={_ => navigate('/')}
+            onClick={(_) => navigate('/')}
             alt="loading"
           />
         </div>

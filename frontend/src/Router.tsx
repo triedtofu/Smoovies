@@ -9,6 +9,7 @@ import Movie from './pages/Movie';
 import Search from './pages/Search';
 import HigherOrLower from './pages/HigherOrLower';
 import AddMovie from './pages/AddMovie';
+import TestingUI from './pages/TestingUI';
 
 const Router = () => {
   return (
@@ -21,6 +22,7 @@ const Router = () => {
       <Route path="/search" element={<Search />} />
       <Route path="/higherorlower" element={<HigherOrLower />} />
       <Route path="/addmovie" element={<AddMovie />} />
+      <Route path="/movie/:id/testingui" element={<TestingUI />} />
     </Routes>
   );
 };

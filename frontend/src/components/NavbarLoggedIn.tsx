@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-import movieLogo from '../logo.png';
+import movieLogo from '../logo2.png';
 import styles from './NavbarLoggedIn.module.css';
 
 import { styled, alpha } from '@mui/material/styles';
@@ -93,7 +93,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             src={movieLogo}
             className={styles.logo}
             alt="loading"
-            onClick={_ => navigate('/')}
+            onClick={(_) => navigate('/')}
           />
         </div>
         <Box className={styles.searchBox}>
