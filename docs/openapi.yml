@@ -225,7 +225,7 @@ paths:
                 contentRating:
                   $ref: '#/components/schemas/ContentRating'
                 runTime:
-                    $ref: '#/components/schemas/RunTime'
+                  $ref: '#/components/schemas/RunTime'
                 cast:
                   $ref: '#/components/schemas/Cast'
       responses:
@@ -382,6 +382,30 @@ paths:
                       $ref: '#/components/schemas/Review'
         '400':
           $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/resetPassword:
+    post:
+      tags:
+        - Users
+      summary: Request the reset password email
+      description: Route for a user to reset their password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
         '404':
           $ref: '#/components/responses/NotFoundError'
 components:
