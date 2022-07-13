@@ -24,6 +24,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "scrollmagic": "^2.0.8",
+    "@types/scrollmagic": "^2.0.2",
     "scrollmagic-plugin-gsap": "^1.0.4",
     "web-vitals": "^2.1.4"
   },
@@ -53,7 +54,6 @@
     ]
   },
   "devDependencies": {
-    "@types/scrollmagic": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
     "eslint": "^8.18.0",
