@@ -224,6 +224,8 @@ paths:
                   $ref: '#/components/schemas/Genres'
                 contentRating:
                   $ref: '#/components/schemas/ContentRating'
+                runTime:
+                    $ref: '#/components/schemas/RunTime'
                 cast:
                   $ref: '#/components/schemas/Cast'
       responses:
