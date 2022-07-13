@@ -3,7 +3,7 @@ package com.example.restservice.service;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.Actor;
 import com.example.restservice.dataModels.DeleteMovieRequest;
 import com.example.restservice.dataModels.AddMovieRequest;
+import com.example.restservice.dataModels.AddReviewRequest;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
@@ -50,7 +51,6 @@ public class MovieService {
      */
     public JSONObject addMovie(AddMovieRequest movie) {
 
-        
         // TODO: check movie values for errors
         if (!ServiceInputChecks.checkMovie(movie)) {
             return ServiceErrors.invalidInputError();
@@ -58,12 +58,12 @@ public class MovieService {
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(movie.getToken());
         if (user_id == null) {
-            return ServiceErrors.invalidTokenError();
+            return ServiceErrors.userTokenInvalidError();
         } 
         // get the users isAdmin permission, if not admin, return error
         User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
-            return ServiceErrors.notAdminError();
+            return ServiceErrors.userAdminPermissionError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -150,7 +150,7 @@ public class MovieService {
 
         // TODO: check id received for errors
         if (!ServiceInputChecks.checkId(id)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.movieIdInvalidError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -176,7 +176,7 @@ public class MovieService {
         }
         // otherwise if movie not found, return error 
         else {
-            return ServiceErrors.notFoundError();
+            return ServiceErrors.movieNotFoundError();
         }
 
         JSONObject responseJson = new JSONObject(returnMessage);
@@ -205,7 +205,7 @@ public class MovieService {
                 homepageList.put(movieDetailsJson);
             }
         } else {
-            return ServiceErrors.notFoundError();
+            return ServiceErrors.movieTrendingEmptyError();
         }
         returnMessage.put("movies", homepageList);
         JSONObject responseJson = new JSONObject(returnMessage);
@@ -221,7 +221,7 @@ public class MovieService {
 
         // TODO: check movie name errors
         if (!ServiceInputChecks.checkName(name)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.movieNameInvalidError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -247,7 +247,7 @@ public class MovieService {
         } 
         // otherwise if no movies found, return not found error
         else {
-            return ServiceErrors.notFoundError();
+            return ServiceErrors.movieNotFoundError();
         }
 
         returnMessage.put("movies", moviesArray);
@@ -270,12 +270,12 @@ public class MovieService {
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
         if (user_id == null) {
-            return ServiceErrors.invalidTokenError();
+            return ServiceErrors.userTokenInvalidError();
         } 
         // get the users isAdmin permission, if not admin, return error
         User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
-            return ServiceErrors.notAdminError();
+            return ServiceErrors.userAdminPermissionError();
         }
 
         //Delete movie from database by id. 
@@ -284,8 +284,51 @@ public class MovieService {
         if (dbMovie != null) {
             movieDAO.deleteById(dbMovie.getId());
         } else {
-            ServiceErrors.invalidInputError();
+            return ServiceErrors.movieNotFoundError();
         }
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject addReview (AddReviewRequest request) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // check valid inputs
+        // check movieId exists/is valid
+        Movie movie = movieDAO.findMovieByID(request.getMovieId());
+        if (movie == null) {
+            return ServiceErrors.movieNotFoundError();
+        }
+
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        if (user_id == null) {
+            return ServiceErrors.userTokenInvalidError();
+        } 
+        // Fill in the userId of Review object
+        request.setUserId(user_id);
+
+        // TODO: send the request to DB
+
+
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject getAllGenres() {
+
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        JSONArray genresListJson = new JSONArray();
+        List<Genre> genresList = genreDAO.findAll();
+
+        for (int i = 0; i < genresList.size(); i++) {
+            genresListJson.put(genresList.get(i).getName());
+        }
+
+        returnMessage.put("genres", genresListJson);
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
