@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restservice.dataModels.DeleteMovieRequest;
+import com.example.restservice.dataModels.AddMovieRequest;
+import com.example.restservice.dataModels.AddReviewRequest;
 import com.example.restservice.dataModels.Movie;
 //import com.example.restservice.dataModels.MovieIdRequest;
 import com.example.restservice.service.MovieService;
@@ -36,7 +38,7 @@ public class MovieController {
     }
     
     @PostMapping("/addMovie")
-    public ResponseEntity<Object> addMovie(@RequestBody Movie movie) {
+    public ResponseEntity<Object> addMovie(@RequestBody AddMovieRequest movie) {
 
         // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
         JSONObject response = movieService.addMovie(movie);
@@ -70,6 +72,18 @@ public class MovieController {
     @PostMapping("/deleteMovie")
     public ResponseEntity<Object> deleteMovie(@RequestBody DeleteMovieRequest request) {
         JSONObject response = movieService.deleteMovie(request);
+        return ControllerResponses.responseInputOnly(response);
+    }
+
+    @PostMapping("/addReview")
+    public ResponseEntity<Object> addReview(@RequestBody AddReviewRequest request) {
+        JSONObject response = movieService.addReview(request);
+        return ControllerResponses.responseInputOnly(response);
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<Object> getAllGenres() {
+        JSONObject response = movieService.getAllGenres();
         return ControllerResponses.responseInputOnly(response);
     }
 }

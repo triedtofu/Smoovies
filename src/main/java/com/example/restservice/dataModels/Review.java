@@ -16,9 +16,13 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(name = "userId")
-    private  int userId;
+    private  long userId;
     
+    @Column(name = "movieId")
+    private  long movieId;  
+
     @Column(name = "review")
     private  String review;
 
@@ -30,11 +34,11 @@ public class Review {
     }
 
     public Review(
-                @JsonProperty("userId") int userId,
+                @JsonProperty("movieId") int movieId,
                 @JsonProperty("review") String review,
                 @JsonProperty("rating") int rating) {
         super();
-        this.userId = userId;
+        this.movieId = movieId;
         this.review = review;
         this.rating = rating;
     }
@@ -43,11 +47,23 @@ public class Review {
         return id;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public long getMovieId() {
+        return movieId;
+    }
+
     public String getReview() {
         return review;
     }
 
     public int getRating() {
         return rating;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 }
