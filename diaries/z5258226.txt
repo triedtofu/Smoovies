@@ -26,3 +26,9 @@ Week 4
 Week 5 (Flex week)
 
 - Attended team meeting for Retrospective A
+
+Week 6
+
+- Added routes to swagger documentation
+- Refactored frontend code
+- Worked on addMovie page and admin navbar
