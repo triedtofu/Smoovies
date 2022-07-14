@@ -49,13 +49,14 @@ public class MovieService {
      * @param movie
      * @return movie id, name, year
      */
-    public JSONObject addMovie(AddMovieRequest movie) {
+    public JSONObject addMovie(Movie movie) {
 
         // TODO: check movie values for errors
         if (!ServiceInputChecks.checkMovie(movie)) {
             return ServiceErrors.invalidInputError();
         }
         // verify the token and extract the users id
+        /* 
         Long user_id = ServiceJWTHelper.getTokenId(movie.getToken());
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
@@ -64,7 +65,7 @@ public class MovieService {
         User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
-        }
+        }*/
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try{
