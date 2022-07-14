@@ -3,15 +3,11 @@ package com.example.restservice.dataModels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-import com.example.restservice.dataModels.Movie;
-
-public class AddMovieRequest extends Movie {
+public class AddMovieRequest {
     
     private String token;
 
-    public AddMovieRequest() {
-        super();
-    }
+    private Movie movie;
     
     public AddMovieRequest(
             @JsonProperty("token") String token,
@@ -25,12 +21,17 @@ public class AddMovieRequest extends Movie {
             @JsonProperty("genres") List<String> genres,
             @JsonProperty("trailer") String trailer) {
 
-        super(name, year, poster, description, directors, contentRating, cast, genres, trailer);
+        Movie movie = new Movie(name, year, poster, description, directors, contentRating, cast, genres, trailer);
+        this.movie = movie;
         this.token = token;
     }
 
     public String getToken() {
         return token;
+    }
+
+    public Movie getMovie() {
+        return movie;
     }
 }
 
