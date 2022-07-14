@@ -43,7 +43,7 @@ public class MovieController {
         // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
         JSONObject response = movieService.addMovie(movie);
 
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/getAllMovies")
@@ -54,36 +54,36 @@ public class MovieController {
     @GetMapping("/homepage")
     public ResponseEntity<Object> homepage() {
         JSONObject response = movieService.homepage();
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/getMovie")
     public ResponseEntity<Object> getMovie(@RequestParam(name = "id") long id) {
         JSONObject response = movieService.getMovieDetails(id);
-        return ControllerResponses.responseInputAndSearchDatabase(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
         JSONObject response = movieService.searchMovieByName(name);
-        return ControllerResponses.responseInputAndSearchDatabase(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @PostMapping("/deleteMovie")
     public ResponseEntity<Object> deleteMovie(@RequestBody DeleteMovieRequest request) {
         JSONObject response = movieService.deleteMovie(request);
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @PostMapping("/addReview")
     public ResponseEntity<Object> addReview(@RequestBody AddReviewRequest request) {
         JSONObject response = movieService.addReview(request);
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/genres")
     public ResponseEntity<Object> getAllGenres() {
         JSONObject response = movieService.getAllGenres();
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 }
