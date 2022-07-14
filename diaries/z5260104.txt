@@ -26,3 +26,12 @@ week 5:
     -Movie put, get
 -Wrote the query logic for extracting from database.
 -Checked controller routes, API Routes
+
+Week6:
+ - Flex week break 
+ 
+ Week 7:
+ - Added add movie functionality
+ - added directors/actors and genres database
+ - delete movie
+ - 
