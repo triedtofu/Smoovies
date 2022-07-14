@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.apache.tomcat.jni.Address;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.Review;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
@@ -49,14 +51,18 @@ public class MovieService {
      * @param movie
      * @return movie id, name, year
      */
-    public JSONObject addMovie(AddMovieRequest movie) {
+    public JSONObject addMovie(AddMovieRequest addMovieRequest) {
+
+        // split the request into its components
+        String userToken = addMovieRequest.getToken();
+        Movie movie = addMovieRequest.getMovie();
 
         // TODO: check movie values for errors
         if (!ServiceInputChecks.checkMovie(movie)) {
             return ServiceErrors.invalidInputError();
         }
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(movie.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(userToken);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         } 
@@ -291,23 +297,28 @@ public class MovieService {
         return responseJson;
     }
 
-    public JSONObject addReview (AddReviewRequest request) {
+    public JSONObject addReview (AddReviewRequest addReviewRequest) {
+
+        // split the request into its parts
+        String token = addReviewRequest.getToken();
+        Review review = addReviewRequest.getReview();
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // check valid inputs
         // check movieId exists/is valid
-        Movie movie = movieDAO.findMovieByID(request.getMovieId());
+        Movie movie = movieDAO.findMovieByID(review.getMovieId());
         if (movie == null) {
             return ServiceErrors.movieNotFoundError();
         }
 
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(token);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         } 
         // Fill in the userId of Review object
-        request.setUserId(user_id);
+        review.setUserId(user_id);
 
         // TODO: send the request to DB
 
