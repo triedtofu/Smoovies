@@ -384,12 +384,12 @@ paths:
           $ref: '#/components/responses/InputError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-  /api/user/resetPassword:
+  /api/user/requestResetPassword:
     post:
       tags:
         - Users
       summary: Request the reset password email
-      description: Route for a user to reset their password
+      description: Route for a user to request a password reset email
       requestBody:
         required: true
         content:
@@ -399,6 +399,32 @@ paths:
               properties:
                 email:
                   $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/resetPassword:
+    post:
+      tags:
+        - Users
+      summary: Change the password of a user
+      description: Change the password of a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resetCode:
+                  $ref: '#/components/schemas/ResetPasswordCode'
+                password:
+                  $ref: '#/components/schemas/Password'
       responses:
         '200':
           description: OK
@@ -549,6 +575,9 @@ components:
       type: boolean
       description: Whether the authorised user is an admin
       example: false
+    ResetPasswordCode:
+      type: string
+      description: Code to identify user resetting their password
   parameters:
     UserIdParam:
       name: userId
