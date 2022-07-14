@@ -19,7 +19,7 @@ const MakePage = (Component: React.ElementType) => {
     }
 
     const Nav = ({ cookies }: { cookies: {[x: string]: any }}) => {
-      if (cookies.admin) {
+      if (cookies.token && cookies.admin) {
         return (
           <NavbarAdmin
             name={cookies.name}

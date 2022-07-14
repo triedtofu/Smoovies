@@ -20,13 +20,13 @@ import * as ScrollMagic from 'scrollmagic';
 import { TimelineMax, TweenMax } from 'gsap';
 import { ScrollMagicPluginGsap } from 'scrollmagic-plugin-gsap';
 
+ScrollMagicPluginGsap(ScrollMagic, TweenMax, TimelineMax);
+
 interface buttonProps {
   state: number;
 }
 
 const TestingUI = () => {
-  ScrollMagicPluginGsap(ScrollMagic, TweenMax, TimelineMax);
-
   const [cookies] = useCookies();
 
   const params = useParams();
@@ -150,7 +150,7 @@ const TestingUI = () => {
     triggerElement: '#trigger1',
   }) as any;
   
-  scene.setTween('#animate1', 0.5, { backgroundColor: 'green', scale: 2.5 }) // trigger a TweenMax.to tween
+  scene.setTween('#animate1', 0.5, { scale: 1.5 }) // trigger a TweenMax.to tween
     .addIndicators({ name: '1 (duration: 0)' }) // add indicators (requires plugin)
     .addTo(controller);
 

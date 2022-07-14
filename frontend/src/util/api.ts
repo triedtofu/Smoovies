@@ -2,7 +2,7 @@
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
 const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
-import { LoginResponse, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
+import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
 
 const apiFetch = <Type>(path: string, init: object) =>  {
   return fetch(baseUrl + '/api' + path, init)
@@ -64,6 +64,18 @@ export const apiGetMovie = (id: number) => {
     return data;
   });
 };
+
+export const apiGetGenres = () => {
+  return apiFetch<{genres: string[]}>('/movie/genres', {});
+}
+
+export const apiAddMovie = (token: string, movie: MovieDetails) => {
+  return apiFetch<Record<string, never>>('/movie/addMovie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, ...movie }),
+  });
+}
 
 // Users
 

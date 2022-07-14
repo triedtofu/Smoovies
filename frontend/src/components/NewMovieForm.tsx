@@ -14,19 +14,23 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
+export type SubmitMovie = (
+  name: string,
+  year: number,
+  poster: string,
+  trailer: string,
+  description: string,
+  director: string,
+  genres: string[],
+  contentRating: string,
+  cast: string,
+  runTime: number
+) => void;
+
 interface NewMovieProps {
-  submit: (
-    name: string,
-    year: string,
-    poster: string,
-    trailer: string,
-    description: string,
-    director: string,
-    genres: string[],
-    contentRating: string,
-    cast: string
-  ) => void;
+  submit: SubmitMovie;
   error: string;
+  allGenres: string[];
 }
 
 const NewMovieForm = (props: NewMovieProps) => {
@@ -36,9 +40,11 @@ const NewMovieForm = (props: NewMovieProps) => {
   const [trailer, setTrailer] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [director, setDirector] = React.useState('');
-  const [genres, setGenres] = React.useState(['']);
+  const [genres, setGenres] = React.useState<string[]>([]);
   const [contentRating, setContentRating] = React.useState('');
   const [cast, setCast] = React.useState('');
+  const [trailerUrl, setTrailerUrl] = React.useState('');
+  const [runtime, setRuntime] = React.useState('');
 
   // const [focusedTitle, setFocusedTitle] = React.useState(false);
   const [focusedDescription, setFocusedDescription] = React.useState(false);
@@ -59,7 +65,9 @@ const NewMovieForm = (props: NewMovieProps) => {
     setHover(false);
   };
 
-  const allGenres = ['Action', 'Horror', 'Romance', 'Comedy'];
+  React.useEffect(() => {
+    setTrailer(trailerUrl);
+  }, [trailerUrl]);
 
   // const fileToDataUrl = (file) => {
   //   const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -87,16 +95,35 @@ const NewMovieForm = (props: NewMovieProps) => {
 
   const newMovieSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    let yearNumber = 0;
+    let runtimeNumber = 0;
+
+    try {
+      yearNumber = parseInt(year);
+    } catch {
+      // TODO
+      return;
+    }
+
+    try {
+      runtimeNumber = parseInt(runtime);
+    } catch {
+      // TODO
+      return;
+    }
+
     props.submit(
       name,
-      year,
+      yearNumber,
       poster,
       trailer,
       description,
       director,
       genres,
       contentRating,
-      cast
+      cast,
+      runtimeNumber
     );
   };
 
@@ -116,10 +143,8 @@ const NewMovieForm = (props: NewMovieProps) => {
               label="Title (required)"
               value={name}
               // inputProps={{ maxLength: 50 }}
-              onChange={(e) => {
-                setName(e.target.value);
-                // setCountTitle(e.target.value.length);
-              }}
+              onChange={e => setName(e.target.value)}
+              // setCountTitle(e.target.value.length);
               // onFocus={onFocusTitle}
               // onBlur={onBlurTitle}
             />
@@ -168,19 +193,35 @@ const NewMovieForm = (props: NewMovieProps) => {
               </Select>
             </FormControl>
           </div>
+          <br/>
+          <div>
+            <RequiredTextField
+              style={{ width: '25%' }}
+              type="text"
+              size="small"
+              name="runtime"
+              label="Runtime (mins)"
+              value={runtime}
+              inputProps={{ maxLength: 4 }}
+              onChange={(e) => {
+                setRuntime(e.target.value);
+              }}
+            />
+          </div>
           <br />
           <div>
             <Autocomplete
               multiple
               id="tags-standard"
-              options={allGenres}
+              options={props.allGenres}
               autoHighlight
               size="small"
+              value={genres}
+              onChange={(e, value) => setGenres(value)}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Genres"
-                  onSubmit={e => console.log(e)}
                 />
               )}
             />
@@ -208,13 +249,13 @@ const NewMovieForm = (props: NewMovieProps) => {
               value={cast}
               inputProps={{ maxLength: 100 }}
               onChange={(e) => {
-                console.log(e.target.value);
+                setCast(e.target.value);
               }}
             />
             <HelpOutlineIcon
               onMouseEnter={onHover}
               onMouseLeave={onLeave}
-            ></HelpOutlineIcon>
+            />
           </div>
           {hover ? (
             <div className={styles.commaDiv}>
@@ -232,6 +273,8 @@ const NewMovieForm = (props: NewMovieProps) => {
               size="small"
               fullWidth
               placeholder="image url"
+              value={poster}
+              onChange={e => setPoster(e.target.value)}
             />
           </div>
           <br/>
@@ -241,6 +284,8 @@ const NewMovieForm = (props: NewMovieProps) => {
               size="small"
               fullWidth
               placeholder="Youtube url"
+              value={trailerUrl}
+              onChange={e => setTrailerUrl(e.target.value)}
             />
           </div>
           <br/>

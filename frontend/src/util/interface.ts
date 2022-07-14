@@ -18,8 +18,7 @@ export interface Review {
   rating: number;
 }
 
-export interface SpecificMovieResponse {
-  id: number;
+export interface MovieDetails {
   name: string;
   year: number;
   poster: string;
@@ -28,9 +27,13 @@ export interface SpecificMovieResponse {
   director: string;
   genres: string[];
   contentRating: string;
-  averageRating: number;
   runTime: number;
   cast: string;
+}
+
+export interface SpecificMovieResponse extends MovieDetails {
+  id: number;
+  averageRating: number;
   reviews: Review[];
 }
 

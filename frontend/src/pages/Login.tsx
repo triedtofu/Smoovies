@@ -24,13 +24,7 @@ const Login = () => {
       if (data.isAdmin) setCookie('admin', data.isAdmin, { path: '/' });
       navigate('/');
     } catch (error) {
-      const errStr = getErrorMessage(error);
-
-      if (errStr === 'Invalid input') {
-        setLoginErr("Email and password don't match");
-      } else {
-        setLoginErr(getErrorMessage(error));
-      }
+      setLoginErr(getErrorMessage(error));
     }
   };
 
