@@ -24,7 +24,7 @@ const Homepage = () => {
 
   return (
     <Container maxWidth="lg">
-      <h1>Home Page</h1>
+      <h1>Trending</h1>
       
       {movies.length > 0 && <div className={styles.container}>
         {movies.map(movie => (
