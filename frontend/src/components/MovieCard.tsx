@@ -32,7 +32,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
           </Typography>
         </Link>
         <div>
-          {['Action', 'Fantasy'].map((genre, index) => (
+          {movie.genres?.map((genre, index) => (
             <Chip key={index} label={genre} sx={{ margin: '5px' }} />
           ))}
         </div>

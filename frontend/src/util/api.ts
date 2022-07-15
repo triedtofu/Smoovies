@@ -1,4 +1,5 @@
 // const baseUrl = '';
+// const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
 const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
@@ -48,8 +49,7 @@ export const apiMovieSearch = (name: string) => {
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
   return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`, {}).then((data) => {
-    data.trailer = 'SQK-QxxtE8Y';
-    data.cast = 'Chris Hemsworth, Natalie Portman, Tom Hiddleston';
+    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
     data.averageRating = 3.14;
     data.runTime = 114;
     data.reviews = [
@@ -67,7 +67,7 @@ export const apiGetMovie = (id: number) => {
 
 export const apiGetGenres = () => {
   return apiFetch<{genres: string[]}>('/movie/genres', {});
-}
+};
 
 export const apiAddMovie = (token: string, movie: MovieDetails) => {
   return apiFetch<Record<string, never>>('/movie/addMovie', {
@@ -76,6 +76,14 @@ export const apiAddMovie = (token: string, movie: MovieDetails) => {
     body: JSON.stringify({ token, ...movie }),
   });
 }
+
+export const apiDeleteMovie = (token: string, movieId: number) => {
+  return apiFetch<Record<string, never>>('/movie/deleteMovie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId }),
+  });
+};
 
 // Users
 
