@@ -32,7 +32,7 @@ const LoginForm = (props: LoginProps) => {
             label="Email"
             type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </MyFormControl>
         <MyFormControl>
@@ -41,7 +41,15 @@ const LoginForm = (props: LoginProps) => {
             label="Enter your password"
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            onPaste={(e) => {
+              e.preventDefault();
+              return false;
+            }}
+            onCopy={(e) => {
+              e.preventDefault();
+              return false;
+            }}
           />
         </MyFormControl>
         <MyFormControl>
