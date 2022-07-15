@@ -10,21 +10,11 @@ import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ReviewCard from '../components/ReviewCard';
-// import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 
 import { apiGetMovie, apiUserWishlist, apiPutUserWishlist } from '../util/api';
-import { parseJwt } from '../util/helper';
-
-interface movieInfo {
-  name: string;
-}
-
-interface reviewInfo {
-  user: number;
-  review: string;
-  rating: number;
-}
+import { parseJwt, getErrorMessage } from '../util/helper';
+import { SpecificMovieResponse } from '../util/interface';
 
 interface buttonProps {
   state: number;
@@ -33,35 +23,40 @@ interface buttonProps {
 const Movie = () => {
   const [cookies] = useCookies();
 
-  const [addedToWishlist, setAddedToWishlist] = React.useState(false);
   const params = useParams();
 
-  const [movie, setMovie] = React.useState<any>({});
-
+  const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(undefined);
+  const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
 
   React.useEffect(() => {
+    setErrorStr('');
+    setMovie(undefined);
+
     const idStr = params.id ?? '';
 
     if (idStr === '') {
       // TODO handle error
+      setErrorStr('Error');
       return;
     }
 
     try {
       const id = parseInt(idStr);
-      apiGetMovie(id).then((data) => setMovie({ ...data, id }));
+      apiGetMovie(id)
+        .then((data) => setMovie({ ...data, id }))
+        .catch(error => setErrorStr(getErrorMessage(error)))
     } catch (error) {
-      console.log(error);
+      setErrorStr(getErrorMessage(error));
     }
-  }, []);
+  }, [params]);
 
   React.useEffect(() => {
-    if (Object.keys(movie).length === 0 || !cookies.token) return;
+    if (!movie || !cookies.token) return;
 
     try {
       apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
-        if (data.movies.find((m: any) => m.id === movie.id)) {
+        if (data.movies.find(m => m.id === movie.id)) {
           setButton(2);
         } else {
           setButton(1);
@@ -73,7 +68,6 @@ const Movie = () => {
   }, [movie]);
 
   const WishlistButton = ({ state }: buttonProps) => {
-    console.log('State = ' + state);
     if (state === 1)
       return (
         <Button
@@ -100,7 +94,9 @@ const Movie = () => {
     return <></>;
   };
 
-  if (Object.keys(movie).length === 0) return <></>;
+  if (errorStr) return <p>{errorStr}</p>;
+
+  if (movie && Object.keys(movie).length === 0) return <></>;
 
   const addMovieToWishlist = () => {
     const idStr = params.id ?? '';
@@ -140,6 +136,8 @@ const Movie = () => {
     // TODO
   };
 
+  if (!movie) return <></>;
+
   return (
     <Container maxWidth="md">
       <div className={styles.title_div}>
@@ -165,13 +163,13 @@ const Movie = () => {
             <p>
               Genre: {movie.genres.join(', ')}
               <br />
-              Director: {movie.director}
+              Director: {movie?.director}
               <br />
               Cast: {movie.cast}
               <br />
               Content Rating: {movie.contentRating}
               <br />
-              Average Rating: {movie.avgRating}
+              Average Rating: {movie.averageRating}
               <br />
               Runtime: {movie.runTime} minutes
             </p>
@@ -186,12 +184,10 @@ const Movie = () => {
       <div>
         <h2>Reviews</h2>
         <div style={{ display: 'flex' }}>
-          {movie.reviews.map((reviews: any) => (
+          {movie.reviews.map(review => (
             <ReviewCard
-              key={reviews.user}
-              reviewUser={reviews.user}
-              reviewDescription={reviews.review}
-              reviewRating={reviews.rating}
+              key={review.user}
+              review={review}
             />
           ))}
         </div>

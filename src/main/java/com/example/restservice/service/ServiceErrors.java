@@ -11,7 +11,8 @@ public class ServiceErrors {
     //                                                                                                  //
     //                                       Http 400 BAD_REQUEST errors                                //
     //                                                                                                  //
-    //////////////////////////////////////////////////////////////////////////////////////////////////////  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
     /**
      * Returns JSONObject with error message
      * @return {"error": "Invalid input"}
@@ -106,13 +107,13 @@ public class ServiceErrors {
     public static JSONObject userAdminPermissionError() {
         return generateErrorMessage("User is not an admin.");
     }
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //
     //                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-    //
     /**
      * Returns JSONObject with error message
      * @return {"error": "Email not found"}
@@ -151,8 +152,7 @@ public class ServiceErrors {
     //                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-
-    private static JSONObject generateErrorMessage(String error) {
+    public static JSONObject generateErrorMessage(String error) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("error", error);
         JSONObject responseJson = new JSONObject(returnMessage);

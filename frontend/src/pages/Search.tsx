@@ -7,21 +7,12 @@ import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
 import Container from '@mui/material/Container';
-
-interface MovieInfo {
-  id: number;
-  name: string;
-  year: number;
-  poster: string;
-  genres: Array<string>;
-  averageRating: number;
-  description: string;
-}
+import { MovieSummary } from '../util/interface';
 
 const Search = () => {
   const [searchParams] = useSearchParams();
 
-  const [movies, setMovies] = React.useState<Array<MovieInfo>>([]);
+  const [movies, setMovies] = React.useState<MovieSummary[]>([]);
   const [found, setFound] = React.useState(true);
 
   React.useEffect(() => {
@@ -48,23 +39,13 @@ const Search = () => {
       <h1>Results: {searchParams.get('name')}</h1>
       {!found && movies.length === 0 && <p>No movies found.</p>}
       {movies.length > 0 &&
-        movies.map((movie) => (
+        movies.map(movie => (
           <MovieResultCard
             key={movie.id}
-            poster={movie.poster}
-            name={movie.name}
-            year={movie.year}
-            button={false}
+            movie={movie}
             buttonClick={null}
-            id={movie.id}
-            // genres={movie.genres}
-            description={movie.description}
-            rating={movie.averageRating}
           />
         ))}
-      {/* {movies.length === 0 && (
-        <h1>Sorry, No results found for "{searchParams.get('name')}"</h1>
-      )} */}
     </Container>
   );
 };

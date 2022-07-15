@@ -7,41 +7,39 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 
-interface MovieCardProps {
-  poster: string;
-  name: string;
-  year: number;
-  id: number;
-  // genres: Array<string>;
-  rating: number;
-}
+import { MovieSummary } from '../util/interface';
 
-const MovieCard = (props: MovieCardProps) => {
+import styles from './MovieCard.module.css';
+
+const MovieCard = ({ movie }: { movie: MovieSummary }) => {
   return (
-    <Card sx={{ width: '200px', margin: '10px' }}>
+    <Card className={styles.movieCard} sx={{ width: '200px', margin: '10px' }}>
       <CardMedia
         component="img"
         height="300"
-        image={props.poster}
-        alt={`Movie poster for ${props.name}`}
+        image={movie.poster}
+        alt={`Movie poster for ${movie.name}`}
       />
       <CardContent>
-        <Link to={`/movie/${props.id}`}>
-          <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center' }}>
-            {`${props.name} (${props.year})`}
+        <Link to={`/movie/${movie.id}`}>
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            sx={{ textAlign: 'center' }}
+          >
+            {`${movie.name} (${movie.year})`}
           </Typography>
         </Link>
         <div>
-          {["Action", "Fantasy"].map((genre, index) => (
-            <Chip key={index} label={genre} sx={{margin: '5px'}}/>
+          {['Action', 'Fantasy'].map((genre, index) => (
+            <Chip key={index} label={genre} sx={{ margin: '5px' }} />
           ))}
         </div>
-        <div>
-          Rating: {props.rating}
-        </div>
+        <div>Rating: {movie.averageRating}</div>
       </CardContent>
     </Card>
   );
-}
+};
 
 export default MovieCard;

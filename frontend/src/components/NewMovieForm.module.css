@@ -1,0 +1,18 @@
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.directorAndCast {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.commaDiv {
+  display: flex;
+  border: solid 1px rgb(172, 28, 28);
+  border-radius: 5px;
+  width: fit-content;
+  background-color: rgb(214, 64, 114);
+}
