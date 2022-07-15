@@ -6,6 +6,13 @@ import java.util.HashMap;
 
 public class ServiceErrors {
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                  //
+    //                                       Http 400 BAD_REQUEST errors                                //
+    //                                                                                                  //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
     /**
      * Returns JSONObject with error message
      * @return {"error": "Invalid input"}
@@ -45,24 +52,39 @@ public class ServiceErrors {
     public static JSONObject userEmailInvalidError() {
         return generateErrorMessage("Invalid email.");
     }
+    
+    /**
+    * Returns JSONObject with error message
+    * @return {"error": "Invalid password"}
+    */
+   public static JSONObject userPasswordInvalidError() {
+       return generateErrorMessage("Invalid password.");
+   }
 
+   
     /**
      * Returns JSONObject with error message
-     * @return {"error": "Email not found"}
+     * @return {"error": "Movie Id is invalid."}
      */
-    public static JSONObject userEmailNotFoundError() {
-        return generateErrorMessage("Email not found.");
+    public static JSONObject movieIdInvalidError() {
+        return generateErrorMessage("Movie Id is invalid.");
     }
 
      /**
      * Returns JSONObject with error message
-     * @return {"error": "Invalid password"}
+     * @return {"error": "User Id is invalid."}
      */
-    public static JSONObject userPasswordInvalidError() {
-        return generateErrorMessage("Invalid password.");
+    public static JSONObject userIdInvalidError() {
+        return generateErrorMessage("User Id is invalid.");
     }
 
-         /**
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                  //
+    //                                       Http 403 FORBIDDEN errors                                  //
+    //                                                                                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////  
+
+    /**
      * Returns JSONObject with error message
      * @return {"error": "Password is incorrect."}
      */
@@ -85,6 +107,20 @@ public class ServiceErrors {
     public static JSONObject userAdminPermissionError() {
         return generateErrorMessage("User is not an admin.");
     }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                  //
+    //                                       Http 404 NOT_FOUND errors                                  //
+    //                                                                                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////  
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "Email not found"}
+     */
+    public static JSONObject userEmailNotFoundError() {
+        return generateErrorMessage("Email not found.");
+    }
 
     /**
      * Returns JSONObject with error message
@@ -96,26 +132,10 @@ public class ServiceErrors {
 
     /**
      * Returns JSONObject with error message
-     * @return {"error": "Movie Id is invalid."}
-     */
-    public static JSONObject movieIdInvalidError() {
-        return generateErrorMessage("Movie Id is invalid.");
-    }
-
-    /**
-     * Returns JSONObject with error message
      * @return {"error": "Trending movie list is empty."}
      */
     public static JSONObject movieTrendingEmptyError() {
         return generateErrorMessage("Trending movie list is empty.");
-    }
-
-     /**
-     * Returns JSONObject with error message
-     * @return {"error": "User Id is invalid."}
-     */
-    public static JSONObject userIdInvalidError() {
-        return generateErrorMessage("User Id is invalid.");
     }
 
     /**
@@ -125,6 +145,12 @@ public class ServiceErrors {
     public static JSONObject UserWishlistNotFoundError() {
         return generateErrorMessage("User wishlist not found.");
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                  //
+    //                                       Helper Functions                                           //
+    //                                                                                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////  
 
     public static JSONObject generateErrorMessage(String error) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
