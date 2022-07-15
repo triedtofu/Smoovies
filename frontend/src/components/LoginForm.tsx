@@ -7,6 +7,7 @@ import FormLabel from '@mui/material/FormLabel';
 import MyFormControl from './MyFormControl';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
+import Divider from '@mui/material/Divider';
 
 interface LoginProps {
   submit: (email: string, password: string) => Promise<void>;
@@ -63,6 +64,10 @@ const LoginForm = (props: LoginProps) => {
         Don&apos;t have an account?{' '}
         <Link className={styles.boxLink} to="/register">
           Register
+        </Link>
+        &nbsp; | Forgot Password?
+        <Link className={styles.boxLink} to="/resetpassword">
+          Reset Password
         </Link>
       </div>
     </>
