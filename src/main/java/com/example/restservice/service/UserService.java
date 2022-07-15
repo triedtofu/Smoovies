@@ -22,8 +22,8 @@ import com.example.restservice.database.UserDataAccessService;
 
 @Service
 public class UserService {
-    
-    
+
+
     @Autowired
 	private UserDataAccessService userDAO;
 
@@ -44,11 +44,12 @@ public class UserService {
         // checks inputs for errors (in terms of formatting)
         if (!ServiceInputChecks.checkEmail(email)) {
             return ServiceErrors.userEmailInvalidError();
-        } 
-        // TODO: Should this check even be here? we dont need to check if the password is correct format when trying to login?
-        if (!ServiceInputChecks.checkPassword(password)) {
-            return ServiceErrors.userPasswordInvalidError();
         }
+        // TODO: Should this check even be here? we dont need to check if the password is correct format when trying to login?
+        // String error = ServiceInputChecks.checkPassword(password);
+        // if (!error.equals("")) {
+        //     return ServiceErrors.generateErrorMessage(error);
+        // }
 
         // find the user in database by their email
         User user = userDAO.findUserByEmail(email);
@@ -81,14 +82,19 @@ public class UserService {
             return ServiceErrors.userNameInvalidError();
         } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
             return ServiceErrors.userEmailInvalidError();
-        } else if (!ServiceInputChecks.checkPassword(user.getPassword())) {
-            return ServiceErrors.userPasswordInvalidError();
-        } else if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
+        }
+
+        String error = ServiceInputChecks.checkPassword(user.getPassword());
+        if (!error.equals("")) {
+            return ServiceErrors.generateErrorMessage(error);
+        }
+
+        if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
             return ServiceErrors.userEmailInUseError();
         }
-        
+
         user.setIsAdmin(isAdmin);
-        
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try{
             // if user is successfully added, put user in dbUser
@@ -144,12 +150,12 @@ public class UserService {
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
-        } 
+        }
         // TODO: Return a different error
         else {
             return ServiceErrors.UserWishlistNotFoundError();
         }
-        
+
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
@@ -158,7 +164,7 @@ public class UserService {
     /**
      * Updates the wishlist of a user
      * @param token
-     * @param movieId 
+     * @param movieId
      * @param addRemove
      * @return {}
      */

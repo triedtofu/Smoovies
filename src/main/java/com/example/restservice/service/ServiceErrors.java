@@ -126,7 +126,7 @@ public class ServiceErrors {
         return generateErrorMessage("User wishlist not found.");
     }
 
-    private static JSONObject generateErrorMessage(String error) {
+    public static JSONObject generateErrorMessage(String error) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("error", error);
         JSONObject responseJson = new JSONObject(returnMessage);

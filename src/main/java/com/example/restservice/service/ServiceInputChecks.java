@@ -49,9 +49,9 @@ public class ServiceInputChecks {
     }
     // Checks if password is valid format, true = valid
     // Modified code from https://www.delftstack.com/howto/java/password-checker-java/
-    public static Boolean checkPassword(String Password) {
+    public static String checkPassword(String Password) {
         // Specify the minimum and maximum number of letters in a password
-        final int min = 6; 
+        final int min = 8; 
         final int max = 16;
                          
         // Specifying the number of uppercase letters in password
@@ -61,34 +61,43 @@ public class ServiceInputChecks {
         // Specifying the number of digits in a password
         final int numDigits = 1;
         // Count number of uppercase letters in a password
-        int uppercaseCounter=0;
-        // Counter lowercase letters in a password
-        int lowercaseCounter=0;
+        int uppercaseCounter = 0;
+        // Count lowercase letters in a password
+        int lowercaseCounter = 0;
         // Count digits in a password
-        int digitCounter=0;
+        int digitCounter = 0;
         
         // Counting character types for password
-        for (int i=0; i < Password.length(); i++ ){
-                char c = Password.charAt(i);
-                if(Character.isUpperCase(c)){ 
-                        uppercaseCounter++;
-                }
-                else if(Character.isLowerCase(c)) {
-                        lowercaseCounter++;
-                }
-                else if(Character.isDigit(c)){ 
-                        digitCounter++;     
-                }
+        for (int i = 0; i < Password.length(); i++) {
+            char c = Password.charAt(i);
+            if (Character.isUpperCase(c)) { 
+                uppercaseCounter++;
+            } else if (Character.isLowerCase(c)) {
+                lowercaseCounter++;
+            } else if (Character.isDigit(c)){ 
+                digitCounter++;     
+            }
+        }
+
+        // Checking that password meets requirements
+
+        if (Password.length() < min || Password.length() > max) {
+            return "Password must be between " + min + " and " + max + " characters";
+        }
+
+        if (uppercaseCounter < minUppercase) {
+            return "Password must contain at least " + minUppercase + " uppercase character";
+        }
+
+        if (lowercaseCounter < minLowercase) {
+            return "Password must contain at least " + minLowercase + " lowercase character";
         }
         
-        // Checking that password meets requirements
-        if (Password.length() >= min && Password.length() <= max && uppercaseCounter >= minUppercase 
-            && lowercaseCounter >= minLowercase && digitCounter >= numDigits) { 
-                return true;
+        if (digitCounter < numDigits) {
+            return "Password must contain at least " + numDigits + " number";
         }
-        else {
-            return false;                            
-        }                                   
+
+        return "";
     }
     
     // TODO: checks all variables in the "movie" object are valid, true = valid
