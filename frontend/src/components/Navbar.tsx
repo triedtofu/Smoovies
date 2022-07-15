@@ -38,9 +38,13 @@ const Navbar = () => {
           Higher Or Lower
         </Link>
         <div>|</div>
-        <Link to="/login">Login</Link>
+        <Link to="/login" className={styles.Links}>
+          Login
+        </Link>
         <div>|</div>
-        <Link to="/register">Register</Link>
+        <Link to="/register" className={styles.Links}>
+          Register
+        </Link>
       </div>
     </nav>
   );

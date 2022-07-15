@@ -66,14 +66,14 @@ const RegisterForm = (props: RegisterProps) => {
               setPassword1(e.target.value)
             }
             error={Boolean(passwordErr)}
-            onPaste={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-            onCopy={(e) => {
-              e.preventDefault();
-              return false;
-            }}
+            // onPaste={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
+            // onCopy={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
           />
         </MyFormControl>
         <MyFormControl>
@@ -86,14 +86,14 @@ const RegisterForm = (props: RegisterProps) => {
               setPassword2(e.target.value)
             }
             error={Boolean(passwordErr)}
-            onPaste={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-            onCopy={(e) => {
-              e.preventDefault();
-              return false;
-            }}
+            // onPaste={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
+            // onCopy={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
           />
         </MyFormControl>
         <FormLabel error={Boolean(passwordErr)}>{passwordErr}</FormLabel>

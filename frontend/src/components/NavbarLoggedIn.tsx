@@ -65,7 +65,9 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/higherorlower">Higher or Lower</Link>
+        <Link to="/higherorlower" className={styles.Links}>
+          Higher or Lower
+        </Link>
         <div>|</div>
         <div className={styles.dashboard}>
           <Button
@@ -75,8 +77,8 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            <ArrowDropDownIcon />
-            Hello {props.name}
+            <ArrowDropDownIcon style={{ color: '#522381' }} />
+            <span style={{ color: '#522381' }}>Hello {props.name}</span>
           </Button>
           <Menu
             id="basic-menu"

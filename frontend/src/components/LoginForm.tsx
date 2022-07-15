@@ -42,14 +42,14 @@ const LoginForm = (props: LoginProps) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            onPaste={(e) => {
-              e.preventDefault();
-              return false;
-            }}
-            onCopy={(e) => {
-              e.preventDefault();
-              return false;
-            }}
+            // onPaste={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
+            // onCopy={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
           />
         </MyFormControl>
         <MyFormControl>
