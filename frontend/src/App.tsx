@@ -12,6 +12,6 @@ const App = () => {
       </HashRouter>
     </CookiesProvider>
   );
-}
+};
 
 export default App;
