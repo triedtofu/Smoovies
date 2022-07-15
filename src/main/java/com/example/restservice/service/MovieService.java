@@ -205,6 +205,14 @@ public class MovieService {
                 dbMovieDetails.put("year", movie.getYear());
                 dbMovieDetails.put("poster", movie.getPoster());
                 dbMovieDetails.put("description", movie.getDescription());
+
+                JSONArray genreList = new JSONArray();
+                Set<Genre> movieGenres = movie.getGenreList();
+                for (Genre g : movieGenres) {
+                    genreList.put(g.getName());
+                }
+                dbMovieDetails.put("genres", genreList);
+
                 //Make it into a JSONObject
                 JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
                 //Put the object into the JSONArray
@@ -246,7 +254,14 @@ public class MovieService {
                 dbMovieDetails.put("year", dbMovie.getYear());
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
-                //TODO: add genres
+
+                JSONArray genreList = new JSONArray();
+                Set<Genre> movieGenres = dbMovie.getGenreList();
+                for (Genre g : movieGenres) {
+                    genreList.put(g.getName());
+                }
+                dbMovieDetails.put("genres", genreList);
+
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
