@@ -377,9 +377,17 @@ paths:
                 properties:
                   reviews:
                     type: array
-                    maxItems: 10
                     items:
-                      $ref: '#/components/schemas/Review'
+                      type: object
+                      properties:
+                        movieId:
+                          $ref: '#/components/schemas/MovieId'
+                        movieName:
+                          $ref: '#/components/schemas/MovieName'
+                        review:
+                          $ref: '#/components/schemas/ReviewString'
+                        rating:
+                          $ref: '#/components/schemas/ReviewRating'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
