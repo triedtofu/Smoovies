@@ -318,12 +318,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  movies:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MovieSummary'
+                allOf:
+                - type: object
+                  properties:
+                    username:
+                      $ref: '#/components/schemas/Name'
+                    movies:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/MovieSummary'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
