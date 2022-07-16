@@ -40,7 +40,7 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
           <b>Rating:</b> {movie.averageRating}
         </div>
         <div>
-          <b>Descripton:</b> {movie.description}
+          <b>Description:</b> {movie.description}
         </div>
       </CardContent>
       {buttonClick ?
