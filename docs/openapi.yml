@@ -378,6 +378,8 @@ paths:
               schema:
                 type: object
                 properties:
+                  username:
+                    $ref: '#/components/schemas/Name'
                   reviews:
                     type: array
                     items:
