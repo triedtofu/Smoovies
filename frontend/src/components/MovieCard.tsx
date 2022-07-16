@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -10,6 +10,7 @@ import Chip from '@mui/material/Chip';
 import { MovieSummary } from '../util/interface';
 
 import styles from './MovieCard.module.css';
+import MyLink from './MyLink';
 
 const MovieCard = ({ movie }: { movie: MovieSummary }) => {
   return (
@@ -21,7 +22,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
         alt={`Movie poster for ${movie.name}`}
       />
       <CardContent>
-        <Link to={`/movie/${movie.id}`}>
+        <MyLink to={`/movie/${movie.id}`}>
           <Typography
             gutterBottom
             variant="h5"
@@ -30,7 +31,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
           >
             {`${movie.name} (${movie.year})`}
           </Typography>
-        </Link>
+        </MyLink>
         <div>
           {movie.genres?.map((genre, index) => (
             <Chip key={index} label={genre} sx={{ margin: '5px' }} />

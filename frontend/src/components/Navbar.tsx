@@ -1,9 +1,10 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import movieLogo from '../logo2.png';
 import styles from './Navbar.module.css';
 import Search from './Search';
+import MyLink from './MyLink';
 
 import Box from '@mui/material/Box';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
@@ -37,18 +38,18 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/higherorlower" className={styles.linkWithLogo}>
+        <MyLink to="/higherorlower" className={styles.linkWithLogo}>
           <SwapVertIcon className={styles.higherorlower}></SwapVertIcon>
           Higher Or Lower
-        </Link>
+        </MyLink>
         <div>|</div>
-        <Link to="/login" className={styles.Links}>
+        <MyLink to="/login">
           Login
-        </Link>
+        </MyLink>
         <div>|</div>
-        <Link to="/register" className={styles.Links}>
+        <MyLink to="/register">
           Register
-        </Link>
+        </MyLink>
       </div>
     </nav>
   );

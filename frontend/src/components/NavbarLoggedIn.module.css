@@ -21,35 +21,11 @@
   width: 120px;
 }
 
-.Links {
-  list-style: none;
-  text-decoration: none;
-}
-
-.Links:hover,
-:focus {
-  color: #f5f2b9;
-}
-
-:links:active {
-  color: #f5f2b9;
-}
 
 .linkWithLogo {
-  list-style: none;
-  text-decoration: none;
   justify-content: center;
   display: flex;
   margin-top: 3px;
-}
-
-.linkWithLogo:hover,
-:focus {
-  color: #f5f2b9;
-}
-
-:linkwithlogo:active {
-  color: #f5f2b9;
 }
 
 .logoBox {

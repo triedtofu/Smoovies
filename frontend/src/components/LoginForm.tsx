@@ -1,13 +1,12 @@
 import React, { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
 
 import MyFormControl from './MyFormControl';
+import MyLink from './MyLink';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
-import Divider from '@mui/material/Divider';
 
 interface LoginProps {
   submit: (email: string, password: string) => Promise<void>;
@@ -62,13 +61,13 @@ const LoginForm = (props: LoginProps) => {
 
       <div className={styles.box}>
         Don&apos;t have an account?{' '}
-        <Link className={styles.boxLink} to="/register">
+        <MyLink className={styles.boxLink} to="/register">
           Register
-        </Link>
+        </MyLink>
         &nbsp; | Forgot Password?
-        <Link className={styles.boxLink} to="/resetpassword">
+        <MyLink className={styles.boxLink} to="/resetpassword">
           Reset Password
-        </Link>
+        </MyLink>
       </div>
     </>
   );

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -10,6 +9,7 @@ import Button from '@mui/material/Button';
 
 import styles from './MovieResultCard.module.css';
 import { MovieSummary } from '../util/interface';
+import MyLink from './MyLink';
 
 interface MovieResultCardProps {
   buttonClick: (() => void) | null;
@@ -26,11 +26,11 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
         id={styles.card_media}
       />
       <CardContent className={styles.card_content}>
-        <Link to={`/movie/${movie.id}`}>
+        <MyLink to={`/movie/${movie.id}`}>
           <Typography gutterBottom variant="h5" component="div">
             {`${movie.name} (${movie.year})`}
           </Typography>
-        </Link>
+        </MyLink>
         <div>
           {movie.genres?.map(genre => (
             <Chip key={genre} label={genre} sx={{margin: '5px'}}/>

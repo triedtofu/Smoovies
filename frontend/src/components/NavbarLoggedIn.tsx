@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import movieLogo from '../logo2.png';
 import styles from './NavbarLoggedIn.module.css';
 import Search from './Search';
+import MyLink from './MyLink';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -65,9 +66,9 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/higherorlower" className={styles.Links}>
+        <MyLink to="/higherorlower" className={styles.Links}>
           Higher or Lower
-        </Link>
+        </MyLink>
         <div>|</div>
         <div className={styles.dashboard}>
           <Button
