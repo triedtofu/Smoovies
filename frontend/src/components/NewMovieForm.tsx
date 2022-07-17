@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import styles from './NewMovieForm.module.css';
 import RequiredTextField from './RequiredTextField';
+import Youtube from './Youtube';
 
 export type SubmitMovie = (
   name: string,
@@ -174,6 +175,8 @@ const NewMovieForm = (props: NewMovieProps) => {
           helperText="Actors separated with a comma ','"
         />
 
+        {poster && <img className={styles.poster} src={poster} alt="Movie poster"/>}
+
         <RequiredTextField
           label="Poster"
           size="small"
@@ -182,6 +185,10 @@ const NewMovieForm = (props: NewMovieProps) => {
           value={poster}
           onChange={e => setPoster(e.target.value)}
         />
+
+        {trailerUrl && <div className={styles.youtube}>
+          <Youtube code={trailerUrl}/>
+        </div>}
 
         <RequiredTextField
           label="Trailer"

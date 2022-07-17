@@ -66,7 +66,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <MyLink to="/higherorlower" className={styles.Links}>
+        <MyLink to="/higherorlower">
           Higher or Lower
         </MyLink>
         <div>|</div>

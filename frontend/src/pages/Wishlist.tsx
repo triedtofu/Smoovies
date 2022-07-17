@@ -17,6 +17,7 @@ const Wishlist = () => {
 
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
   const [fetched, setFetched] = React.useState(false);
+  const [name, setName] = React.useState('');
 
   const removeMovie = (movieId: number) => {
     try {
@@ -43,6 +44,7 @@ const Wishlist = () => {
       apiUserWishlist(parseInt(idStr))
         .then(data => {
           setMovies(data.movies);
+          setName(data.username);
           setFetched(true);
         });
     } catch (error) {
@@ -64,9 +66,11 @@ const Wishlist = () => {
     return true;
   }
 
+  if (!fetched) return <></>;
+
   return (
     <Container maxWidth="lg">
-      <h1>Your Wishlist</h1>
+      <h1>{cookies.token && params.id === parseJwt(cookies.token).jti ? 'Your Wishlist' : `${name}'s Wishlist`}</h1>
       {fetched && movies.length === 0 && <p>No movies in wishlist.</p>}
       {movies.length > 0 && movies.map(movie => (
         <MovieResultCard
