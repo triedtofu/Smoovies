@@ -447,6 +447,36 @@ paths:
                 type: object
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/user/banUser:
+    put:
+      tags:
+        - Users
+      summary: Ban a user
+      description: Admin route to ban a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                UserId:
+                  $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'          
 components:
   securitySchemes:
     bearerAuth:
