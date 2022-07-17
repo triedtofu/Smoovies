@@ -2,6 +2,9 @@ package com.example.restservice.dataModels;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +41,10 @@ public class Genre {
     public String getName() {
         return this.name;
     }
-        
-    
+
+    public static List<String> genreCollectionToStrList(Collection<Genre> genres) {
+        List<String> genreList = new ArrayList<>();
+        for (Genre genre : genres) genreList.add(genre.getName());
+        return genreList;
+    }
 }

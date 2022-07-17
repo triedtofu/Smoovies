@@ -1,7 +1,7 @@
-.title {
+/* .title {
   display: flex;
   justify-content: space-between;
-}
+} */
 
 .directorAndCast {
   display: flex;
@@ -15,4 +15,29 @@
   border-radius: 5px;
   width: fit-content;
   background-color: rgb(214, 64, 114);
+}
+
+.movieForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flexDiv {
+  display: flex;
+  gap: 5px;
+}
+
+.flexContents {
+  flex: 1;
+}
+
+.poster {
+  max-width: 200px;
+  max-height: 300px;
+  margin-bottom: 5px;
+}
+
+.youtube {
+  margin-bottom: 5px;
 }

@@ -27,7 +27,7 @@ export interface MovieDetails {
   director: string;
   genres: string[];
   contentRating: string;
-  runTime: number;
+  runtime: number;
   cast: string;
 }
 
@@ -48,9 +48,10 @@ export interface MovieSummary {
 }
 
 export interface WishlistResponse {
-  movies: MovieSummary[]
+  movies: MovieSummary[];
+  username: string;
 }
 
 export interface MovieSummaries {
-  movies: MovieSummary[]
+  movies: MovieSummary[];
 }

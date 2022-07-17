@@ -8,7 +8,7 @@ import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
 import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
-import { parseJwt } from '../util/helper';
+import { parseJwt, getErrorMessage } from '../util/helper';
 import { MovieSummary } from '../util/interface';
 
 const Wishlist = () => {
@@ -16,7 +16,8 @@ const Wishlist = () => {
   const [cookies] = useCookies();
 
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
-  const [fetched, setFetched] = React.useState(false);
+  const [errorStr, setErrorStr] = React.useState('');
+  const [name, setName] = React.useState('');
 
   const removeMovie = (movieId: number) => {
     try {
@@ -32,6 +33,9 @@ const Wishlist = () => {
   }
 
   React.useEffect(() => {
+    setMovies([]);
+    setName('');
+    setErrorStr('');
     const idStr = params.id ?? '';
 
     if (idStr === '') {
@@ -43,12 +47,13 @@ const Wishlist = () => {
       apiUserWishlist(parseInt(idStr))
         .then(data => {
           setMovies(data.movies);
-          setFetched(true);
-        });
+          setName(data.username);
+        })
+        .catch(error => setErrorStr(getErrorMessage(error)));
     } catch (error) {
-      console.log(error);
+      setErrorStr(getErrorMessage(error));
     }
-  }, []);
+  }, [params]);
 
   // returns whether the remove from wishlist button should be shown
   const showButton = () => {
@@ -64,11 +69,15 @@ const Wishlist = () => {
     return true;
   }
 
+  if (errorStr || name === '') return <h2>{errorStr}</h2>;
+
   return (
     <Container maxWidth="lg">
-      <h1>Your Wishlist</h1>
-      {fetched && movies.length === 0 && <p>No movies in wishlist.</p>}
-      {movies.length > 0 && movies.map(movie => (
+      <h1>{cookies.token && params.id === parseJwt(cookies.token).jti ? 'Your Wishlist' : `${name}'s Wishlist`}</h1>
+      
+      {movies.length === 0 && <p>No movies in wishlist.</p>}
+
+      {movies.map(movie => (
         <MovieResultCard
           key={movie.id}
           movie={movie}

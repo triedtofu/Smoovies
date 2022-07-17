@@ -12,7 +12,7 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ReviewCard from '../components/ReviewCard';
 import Container from '@mui/material/Container';
 
-import { apiGetMovie, apiUserWishlist, apiPutUserWishlist } from '../util/api';
+import { apiGetMovie, apiUserWishlist, apiPutUserWishlist, apiDeleteMovie } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
 
@@ -52,7 +52,7 @@ const Movie = () => {
   }, [params]);
 
   React.useEffect(() => {
-    if (!movie || !cookies.token) return;
+    if (!movie || !cookies.token || cookies.admin) return;
 
     try {
       apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
@@ -93,6 +93,35 @@ const Movie = () => {
 
     return <></>;
   };
+
+  const deleteMovie = () => {
+    apiDeleteMovie(cookies.token, movie!.id)
+      .then(() => {
+        setMovie(undefined);
+        setErrorStr('Movie has been deleted.')
+      })
+  };
+
+  const AdminButton = () => {
+    if (!cookies.admin) return <></>;
+
+    return (
+      <div>
+        <Button
+          variant="outlined"
+        >
+          Edit
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={deleteMovie}
+        >
+          Delete
+        </Button>
+      </div>
+    );
+  }
 
   if (errorStr) return <p>{errorStr}</p>;
 
@@ -146,6 +175,7 @@ const Movie = () => {
         </h1>
 
         <WishlistButton state={button} />
+        <AdminButton />
       </div>
 
       <div style={{ maxWidth: '740px' }}>
@@ -163,15 +193,15 @@ const Movie = () => {
             <p>
               Genre: {movie.genres.join(', ')}
               <br />
-              Director: {movie?.director}
+              Director: {movie.director}
               <br />
-              Cast: {movie.cast}
+              Cast: {movie.cast.split(',').map(s => s.trim()).join(', ')}
               <br />
               Content Rating: {movie.contentRating}
               <br />
               Average Rating: {movie.averageRating}
               <br />
-              Runtime: {movie.runTime} minutes
+              Runtime: {movie.runtime} minutes
             </p>
           </div>
         </div>

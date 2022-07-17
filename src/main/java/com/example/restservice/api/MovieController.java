@@ -39,10 +39,7 @@ public class MovieController {
     
     @PostMapping("/addMovie")
     public ResponseEntity<Object> addMovie(@RequestBody AddMovieRequest movie) {
-
-        // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
         JSONObject response = movieService.addMovie(movie);
-
         return ControllerResponses.generateHttpResponse(response);
     }
 

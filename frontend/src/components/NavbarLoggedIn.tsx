@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import movieLogo from '../logo2.png';
 import styles from './NavbarLoggedIn.module.css';
 import Search from './Search';
+import MyLink from './MyLink';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -65,7 +66,9 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/higherorlower">Higher or Lower</Link>
+        <MyLink to="/higherorlower">
+          Higher or Lower
+        </MyLink>
         <div>|</div>
         <div className={styles.dashboard}>
           <Button
@@ -75,8 +78,8 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            <ArrowDropDownIcon />
-            Hello {props.name}
+            <ArrowDropDownIcon style={{ color: '#522381' }} />
+            <span style={{ color: '#522381' }}>Hello {props.name}</span>
           </Button>
           <Menu
             id="basic-menu"

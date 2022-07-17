@@ -27,15 +27,15 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "name")
-    private  String name;
-    
+    private String name;
+
     @Column(name = "year")
-    private  int year;
+    private int year;
 
     @Column(name = "poster")
     private String poster;
-  
-    @Column(name = "description")
+
+    @Column(name = "description", columnDefinition= "text")
     private String description;
 
     @Column(name = "director")
@@ -43,6 +43,9 @@ public class Movie {
 
     @Column(name = "contentRating")
     private String contentRating;
+
+    @Column(name = "runtime")
+    private int runtime;
 
     @ManyToMany(mappedBy = "wishList")
     private Set<User> userWishlists = new HashSet<>();
@@ -53,7 +56,7 @@ public class Movie {
     @Transient
     private List<String> genres = new ArrayList<>();
 
-    @Column(name = "trailer") 
+    @Column(name = "trailer")
     private String trailer;
 
     @JsonIgnore
@@ -82,7 +85,6 @@ public class Movie {
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> movieGenres = new HashSet<>();
-  
 
     public Movie() {
         super();
@@ -97,7 +99,9 @@ public class Movie {
                 @JsonProperty("contentRating") String contentRating,
                 @JsonProperty("cast") String cast,
                 @JsonProperty("genres") List<String> genres,
-                @JsonProperty("trailer") String trailer) {
+                @JsonProperty("trailer") String trailer,
+                @JsonProperty("runtime") int runtime
+                ) {
         super();
         this.name = name;
         this.year = year;
@@ -108,7 +112,7 @@ public class Movie {
         this.cast = cast;
         this.genres = genres;
         this.trailer = trailer;
-
+        this.runtime = runtime;
     }
 
     public long getId() {
@@ -121,6 +125,10 @@ public class Movie {
 
     public int getYear() {
         return year;
+    }
+
+    public int getRtuntime() {
+        return runtime;
     }
 
     public String getPoster() {
@@ -161,7 +169,7 @@ public class Movie {
 
     public void addGenreToDB(Genre g) {
         this.movieGenres.add(g);
-    } 
+    }
 
     public String getTrailer() {
         return this.trailer;
@@ -170,15 +178,17 @@ public class Movie {
     public Set<Genre> getGenreList() {
         return this.movieGenres;
     }
+
+    public List<String> getGenreListStr() {
+        return Genre.genreCollectionToStrList(this.movieGenres);
+    }
+
     /**
-     * Clears the sets of actors, directors, reviews, 
+     * Clears the sets of actors, directors, reviews,
      */
     public void deleteMovieDependencies() {
         this.actorsInMovie.clear();
         this.directorsInMovie.clear();
         this.movieGenres.clear();
     }
-   
-
-
 }
