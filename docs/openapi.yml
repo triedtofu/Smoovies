@@ -462,7 +462,7 @@ paths:
               properties:
                 token:
                   $ref: '#/components/schemas/Token'
-                UserId:
+                userId:
                   $ref: '#/components/schemas/UserId'
       responses:
         '200':
