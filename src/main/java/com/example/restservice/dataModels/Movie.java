@@ -170,6 +170,11 @@ public class Movie {
     public Set<Genre> getGenreList() {
         return this.movieGenres;
     }
+
+    public List<String> getGenreListStr() {
+        return Genre.genreCollectionToStrList(this.movieGenres);
+    }
+
     /**
      * Clears the sets of actors, directors, reviews, 
      */
@@ -178,7 +183,4 @@ public class Movie {
         this.directorsInMovie.clear();
         this.movieGenres.clear();
     }
-   
-
-
 }
