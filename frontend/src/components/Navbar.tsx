@@ -1,15 +1,20 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import movieLogo from '../logo2.png';
 import styles from './Navbar.module.css';
 import Search from './Search';
+import MyLink from './MyLink';
 
 import Box from '@mui/material/Box';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import { styled } from '@mui/material/styles';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch, { SwitchProps } from '@mui/material/Switch';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [checked, setChecked] = React.useState(false);
 
   const submitSearch = (movieSearch: string) => {
     navigate(`/search?name=${movieSearch}`);
@@ -33,14 +38,18 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <Link to="/higherorlower" className={styles.linkWithLogo}>
+        <MyLink to="/higherorlower" className={styles.linkWithLogo}>
           <SwapVertIcon className={styles.higherorlower}></SwapVertIcon>
           Higher Or Lower
-        </Link>
+        </MyLink>
         <div>|</div>
-        <Link to="/login">Login</Link>
+        <MyLink to="/login">
+          Login
+        </MyLink>
         <div>|</div>
-        <Link to="/register">Register</Link>
+        <MyLink to="/register">
+          Register
+        </MyLink>
       </div>
     </nav>
   );

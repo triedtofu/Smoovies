@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
@@ -130,10 +131,14 @@ public class UserService {
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.userIdInvalidError();
         }
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
-        User user = userDAO.findById(id).get();
+        User user = userDAO.findById(id).orElse(null);
+
+        if (user == null) return ServiceErrors.userIdInvalidError();
+
         Set<Movie> wishlist = user.getWishlistMovies();
         List<Movie> wish = new ArrayList<>(wishlist);
         //TODO: Sort alphabetically
@@ -146,17 +151,15 @@ public class UserService {
                 dbMovieDetails.put("year", dbMovie.getYear());
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
-                //TODO: add genres
+                dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
+
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
         }
-        // TODO: Return a different error
-        else {
-            return ServiceErrors.UserWishlistNotFoundError();
-        }
 
         returnMessage.put("movies", moviesArray);
+        returnMessage.put("username", user.getName());
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }

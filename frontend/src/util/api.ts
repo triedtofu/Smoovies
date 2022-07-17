@@ -1,10 +1,11 @@
-// const baseUrl = '';
+const baseUrl = '';
+// const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
 
-const apiFetch = <Type>(path: string, init: object) =>  {
+const apiFetch = <Type>(path: string, init?: RequestInit) =>  {
   return fetch(baseUrl + '/api' + path, init)
     .then((res) => res.json())
     .then((data) => {
@@ -38,18 +39,17 @@ export const apiAuthLogin = (email: string, password: string) => {
 // Movies
 
 export const apiMovieHomepage = () => {
-  return apiFetch<MovieSummaries>('/movie/homepage', {});
+  return apiFetch<MovieSummaries>('/movie/homepage');
 };
 
 export const apiMovieSearch = (name: string) => {
-  return apiFetch<MovieSummaries>(`/movie/search?name=${name}`, {});
+  return apiFetch<MovieSummaries>(`/movie/search?name=${name}`);
 };
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`, {}).then((data) => {
-    data.trailer = 'SQK-QxxtE8Y';
-    data.cast = 'Chris Hemsworth, Natalie Portman, Tom Hiddleston';
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
+    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
     data.averageRating = 3.14;
     data.runTime = 114;
     data.reviews = [
@@ -66,8 +66,8 @@ export const apiGetMovie = (id: number) => {
 };
 
 export const apiGetGenres = () => {
-  return apiFetch<{genres: string[]}>('/movie/genres', {});
-}
+  return apiFetch<{genres: string[]}>('/movie/genres');
+};
 
 export const apiAddMovie = (token: string, movie: MovieDetails) => {
   return apiFetch<Record<string, never>>('/movie/addMovie', {
@@ -77,14 +77,19 @@ export const apiAddMovie = (token: string, movie: MovieDetails) => {
   });
 }
 
+export const apiDeleteMovie = (token: string, movieId: number) => {
+  return apiFetch<Record<string, never>>('/movie/deleteMovie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId }),
+  });
+};
+
 // Users
 
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
-  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`, {})
-    .catch(_ => {
-      return { movies: [] };
-    });
+  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`);
 };
 
 export const apiPutUserWishlist = (

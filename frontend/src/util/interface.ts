@@ -48,9 +48,10 @@ export interface MovieSummary {
 }
 
 export interface WishlistResponse {
-  movies: MovieSummary[]
+  movies: MovieSummary[];
+  username: string;
 }
 
 export interface MovieSummaries {
-  movies: MovieSummary[]
+  movies: MovieSummary[];
 }

@@ -1,10 +1,10 @@
 import React, { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
 
 import MyFormControl from './MyFormControl';
+import MyLink from './MyLink';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
 
@@ -32,7 +32,7 @@ const LoginForm = (props: LoginProps) => {
             label="Email"
             type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </MyFormControl>
         <MyFormControl>
@@ -41,7 +41,15 @@ const LoginForm = (props: LoginProps) => {
             label="Enter your password"
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            // onPaste={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
+            // onCopy={(e) => {
+            //   e.preventDefault();
+            //   return false;
+            // }}
           />
         </MyFormControl>
         <MyFormControl>
@@ -53,9 +61,13 @@ const LoginForm = (props: LoginProps) => {
 
       <div className={styles.box}>
         Don&apos;t have an account?{' '}
-        <Link className={styles.box_link} to="/register">
+        <MyLink className={styles.boxLink} to="/register">
           Register
-        </Link>
+        </MyLink>
+        &nbsp; | Forgot Password?
+        <MyLink className={styles.boxLink} to="/resetpassword">
+          Reset Password
+        </MyLink>
       </div>
     </>
   );

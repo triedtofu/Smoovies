@@ -36,7 +36,7 @@ const AddMovie = () => {
   }, []);
 
   if (!cookies.token || !cookies.admin) return (
-    <h2>Access denied</h2>
+    <h2>Access denied. Only admins can access this page.</h2>
   );
 
   return (

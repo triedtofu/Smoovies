@@ -30,7 +30,7 @@ import com.example.restservice.database.UserDataAccessService;
 //import com.example.restservice.service.ServiceErrors;
 @Service
 public class MovieService {
-    
+
     @Autowired
 	private MovieDataAccessService movieDAO;
 
@@ -65,7 +65,7 @@ public class MovieService {
         Long user_id = ServiceJWTHelper.getTokenId(userToken);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
-        } 
+        }
         // get the users isAdmin permission, if not admin, return error
         User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
@@ -142,7 +142,7 @@ public class MovieService {
      * Grabs all movies from the database
      * @return List of all movies
      */
-    public List<Movie> getAllMovies() {  
+    public List<Movie> getAllMovies() {
         return movieDAO.findAll();
     }
 
@@ -160,7 +160,7 @@ public class MovieService {
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-        
+
         Movie dbMovie = movieDAO.findMovieByID(id);
 
         if (dbMovie != null) {
@@ -171,16 +171,12 @@ public class MovieService {
             returnMessage.put("description", dbMovie.getDescription());
             returnMessage.put("director", dbMovie.getDirectors());
             returnMessage.put("contentRating", dbMovie.getContentRating());
-            returnMessage.put("cast", dbMovie.getCast()); 
-            JSONArray genreList = new JSONArray();
-            Set<Genre> movieGenres = dbMovie.getGenreList();
-            for (Genre g : movieGenres) {
-                genreList.put(g.getName());
-            }
-            returnMessage.put("genres", genreList);
+            returnMessage.put("cast", dbMovie.getCast());
+            returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
+
             //TODO: add reviews
         }
-        // otherwise if movie not found, return error 
+        // otherwise if movie not found, return error
         else {
             return ServiceErrors.movieNotFoundError();
         }
@@ -205,13 +201,7 @@ public class MovieService {
                 dbMovieDetails.put("year", movie.getYear());
                 dbMovieDetails.put("poster", movie.getPoster());
                 dbMovieDetails.put("description", movie.getDescription());
-
-                JSONArray genreList = new JSONArray();
-                Set<Genre> movieGenres = movie.getGenreList();
-                for (Genre g : movieGenres) {
-                    genreList.put(g.getName());
-                }
-                dbMovieDetails.put("genres", genreList);
+                dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
 
                 //Make it into a JSONObject
                 JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
@@ -254,18 +244,12 @@ public class MovieService {
                 dbMovieDetails.put("year", dbMovie.getYear());
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
-
-                JSONArray genreList = new JSONArray();
-                Set<Genre> movieGenres = dbMovie.getGenreList();
-                for (Genre g : movieGenres) {
-                    genreList.put(g.getName());
-                }
-                dbMovieDetails.put("genres", genreList);
+                dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
 
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
-        } 
+        }
         // otherwise if no movies found, return not found error
         else {
             return ServiceErrors.movieNotFoundError();
@@ -285,21 +269,22 @@ public class MovieService {
         List<Movie> movieList = movieDAO.trending();
         return movieList;
     }
-    public JSONObject deleteMovie (DeleteMovieRequest request) {
+
+    public JSONObject deleteMovie(DeleteMovieRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
-        } 
+        }
         // get the users isAdmin permission, if not admin, return error
         User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
         }
 
-        //Delete movie from database by id. 
+        //Delete movie from database by id.
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
@@ -312,8 +297,7 @@ public class MovieService {
         return responseJson;
     }
 
-    public JSONObject addReview (AddReviewRequest addReviewRequest) {
-
+    public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
         String token = addReviewRequest.getToken();
         Review review = addReviewRequest.getReview();
@@ -331,7 +315,7 @@ public class MovieService {
         Long user_id = ServiceJWTHelper.getTokenId(token);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
-        } 
+        }
         // Fill in the userId of Review object
         review.setUserId(user_id);
 
@@ -344,19 +328,8 @@ public class MovieService {
     }
 
     public JSONObject getAllGenres() {
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        JSONArray genresListJson = new JSONArray();
-        List<Genre> genresList = genreDAO.findAll();
-
-        for (int i = 0; i < genresList.size(); i++) {
-            genresListJson.put(genresList.get(i).getName());
-        }
-
-        returnMessage.put("genres", genresListJson);
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        returnMessage.put("genres",  new JSONArray(Genre.genreCollectionToStrList(genreDAO.findAll())));
+        return new JSONObject(returnMessage);
     }
 }
