@@ -32,7 +32,7 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
           </Typography>
         </MyLink>
         <div>
-          {movie.genres?.map(genre => (
+          {movie.genres.map(genre => (
             <Chip key={genre} label={genre} sx={{margin: '5px'}}/>
           ))}
         </div>

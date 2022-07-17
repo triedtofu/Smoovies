@@ -27,7 +27,7 @@ export interface MovieDetails {
   director: string;
   genres: string[];
   contentRating: string;
-  runTime: number;
+  runtime: number;
   cast: string;
 }
 
