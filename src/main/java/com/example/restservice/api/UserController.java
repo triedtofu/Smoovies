@@ -1,6 +1,7 @@
 package com.example.restservice.api;
 
 import com.example.restservice.dataModels.*;
+import com.example.restservice.service.ReviewService;
 import com.example.restservice.service.UserService;
 
 
@@ -31,10 +32,14 @@ public class UserController {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private final ReviewService reviewService;
     
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ReviewService reviewService) {
         this.userService = userService;
+        this.reviewService = reviewService;
     }
 
     @PostMapping("/login")
@@ -72,6 +77,14 @@ public class UserController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
+
+    @GetMapping("/reviews") 
+    public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id) {
+        JSONObject response = reviewService.getUserReviews(id);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+        
+
     @PostMapping("/requestResetPassword")
     public ResponseEntity<Object> requestResetPassword(@RequestBody RequestResetPasswordRequest requestResetPasswordRequest ) {
         JSONObject response = userService.requestResetPassword(requestResetPasswordRequest);
@@ -81,6 +94,7 @@ public class UserController {
     @PostMapping("/resetPassword")
     public ResponseEntity<Object> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest ) {
         JSONObject response = userService.resetPassword(resetPasswordRequest);
+
         return ControllerResponses.generateHttpResponse(response);
     }
 

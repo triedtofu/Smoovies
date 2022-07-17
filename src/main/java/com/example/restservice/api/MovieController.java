@@ -23,6 +23,7 @@ import com.example.restservice.dataModels.AddReviewRequest;
 import com.example.restservice.dataModels.Movie;
 //import com.example.restservice.dataModels.MovieIdRequest;
 import com.example.restservice.service.MovieService;
+import com.example.restservice.service.ReviewService;
 
 //import com.example.restservice.api.ControllerResponses;
 
@@ -31,10 +32,14 @@ import com.example.restservice.service.MovieService;
 public class MovieController {
     @Autowired
     private final MovieService movieService;
+
+    @Autowired
+    private final ReviewService reviewService;
     
     @Autowired
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, ReviewService reviewService) {
         this.movieService = movieService;
+        this.reviewService = reviewService;
     }
     
     @PostMapping("/addMovie")
@@ -74,7 +79,7 @@ public class MovieController {
 
     @PostMapping("/addReview")
     public ResponseEntity<Object> addReview(@RequestBody AddReviewRequest request) {
-        JSONObject response = movieService.addReview(request);
+        JSONObject response = reviewService.addReview(request);
         return ControllerResponses.generateHttpResponse(response);
     }
 

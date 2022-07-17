@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -85,6 +88,9 @@ public class Movie {
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> movieGenres = new HashSet<>();
+
+    @OneToMany(mappedBy = "movie")
+    private Set<Review> movieReviews = new HashSet<>();
 
     public Movie() {
         super();
@@ -183,12 +189,19 @@ public class Movie {
         return Genre.genreCollectionToStrList(this.movieGenres);
     }
 
-    /**
-     * Clears the sets of actors, directors, reviews,
-     */
-    public void deleteMovieDependencies() {
-        this.actorsInMovie.clear();
-        this.directorsInMovie.clear();
-        this.movieGenres.clear();
+
+    public void addReviewToMovie(Review review) {
+        this.movieReviews.add(review);
+    }
+
+    public Set<Review> getMovieReviews() {
+        return movieReviews;
+    }
+
+    @PreRemove
+    private void removeMoviesFromUserWishlists(){
+        for (User u : userWishlists) {
+            u.removeWishlist(this);
+        }
     }
 }

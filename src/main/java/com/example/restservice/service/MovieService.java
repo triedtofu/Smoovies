@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.apache.tomcat.jni.Address;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,10 +27,12 @@ import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
 //import com.example.restservice.service.ServiceErrors;
 @Service
+@Transactional
 public class MovieService {
 
     @Autowired
@@ -45,6 +49,9 @@ public class MovieService {
 
     @Autowired
     private UserDataAccessService userDAO;
+
+    @Autowired
+    private ReviewDataAccessService reviewDAO;
 
     /**
      * Adds a movie to the database
@@ -289,6 +296,8 @@ public class MovieService {
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
+            
+            reviewDAO.deleteByMovie(dbMovie);
             movieDAO.deleteById(dbMovie.getId());
         } else {
             return ServiceErrors.movieNotFoundError();
@@ -297,6 +306,7 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
 
     public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
@@ -327,6 +337,7 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
 
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
