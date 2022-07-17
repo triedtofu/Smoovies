@@ -53,15 +53,15 @@ public class UserService {
         // }
 
         // find the user in database by their email
-        User user = userDAO.findUserByEmail(email);
+        User user = userDAO.findUserByEmailPassword(email, password);
         // Check that the email exists in the database
         if (user == null) {
-            return ServiceErrors.userEmailNotFoundError();
+            return ServiceErrors.generateErrorMessage("The email and password you entered don't match");
         }
         //Password verification step
-        if (!password.equals(user.getPassword())) {
-            return ServiceErrors.userPasswordIncorrectError();
-        }
+        // if (!password.equals(user.getPassword())) {
+        //     return ServiceErrors.userPasswordIncorrectError();
+        // }
 
         returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
         returnMessage.put("userId", user.getId());
@@ -95,15 +95,16 @@ public class UserService {
         }
 
         user.setIsAdmin(isAdmin);
-
+        
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-        try{
+        try {
             // if user is successfully added, put user in dbUser
             // set return response values
-            User dbUser = userDAO.save(user);
+            user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
+
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
-            returnMessage.put("userId", dbUser.getId());
-            returnMessage.put("name", dbUser.getName());
+            returnMessage.put("userId", user.getId());
+            returnMessage.put("name", user.getName());
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }
