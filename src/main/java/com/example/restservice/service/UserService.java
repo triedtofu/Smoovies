@@ -4,6 +4,7 @@ import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.ResetPasswordRequest;
+import com.example.restservice.dataModels.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
@@ -30,6 +33,9 @@ public class UserService {
 
     @Autowired
     private MovieDataAccessService movieDAO;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
 
     /**
@@ -63,7 +69,7 @@ public class UserService {
         //     return ServiceErrors.userPasswordIncorrectError();
         // }
 
-        returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
+        returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
         returnMessage.put("userId", user.getId());
         returnMessage.put("isAdmin", user.getIsAdmin());
         returnMessage.put("name", user.getName());
@@ -180,7 +186,7 @@ public class UserService {
         }
 
         // verify the token and extract the users email
-        Long user_id = ServiceJWTHelper.getTokenId(token.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(token.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -199,4 +205,71 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
+    public JSONObject requestResetPassword(RequestResetPasswordRequest requestResetPasswordRequest) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        User user = userDAO.findUserByEmail(requestResetPasswordRequest.getEmail());
+        if (user == null) {
+            return ServiceErrors.userEmailNotFoundError();
+        } else {
+            //send email
+            // use the users current password as the signKey, this will allow the password to be reset once
+            String link = "https://comp3900-lawnchair-front.herokuapp.com/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
+            String subject = "Smoovies - Reset Password Request";
+            String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
+            emailSenderService.sendEmail(user.getEmail(), subject, body);
+        }
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // seperate request elements, resetCode is a token
+        String token = resetPasswordRequest.getResetCode();
+        String newPassword = resetPasswordRequest.getPassword();
+
+        String tokenPassword = ServiceJWTHelper.getTokenSubject(token, ServiceJWTHelper.getResetSignKey());
+        Long tokenUserId = ServiceJWTHelper.getTokenId(token, ServiceJWTHelper.getResetSignKey());
+        // check that the user id and password in token exists, this will check that the token is valid as well
+        if (tokenUserId == null || tokenPassword == null) {
+            return ServiceErrors.resetCodeInvalidError();
+        } 
+
+        // check that the new password is valid
+        String error = ServiceInputChecks.checkPassword(newPassword);
+        if (!error.equals("")) {
+            return ServiceErrors.generateErrorMessage(error);
+        }
+        
+        // get the user corresponding to resetCode token
+        Optional<User> optionalEntity = userDAO.findById(tokenUserId);
+        User user = optionalEntity.get();
+        // if not found, return error
+        if(user == null) {
+            return ServiceErrors.resetCodeInvalidError();
+        } else {
+            // if first time changing password, change password
+            if (tokenPassword.equals(user.getPassword())) {
+                // if its the same password, return error
+                if (user.getPassword().equals(newPassword)) {
+                    return ServiceErrors.resetPasswordIsTheSame();
+                } else {
+                    user.setPassword(resetPasswordRequest.getPassword());
+                    userDAO.save(user);
+                }
+            }
+            // otherwise return invalid link error
+            else {
+                return ServiceErrors.resetLinkInvalid();
+            }
+        }
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
 }

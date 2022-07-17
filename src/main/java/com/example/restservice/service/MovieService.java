@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.apache.tomcat.jni.Address;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,10 +27,12 @@ import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
 //import com.example.restservice.service.ServiceErrors;
 @Service
+@Transactional
 public class MovieService {
 
     @Autowired
@@ -46,6 +50,9 @@ public class MovieService {
     @Autowired
     private UserDataAccessService userDAO;
 
+    @Autowired
+    private ReviewDataAccessService reviewDAO;
+
     /**
      * Adds a movie to the database
      * @param movie
@@ -62,7 +69,7 @@ public class MovieService {
             return ServiceErrors.invalidInputError();
         }
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(userToken);
+        Long user_id = ServiceJWTHelper.getTokenId(userToken, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -275,7 +282,7 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(request.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -289,6 +296,8 @@ public class MovieService {
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
+            
+            reviewDAO.deleteByMovie(dbMovie);
             movieDAO.deleteById(dbMovie.getId());
         } else {
             return ServiceErrors.movieNotFoundError();
@@ -298,35 +307,7 @@ public class MovieService {
         return responseJson;
     }
 
-    public JSONObject addReview(AddReviewRequest addReviewRequest) {
-        // split the request into its parts
-        String token = addReviewRequest.getToken();
-        Review review = addReviewRequest.getReview();
 
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        // check valid inputs
-        // check movieId exists/is valid
-        Movie movie = movieDAO.findMovieByID(review.getMovieId());
-        if (movie == null) {
-            return ServiceErrors.movieNotFoundError();
-        }
-
-        // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(token);
-        if (user_id == null) {
-            return ServiceErrors.userTokenInvalidError();
-        }
-        // Fill in the userId of Review object
-        review.setUserId(user_id);
-
-        // TODO: send the request to DB
-
-
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
-    }
 
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -334,3 +315,4 @@ public class MovieService {
         return new JSONObject(returnMessage);
     }
 }
+

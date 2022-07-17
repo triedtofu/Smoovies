@@ -78,6 +78,15 @@ public class ServiceErrors {
         return generateErrorMessage("User Id is invalid.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "Invalid reset code."}
+     */
+    public static JSONObject resetCodeInvalidError() {
+        return generateErrorMessage("Invalid reset code.");
+    }
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 403 FORBIDDEN errors                                  //
@@ -107,7 +116,23 @@ public class ServiceErrors {
     public static JSONObject userAdminPermissionError() {
         return generateErrorMessage("User is not an admin.");
     }
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "This reset link is no longer valid, please make a new request."}
+     */
+    public static JSONObject resetLinkInvalid() {
+        return generateErrorMessage("This reset link is no longer valid, please make a new request.");
+    }
     
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "New password can not be same as old password."}
+     */
+    public static JSONObject resetPasswordIsTheSame() {
+        return generateErrorMessage("New password can not be same as old password.");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //
@@ -122,6 +147,7 @@ public class ServiceErrors {
         return generateErrorMessage("Email not found.");
     }
 
+    
     /**
      * Returns JSONObject with error message
      * @return {"error": "Movie not found in database."}

@@ -3,6 +3,7 @@ package com.example.restservice.dataModels;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -46,6 +48,9 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "movie_id")
     )
     Set<Movie> wishList = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Review> userReviews = new HashSet<>();
 
     public User() {
         super();
@@ -106,5 +111,23 @@ public class User {
 
     public void removeWishlist(Movie movie) {
         wishList.remove(movie);
+    }
+
+
+    public Set<Review> getUserReviews() {
+        return userReviews;
+    }
+
+    public void addReviewUser(Review r) {
+        this.userReviews.add(r);
+    }
+
+    public void removeUserReview(Review r) {
+        this.userReviews.remove(r);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+
     }
 }
