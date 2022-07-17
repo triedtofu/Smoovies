@@ -172,6 +172,7 @@ public class MovieService {
             returnMessage.put("director", dbMovie.getDirectors());
             returnMessage.put("contentRating", dbMovie.getContentRating());
             returnMessage.put("cast", dbMovie.getCast());
+            returnMessage.put("runtime", dbMovie.getRtuntime());
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
 
             //TODO: add reviews

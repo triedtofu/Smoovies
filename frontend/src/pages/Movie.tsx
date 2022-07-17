@@ -193,7 +193,7 @@ const Movie = () => {
             <p>
               Genre: {movie.genres.join(', ')}
               <br />
-              Director: {movie?.director}
+              Director: {movie.director}
               <br />
               Cast: {movie.cast.split(',').map(s => s.trim()).join(', ')}
               <br />
@@ -201,7 +201,7 @@ const Movie = () => {
               <br />
               Average Rating: {movie.averageRating}
               <br />
-              Runtime: {movie.runTime} minutes
+              Runtime: {movie.runtime} minutes
             </p>
           </div>
         </div>

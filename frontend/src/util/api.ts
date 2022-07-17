@@ -51,7 +51,6 @@ export const apiGetMovie = (id: number) => {
   return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
     data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
     data.averageRating = 3.14;
-    data.runTime = 114;
     data.reviews = [
       {
         user: 1729,

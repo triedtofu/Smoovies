@@ -24,7 +24,7 @@ export type SubmitMovie = (
   genres: string[],
   contentRating: string,
   cast: string,
-  runTime: number
+  runtime: number
 ) => void;
 
 interface NewMovieProps {

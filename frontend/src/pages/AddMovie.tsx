@@ -24,10 +24,10 @@ const AddMovie = () => {
     genres,
     contentRating,
     cast,
-    runTime
+    runtime
   ) => {
     // TODO
-    const movie = {name, year, poster, trailer, description, genres, contentRating, cast, director, runTime};
+    const movie = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
     apiAddMovie(cookies.token, movie).then(res => console.log(res));
   };
 
