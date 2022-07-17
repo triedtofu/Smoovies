@@ -1,6 +1,7 @@
 package com.example.restservice.api;
 
 import com.example.restservice.dataModels.*;
+import com.example.restservice.service.ReviewService;
 import com.example.restservice.service.UserService;
 
 
@@ -31,10 +32,14 @@ public class UserController {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private final ReviewService reviewService;
     
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ReviewService reviewService) {
         this.userService = userService;
+        this.reviewService = reviewService;
     }
 
     @PostMapping("/login")
@@ -69,6 +74,12 @@ public class UserController {
     public ResponseEntity<Object> updateUserWishlist(@RequestBody UpdateWishlistRequest updateWishlistRequest) {
         AuthenticationToken authenticationToken = new AuthenticationToken(updateWishlistRequest.getToken());
         JSONObject response = userService.updateUserWishlist(authenticationToken, updateWishlistRequest.getMovieId(), updateWishlistRequest.getAddRemove());
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @GetMapping("/reviews") 
+    public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id) {
+        JSONObject response = reviewService.getUserReviews(id);
         return ControllerResponses.generateHttpResponse(response);
     }
 

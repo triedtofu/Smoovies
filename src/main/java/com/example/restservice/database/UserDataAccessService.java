@@ -19,6 +19,9 @@ public interface UserDataAccessService extends JpaRepository<User, Long>{
     @Query(value = "SELECT * FROM users u WHERE u.email = :email", nativeQuery = true)
     public User findUserByEmail(@Param("email") String email);
 
+    @Query(value = "SELECT * FROM users u WHERE u.id = :id", nativeQuery = true)
+    public User findUserById(@Param("id") Long id);
+
     public default Boolean uniqueEmail(String email) {
         User user = findUserByEmail(email);
         if (user == null) {
