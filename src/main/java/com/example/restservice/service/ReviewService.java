@@ -38,7 +38,7 @@ public class ReviewService {
             return ServiceErrors.movieNotFoundError();
         }
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(token);
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
