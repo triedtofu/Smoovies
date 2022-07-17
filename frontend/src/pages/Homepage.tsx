@@ -7,27 +7,16 @@ import MovieCard from '../components/MovieCard';
 // import { useNavigate } from 'react-router-dom';
 
 import { apiMovieHomepage } from '../util/api';
+import { MovieSummary } from '../util/interface';
 
 import Container from '@mui/material/Container';
-import Movie from './Movie';
-
-interface MovieInfo {
-  id: number;
-  name: string;
-  year: number;
-  poster: string;
-  genres: Array<string>;
-  averageRating: number;
-}
 
 const Homepage = () => {
-  const [movies, setMovies] = React.useState<Array<MovieInfo>>([]);
+  const [movies, setMovies] = React.useState<MovieSummary[]>([]);
 
   React.useEffect(() => {
     try {
-      apiMovieHomepage().then((data) => {
-      setMovies(data.movies)
-    });
+      apiMovieHomepage().then((data) => setMovies(data.movies));
     } catch (err) {
       console.log(err);
     }
@@ -35,18 +24,13 @@ const Homepage = () => {
 
   return (
     <Container maxWidth="lg">
-      <h1>Home Page</h1>
+      <h1>Trending</h1>
       
       {movies.length > 0 && <div className={styles.container}>
         {movies.map(movie => (
           <MovieCard
             key={movie.id}
-            poster={movie.poster}
-            name={movie.name}
-            year={movie.year}
-            id={movie.id}
-            // genres={movie.genres}
-            rating={0}
+            movie={movie}
           />
         ))
         }

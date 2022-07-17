@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
+//import org.springframework.util.MultiValueMap;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
-import com.example.restservice.api.ControllerResponses;
+//import com.example.restservice.api.ControllerResponses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
 //Expose endpoints so clients can consume 
 @RestController
@@ -40,7 +40,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Object> Login(@RequestBody User user) {
         JSONObject response = userService.UserLogin(user.getEmail(), user.getPassword());
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @PostMapping("/register")
@@ -49,7 +49,7 @@ public class UserController {
         // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
         JSONObject response = userService.register(user, false);
 
-        return ControllerResponses.responseInputOnly(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     
@@ -62,14 +62,14 @@ public class UserController {
     @GetMapping("/wishlist")
     public ResponseEntity<Object> getUserWishlist(@RequestParam(name = "userId") long id) {
         JSONObject response = userService.getUserWishlist(id);
-        return ControllerResponses.responseInputAndSearchDatabase(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
     @PutMapping("/wishlist")
     public ResponseEntity<Object> updateUserWishlist(@RequestBody UpdateWishlistRequest updateWishlistRequest) {
         AuthenticationToken authenticationToken = new AuthenticationToken(updateWishlistRequest.getToken());
         JSONObject response = userService.updateUserWishlist(authenticationToken, updateWishlistRequest.getMovieId(), updateWishlistRequest.getAddRemove());
-        return ControllerResponses.responseInputAndSearchToken(response);
+        return ControllerResponses.generateHttpResponse(response);
     }
 
 }

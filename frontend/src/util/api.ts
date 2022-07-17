@@ -1,16 +1,16 @@
-const baseUrl = '';
+// const baseUrl = '';
+// const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
-// import movielist from './movielist.json';
-// import specificMovie from './specificmovie.json';
+import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
 
-const apiFetch = (path: string, init: object) => {
+const apiFetch = <Type>(path: string, init: object) =>  {
   return fetch(baseUrl + '/api' + path, init)
     .then((res) => res.json())
     .then((data) => {
       if (data && data.error) throw Error(data.error);
-      return data;
+      return data as Type;
     });
 };
 
@@ -21,7 +21,7 @@ export const apiAuthRegister = (
   email: string,
   password: string
 ) => {
-  return apiFetch('/user/register', {
+  return apiFetch<RegisterReponse>('/user/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password }),
@@ -29,7 +29,7 @@ export const apiAuthRegister = (
 };
 
 export const apiAuthLogin = (email: string, password: string) => {
-  return apiFetch('/user/login', {
+  return apiFetch<LoginResponse>('/user/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -39,23 +39,23 @@ export const apiAuthLogin = (email: string, password: string) => {
 // Movies
 
 export const apiMovieHomepage = () => {
-  return apiFetch('/movie/homepage', {});
+  return apiFetch<MovieSummaries>('/movie/homepage', {});
 };
 
 export const apiMovieSearch = (name: string) => {
-  return apiFetch(`/movie/search?name=${name}`, {});
+  return apiFetch<MovieSummaries>(`/movie/search?name=${name}`, {});
 };
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch(`/movie/getMovie?id=${id}`, {}).then((data) => {
-    data.trailer = 'SQK-QxxtE8Y';
-    data.cast = 'Chris Hemsworth, Natalie Portman, Tom Hiddleston';
-    data.avgRating = 3.14;
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`, {}).then((data) => {
+    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
+    data.averageRating = 3.14;
     data.runTime = 114;
     data.reviews = [
       {
         user: 1729,
+        name: 'Dave',
         review: "It's Morbin Time",
         rating: 5,
       },
@@ -65,12 +65,34 @@ export const apiGetMovie = (id: number) => {
   });
 };
 
+export const apiGetGenres = () => {
+  return apiFetch<{genres: string[]}>('/movie/genres', {});
+};
+
+export const apiAddMovie = (token: string, movie: MovieDetails) => {
+  return apiFetch<Record<string, never>>('/movie/addMovie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, ...movie }),
+  });
+}
+
+export const apiDeleteMovie = (token: string, movieId: number) => {
+  return apiFetch<Record<string, never>>('/movie/deleteMovie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId }),
+  });
+};
+
 // Users
 
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
-  return apiFetch(`/user/wishlist?userId=${id}`, {})
-    .catch(err => {return { 'movies': [] }});
+  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`, {})
+    .catch(_ => {
+      return { movies: [] };
+    });
 };
 
 export const apiPutUserWishlist = (
@@ -78,7 +100,7 @@ export const apiPutUserWishlist = (
   movieId: number,
   turnon: boolean
 ) => {
-  return apiFetch('/user/wishlist', {
+  return apiFetch<Record<string, never>>('/user/wishlist', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, turnon }),

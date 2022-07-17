@@ -1,7 +1,7 @@
 package com.example.restservice.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -17,13 +17,13 @@ import com.example.restservice.dataModels.User;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
-import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.Claims;
 
 
 @Service
 public class UserService {
-    
-    
+
+
     @Autowired
 	private UserDataAccessService userDAO;
 
@@ -39,29 +39,34 @@ public class UserService {
      */
     public JSONObject UserLogin(String email, String password) {
 
-        // TODO: check user values for errors
-        if (!ServiceInputChecks.checkEmail(email) || !ServiceInputChecks.checkPassword(password)) {
-            return ServiceErrors.invalidInputError();
-        }
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // checks inputs for errors (in terms of formatting)
+        if (!ServiceInputChecks.checkEmail(email)) {
+            return ServiceErrors.userEmailInvalidError();
+        }
+        // TODO: Should this check even be here? we dont need to check if the password is correct format when trying to login?
+        // String error = ServiceInputChecks.checkPassword(password);
+        // if (!error.equals("")) {
+        //     return ServiceErrors.generateErrorMessage(error);
+        // }
+
+        // find the user in database by their email
         User user = userDAO.findUserByEmail(email);
+        // Check that the email exists in the database
+        if (user == null) {
+            return ServiceErrors.userEmailNotFoundError();
+        }
         //Password verification step
         if (!password.equals(user.getPassword())) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userPasswordIncorrectError();
         }
 
-        if (user != null) {
-            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
-            returnMessage.put("userId", user.getId());
-            returnMessage.put("isAdmin", user.getIsAdmin());
-            returnMessage.put("name", user.getName());
-            //returnMessage.put("token", user.getToken());
-        }
-        // otherwise return error (SHOULD THIS BE A DIFFERENT ERROR?)
-        else {
-            return ServiceErrors.invalidInputError();
-        }
+        returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
+        returnMessage.put("userId", user.getId());
+        returnMessage.put("isAdmin", user.getIsAdmin());
+        returnMessage.put("name", user.getName());
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -73,27 +78,28 @@ public class UserService {
      * @return token, userID
      */
     public JSONObject register(User user, Boolean isAdmin) {
-
-        // TODO: check user values for errors
-
         if (!ServiceInputChecks.checkName(user.getName())) {
-            return ServiceErrors.invalidNameError();
+            return ServiceErrors.userNameInvalidError();
         } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
-            return ServiceErrors.invalidEmailError();
-        } else if (!ServiceInputChecks.checkPassword(user.getPassword())) {
-            return ServiceErrors.invalidPasswordError();
-        } else if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
-            return ServiceErrors.invalidUniqueEmailError();
+            return ServiceErrors.userEmailInvalidError();
         }
-        
+
+        String error = ServiceInputChecks.checkPassword(user.getPassword());
+        if (!error.equals("")) {
+            return ServiceErrors.generateErrorMessage(error);
+        }
+
+        if (!ServiceInputChecks.checkUniqueEmail(user.getEmail(), userDAO)) {
+            return ServiceErrors.userEmailInUseError();
+        }
+
         user.setIsAdmin(isAdmin);
-        
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try{
             // if user is successfully added, put user in dbUser
             // set return response values
             User dbUser = userDAO.save(user);
-            // TODO: Add token implementation
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
             returnMessage.put("userId", dbUser.getId());
             returnMessage.put("name", dbUser.getName());
@@ -122,7 +128,7 @@ public class UserService {
 
         // TODO: check id for errors
         if (!ServiceInputChecks.checkId(id)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userIdInvalidError();
         }
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
@@ -144,12 +150,12 @@ public class UserService {
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
-        } 
+        }
         // TODO: Return a different error
         else {
-            return ServiceErrors.notFoundError();
+            return ServiceErrors.UserWishlistNotFoundError();
         }
-        
+
         returnMessage.put("movies", moviesArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
@@ -158,7 +164,7 @@ public class UserService {
     /**
      * Updates the wishlist of a user
      * @param token
-     * @param movieId 
+     * @param movieId
      * @param addRemove
      * @return {}
      */
@@ -166,13 +172,13 @@ public class UserService {
 
         // TODO: check inputs for errors
         if (!ServiceInputChecks.checkId(movieId)) {
-            return ServiceErrors.invalidInputError();
+            return ServiceErrors.userIdInvalidError();
         }
 
         // verify the token and extract the users email
         Long user_id = ServiceJWTHelper.getTokenId(token.getToken());
         if (user_id == null) {
-            return ServiceErrors.invalidTokenError();
+            return ServiceErrors.userTokenInvalidError();
         }
         Movie movie = movieDAO.findById(movieId).get();
         User user = userDAO.findById(user_id).get();

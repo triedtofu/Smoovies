@@ -8,6 +8,12 @@ import Wishlist from './pages/Wishlist';
 import Movie from './pages/Movie';
 import Search from './pages/Search';
 import HigherOrLower from './pages/HigherOrLower';
+import AddMovie from './pages/AddMovie';
+import TestingUI from './pages/TestingUI';
+import Profile from './pages/Profile';
+import Page404 from './pages/Page404';
+import ResetPassword from './pages/ResetPassword';
+import ResetPasswordSuccess from './pages/ResetPasswordSuccess';
 
 const Router = () => {
   return (
@@ -15,10 +21,16 @@ const Router = () => {
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/resetpassword" element={<ResetPassword />} />
+      <Route path="/resetpassword/success" element={<ResetPasswordSuccess />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
       <Route path="/movie/:id" element={<Movie />} />
       <Route path="/search" element={<Search />} />
       <Route path="/higherorlower" element={<HigherOrLower />} />
+      <Route path="/addmovie" element={<AddMovie />} />
+      <Route path="/movie/:id/testingui" element={<TestingUI />} />
+      <Route path="/user/:id" element={<Profile />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   );
 };

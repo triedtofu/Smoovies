@@ -9,12 +9,13 @@ import MovieResultCard from '../components/MovieResultCard';
 
 import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
 import { parseJwt } from '../util/helper';
+import { MovieSummary } from '../util/interface';
 
 const Wishlist = () => {
   const params = useParams();
   const [cookies] = useCookies();
 
-  const [movies, setMovies] = React.useState<any>([]);
+  const [movies, setMovies] = React.useState<MovieSummary[]>([]);
   const [fetched, setFetched] = React.useState(false);
 
   const removeMovie = (movieId: number) => {
@@ -22,7 +23,7 @@ const Wishlist = () => {
       apiPutUserWishlist(cookies.token, movieId, false)
         .then(_ => {
           // delete movie
-          setMovies(movies.filter((movie: any) => movie.id != movieId));
+          setMovies(movies.filter(movie => movie.id != movieId));
         })
         .catch(err => console.log(err));
     } catch (err) {
@@ -63,24 +64,15 @@ const Wishlist = () => {
     return true;
   }
 
-  console.log(fetched, movies.length);
-
   return (
     <Container maxWidth="lg">
       <h1>Your Wishlist</h1>
       {fetched && movies.length === 0 && <p>No movies in wishlist.</p>}
-      {movies.length > 0 && movies.map((movie: any) => (
+      {movies.length > 0 && movies.map(movie => (
         <MovieResultCard
           key={movie.id}
-          id={movie.id}
-          poster={movie.poster}
-          name={movie.name}
-          year={movie.year}
-          button={showButton()}
-          buttonClick={() => removeMovie(movie.id)}
-          // genres={movie.genres}
-          description={movie.description}
-          rating={movie.averageRating}
+          movie={movie}
+          buttonClick={showButton() ? () => removeMovie(movie.id) : null}
         />
       ))}
     </Container>
