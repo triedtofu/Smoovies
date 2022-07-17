@@ -77,9 +77,24 @@ public class UserController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
+
     @GetMapping("/reviews") 
     public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id) {
         JSONObject response = reviewService.getUserReviews(id);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+        
+
+    @PostMapping("/requestResetPassword")
+    public ResponseEntity<Object> requestResetPassword(@RequestBody RequestResetPasswordRequest requestResetPasswordRequest ) {
+        JSONObject response = userService.requestResetPassword(requestResetPasswordRequest);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<Object> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest ) {
+        JSONObject response = userService.resetPassword(resetPasswordRequest);
+
         return ControllerResponses.generateHttpResponse(response);
     }
 

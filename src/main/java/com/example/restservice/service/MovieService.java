@@ -69,7 +69,7 @@ public class MovieService {
             return ServiceErrors.invalidInputError();
         }
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(userToken);
+        Long user_id = ServiceJWTHelper.getTokenId(userToken, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -282,7 +282,7 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(request.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -307,7 +307,37 @@ public class MovieService {
         return responseJson;
     }
 
-    
+
+    public JSONObject addReview(AddReviewRequest addReviewRequest) {
+        // split the request into its parts
+        String token = addReviewRequest.getToken();
+        Review review = addReviewRequest.getReview();
+
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // check valid inputs
+        // check movieId exists/is valid
+        Movie movie = movieDAO.findMovieByID(review.getMovieId());
+        if (movie == null) {
+            return ServiceErrors.movieNotFoundError();
+        }
+
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id == null) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+        // Fill in the userId of Review object
+        review.setUserId(user_id);
+
+        // TODO: send the request to DB
+
+
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
 
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -315,3 +345,4 @@ public class MovieService {
         return new JSONObject(returnMessage);
     }
 }
+

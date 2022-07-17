@@ -113,6 +113,7 @@ public class User {
         wishList.remove(movie);
     }
 
+
     public Set<Review> getUserReviews() {
         return userReviews;
     }
@@ -123,5 +124,10 @@ public class User {
 
     public void removeUserReview(Review r) {
         this.userReviews.remove(r);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+
     }
 }
