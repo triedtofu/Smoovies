@@ -242,6 +242,52 @@ paths:
                     $ref: '#/components/schemas/MovieName'
         '400':
           $ref: '#/components/responses/InputError'
+  /api/movie/editMovie:
+    post:
+      tags:
+        - Movies
+      summary: Edit a movie
+      description: Route for admin to edit a movie in the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                id:
+                  $ref: '#/components/schemas/MovieId'
+                name:
+                  $ref: '#/components/schemas/MovieName'
+                year:
+                  $ref: '#/components/schemas/MovieYear'
+                poster:
+                  $ref: '#/components/schemas/MoviePoster'
+                trailer:
+                  $ref: '#/components/schemas/YoutubeVideoId'
+                description:
+                  $ref: '#/components/schemas/MovieDescription'
+                director:
+                  $ref: '#/components/schemas/Director'
+                genres:
+                  $ref: '#/components/schemas/Genres'
+                contentRating:
+                  $ref: '#/components/schemas/ContentRating'
+                runtime:
+                  $ref: '#/components/schemas/Runtime'
+                cast:
+                  $ref: '#/components/schemas/Cast'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
   /api/movie/deleteMovie:
     post:
       tags:
@@ -319,14 +365,14 @@ paths:
             application/json:
               schema:
                 allOf:
-                - type: object
-                  properties:
-                    username:
-                      $ref: '#/components/schemas/Name'
-                    movies:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/MovieSummary'
+                  - type: object
+                    properties:
+                      username:
+                        $ref: '#/components/schemas/Name'
+                      movies:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MovieSummary'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -471,12 +517,12 @@ paths:
             application/json:
               schema:
                 type: object
-        '404':
-          $ref: '#/components/responses/NotFoundError'
         '400':
           $ref: '#/components/responses/InputError'
         '403':
-          $ref: '#/components/responses/AccessError'          
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes:
     bearerAuth:
