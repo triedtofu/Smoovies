@@ -7,6 +7,7 @@ import MyFormControl from './MyFormControl';
 import MyLink from './MyLink';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
+import ToggleablePassword from './ToggleablePassword';
 
 interface LoginProps {
   submit: (email: string, password: string) => Promise<void>;
@@ -36,20 +37,11 @@ const LoginForm = (props: LoginProps) => {
           />
         </MyFormControl>
         <MyFormControl>
-          <RequiredTextField
+          <ToggleablePassword
             name="password"
             label="Enter your password"
-            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            // onPaste={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
-            // onCopy={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
           />
         </MyFormControl>
         <MyFormControl>
