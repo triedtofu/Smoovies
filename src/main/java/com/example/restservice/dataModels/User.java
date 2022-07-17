@@ -107,4 +107,8 @@ public class User {
     public void removeWishlist(Movie movie) {
         wishList.remove(movie);
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -62,7 +62,7 @@ public class MovieService {
             return ServiceErrors.invalidInputError();
         }
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(userToken);
+        Long user_id = ServiceJWTHelper.getTokenId(userToken, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -275,7 +275,7 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(request.getToken());
+        Long user_id = ServiceJWTHelper.getTokenId(request.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -313,7 +313,7 @@ public class MovieService {
         }
 
         // verify the token and extract the users id
-        Long user_id = ServiceJWTHelper.getTokenId(token);
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
@@ -334,3 +334,4 @@ public class MovieService {
         return new JSONObject(returnMessage);
     }
 }
+
