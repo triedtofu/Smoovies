@@ -72,4 +72,16 @@ public class UserController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
+    @PostMapping("/requestResetPassword")
+    public ResponseEntity<Object> requestResetPassword(@RequestBody RequestResetPasswordRequest requestResetPasswordRequest ) {
+        JSONObject response = userService.requestResetPassword(requestResetPasswordRequest);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<Object> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest ) {
+        JSONObject response = userService.resetPassword(resetPasswordRequest);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
 }
