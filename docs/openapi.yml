@@ -140,8 +140,8 @@ paths:
                     $ref: '#/components/schemas/ContentRating'
                   averageRating:
                     $ref: '#/components/schemas/AverageRating'
-                  runTime:
-                    $ref: '#/components/schemas/RunTime'
+                  runtime:
+                    $ref: '#/components/schemas/Runtime'
                   cast:
                     $ref: '#/components/schemas/Cast'
                   reviews:
@@ -224,8 +224,8 @@ paths:
                   $ref: '#/components/schemas/Genres'
                 contentRating:
                   $ref: '#/components/schemas/ContentRating'
-                runTime:
-                  $ref: '#/components/schemas/RunTime'
+                runtime:
+                  $ref: '#/components/schemas/Runtime'
                 cast:
                   $ref: '#/components/schemas/Cast'
       responses:
@@ -536,7 +536,7 @@ components:
       multipleOf: 0.01
       description: Average number rating
       example: 3.14
-    RunTime:
+    Runtime:
       type: number
       description: The runtime in minutes
       example: 100
