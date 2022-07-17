@@ -14,9 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.Movie;
-import com.example.restservice.dataModels.ResetPasswordRequest;
-import com.example.restservice.dataModels.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.requests.BanUserRequest;
+import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
+import com.example.restservice.dataModels.requests.ResetPasswordRequest;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
@@ -64,6 +65,10 @@ public class UserService {
         if (user == null) {
             return ServiceErrors.userEmailNotFoundError();
         }
+        // check the user is not banned
+        if (user.getIsBanned()) {
+            return ServiceErrors.userBannedError();
+        }
         //Password verification step
         if (!password.equals(user.getPassword())) {
             return ServiceErrors.userPasswordIncorrectError();
@@ -84,7 +89,7 @@ public class UserService {
      * @param isAdmin
      * @return token, userID
      */
-    public JSONObject register(User user, Boolean isAdmin) {
+    public JSONObject register(User user, Boolean isAdmin, Boolean isBanned) {
         if (!ServiceInputChecks.checkName(user.getName())) {
             return ServiceErrors.userNameInvalidError();
         } else if (!ServiceInputChecks.checkEmail(user.getEmail())) {
@@ -101,6 +106,7 @@ public class UserService {
         }
 
         user.setIsAdmin(isAdmin);
+        user.setIsBanned(isBanned);
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try{
@@ -271,4 +277,40 @@ public class UserService {
         return responseJson;
     }
 
+
+    public JSONObject banUser(BanUserRequest banUserRequest) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // separate request components
+        String token = banUserRequest.getToken();
+        long userId = banUserRequest.getUserId();
+
+        // verify the token and extract the admins id
+        Long admin_id = ServiceJWTHelper.getTokenId(token, null);
+        if (admin_id == null) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+        // get the users isAdmin permission, if not admin, return error
+        User admin = userDAO.findById(admin_id).get();
+        if (!admin.getIsAdmin()) {
+            return ServiceErrors.userAdminPermissionError();
+        }
+        // check if userId to be banned is valid format
+        if (!ServiceInputChecks.checkId(userId)) {
+            return ServiceErrors.userIdInvalidError();
+        }
+
+        // get the user corresponding to userId to be banned
+        Optional<User> optionalEntity = userDAO.findById(userId);
+        User user = optionalEntity.get();        
+        if (user.getIsBanned().equals(true)) {
+            return ServiceErrors.userAlreadyBannedError();
+        } else {
+            user.setIsBanned(true);
+            userDAO.save(user);
+        }
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
 }

@@ -133,6 +133,22 @@ public class ServiceErrors {
         return generateErrorMessage("New password can not be same as old password.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User is already banned."}
+     */
+    public static JSONObject userAlreadyBannedError() {
+        return generateErrorMessage("User is already banned.");
+    }
+
+     /**
+     * Returns JSONObject with error message
+     * @return {"error": "User is banned."}
+     */
+    public static JSONObject userBannedError() {
+        return generateErrorMessage("User is banned.");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //

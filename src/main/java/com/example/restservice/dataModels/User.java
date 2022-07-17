@@ -38,6 +38,9 @@ public class User {
     @Column(name = "token")
     private String token;
 
+    @Column(name = "isBanned")
+    private Boolean isBanned;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -56,13 +59,15 @@ public class User {
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String password,
                 @JsonProperty("token") String token,
-                Boolean isAdmin) {
+                Boolean isAdmin,
+                Boolean isBanned) {
         super();
         this.name = name;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
         this.token = token;
+        this.isBanned = isBanned;
     }
 
     public Long getId() {
@@ -93,6 +98,10 @@ public class User {
         return this.token;
     }
 
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -110,5 +119,9 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 }

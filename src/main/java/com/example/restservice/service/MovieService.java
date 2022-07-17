@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.restservice.dataModels.Actor;
-import com.example.restservice.dataModels.DeleteMovieRequest;
-import com.example.restservice.dataModels.AddMovieRequest;
-import com.example.restservice.dataModels.AddReviewRequest;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.requests.AddMovieRequest;
+import com.example.restservice.dataModels.requests.AddReviewRequest;
+import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
