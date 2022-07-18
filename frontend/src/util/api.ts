@@ -49,7 +49,6 @@ export const apiMovieSearch = (name: string) => {
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
   return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
-    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
     data.averageRating = 3.14;
     data.reviews = [
       {
@@ -59,7 +58,6 @@ export const apiGetMovie = (id: number) => {
         rating: 5,
       },
     ];
-    data.genres = ['Action', 'Fantasy'];
     return data;
   });
 };
@@ -108,5 +106,13 @@ export const apiRequestResetPassword = (email: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
+  });
+};
+
+export const apiResetPassword = (resetCode: string, password: string) => {
+  return apiFetch<Record<string, never>>('/user/resetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ resetCode, password }),
   });
 };
