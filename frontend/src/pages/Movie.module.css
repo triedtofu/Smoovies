@@ -1,5 +1,10 @@
-.title_div {
+.titleDiv {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.reviewsDiv {
+  display: flex;
+  gap: 10px;
 }
