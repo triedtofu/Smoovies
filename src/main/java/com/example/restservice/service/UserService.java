@@ -4,7 +4,7 @@ import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -18,7 +18,7 @@ import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.BanUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
-import com.example.restservice.dataModels.Genre;
+//import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
@@ -191,11 +191,9 @@ public class UserService {
      */
     public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
 
-        // TODO: check inputs for errors
         if (!ServiceInputChecks.checkId(movieId)) {
             return ServiceErrors.userIdInvalidError();
         }
-
         // verify the token and extract the users email
         Long user_id = ServiceJWTHelper.getTokenId(token.getToken(), null);
         if (user_id == null) {

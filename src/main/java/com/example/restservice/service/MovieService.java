@@ -3,13 +3,13 @@ package com.example.restservice.service;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Optional;
+// import java.util.ArrayList;
+// import java.util.Set;
+// import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.apache.tomcat.jni.Address;
+// import org.apache.tomcat.jni.Address;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
-import com.example.restservice.dataModels.requests.AddReviewRequest;
+// import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
 import com.example.restservice.dataModels.Review;
@@ -128,7 +128,6 @@ public class MovieService {
      */
     public JSONObject getMovieDetails(long id) {
 
-        // TODO: check id received for errors
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.movieIdInvalidError();
         }
@@ -207,7 +206,6 @@ public class MovieService {
      */
     public JSONObject searchMovieByName(String name) {
 
-        // TODO: check movie name errors
         if (!ServiceInputChecks.checkName(name)) {
             return ServiceErrors.movieNameInvalidError();
         }
