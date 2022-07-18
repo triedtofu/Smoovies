@@ -8,7 +8,7 @@ import MyFormControl from './MyFormControl';
 import RequiredTextField from './RequiredTextField';
 
 interface ResetPasswordProps {
-  submit: (email: string) => Promise<void>;
+  submit: (email: string) => void;
   error: string;
 }
 
@@ -23,7 +23,7 @@ const ResetPasswordForm = (props: ResetPasswordProps) => {
   return (
     <>
       <form onSubmit={resetFormSubmit}>
-        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
+        <FormLabel error={!!props.error}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="email"

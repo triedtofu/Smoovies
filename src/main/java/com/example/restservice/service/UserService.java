@@ -221,7 +221,7 @@ public class UserService {
         } else {
             //send email
             // use the users current password as the signKey, this will allow the password to be reset once
-            String link = "https://comp3900-lawnchair-front.herokuapp.com/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
+            String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
             String subject = "Smoovies - Reset Password Request";
             String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
             emailSenderService.sendEmail(user.getEmail(), subject, body);
@@ -260,13 +260,7 @@ public class UserService {
         } else {
             // if first time changing password, change password
             if (tokenPassword.equals(user.getPassword())) {
-                // if its the same password, return error
-                if (user.getPassword().equals(newPassword)) {
-                    return ServiceErrors.resetPasswordIsTheSame();
-                } else {
-                    user.setPassword(resetPasswordRequest.getPassword());
-                    userDAO.save(user);
-                }
+                userDAO.updateUserPassword(user.getEmail(), newPassword);
             }
             // otherwise return invalid link error
             else {
@@ -277,7 +271,6 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
 
     public JSONObject banUser(BanUserRequest banUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();

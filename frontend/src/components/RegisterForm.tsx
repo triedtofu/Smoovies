@@ -1,10 +1,10 @@
 import React, { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 
 import RequiredTextField from './RequiredTextField';
 import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
 import ToggleablePassword from './ToggleablePassword';
+import MyLink from './MyLink';
 
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
@@ -35,7 +35,7 @@ const RegisterForm = (props: RegisterProps) => {
   return (
     <>
       <form onSubmit={signupSubmit}>
-        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
+        <FormLabel error={!!props.error}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="name"
@@ -65,15 +65,7 @@ const RegisterForm = (props: RegisterProps) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword1(e.target.value)
             }
-            error={Boolean(passwordErr)}
-            // onPaste={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
-            // onCopy={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
+            error={!!passwordErr}
           />
         </MyFormControl>
         <MyFormControl>
@@ -84,18 +76,10 @@ const RegisterForm = (props: RegisterProps) => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword2(e.target.value)
             }
-            error={Boolean(passwordErr)}
-            // onPaste={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
-            // onCopy={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
+            error={!!passwordErr}
           />
         </MyFormControl>
-        <FormLabel error={Boolean(passwordErr)}>{passwordErr}</FormLabel>
+        <FormLabel error={!!passwordErr}>{passwordErr}</FormLabel>
         <MyFormControl>
           <Button variant="contained" type="submit">
             Register
@@ -105,9 +89,9 @@ const RegisterForm = (props: RegisterProps) => {
 
       <div className={styles.box}>
         Already have an account?{' '}
-        <Link className={styles.boxLink} to="/login">
+        <MyLink className={styles.boxLink} to="/login">
           Login
-        </Link>
+        </MyLink>
       </div>
     </>
   );

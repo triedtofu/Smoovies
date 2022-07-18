@@ -1,7 +1,7 @@
-const baseUrl = '';
+// const baseUrl = '';
 // const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
 
@@ -49,17 +49,15 @@ export const apiMovieSearch = (name: string) => {
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
   return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
-    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
     data.averageRating = 3.14;
-    data.reviews = [
+    data.reviews.push(
       {
         user: 1729,
         name: 'Dave',
         review: "It's Morbin Time",
         rating: 5,
       },
-    ];
-    data.genres = ['Action', 'Fantasy'];
+    );
     return data;
   });
 };
@@ -84,6 +82,14 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
   });
 };
 
+export const apiAddReview = (token: string, movieId: number, review: string, rating: number) => {
+  apiFetch<Record<string, never>>('/movie/addReview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, review, rating }),
+  });
+}
+
 // Users
 
 // TODO update once api is done
@@ -100,5 +106,21 @@ export const apiPutUserWishlist = (
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, turnon }),
+  });
+};
+
+export const apiRequestResetPassword = (email: string) => {
+  return apiFetch<Record<string, never>>('/user/requestResetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+};
+
+export const apiResetPassword = (resetCode: string, password: string) => {
+  return apiFetch<Record<string, never>>('/user/resetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ resetCode, password }),
   });
 };

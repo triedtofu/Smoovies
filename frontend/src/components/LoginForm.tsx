@@ -26,7 +26,7 @@ const LoginForm = (props: LoginProps) => {
   return (
     <>
       <form onSubmit={loginSubmit}>
-        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
+        <FormLabel error={!!props.error}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="email"
@@ -56,9 +56,9 @@ const LoginForm = (props: LoginProps) => {
         <MyLink className={styles.boxLink} to="/register">
           Register
         </MyLink>
-        &nbsp; | Forgot Password?
-        <MyLink className={styles.boxLink} to="/resetpassword">
-          Reset Password
+        |
+        <MyLink className={styles.boxLink} to="/forgotpassword">
+          Forgot Password?
         </MyLink>
       </div>
     </>
