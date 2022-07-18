@@ -1,4 +1,4 @@
-package com.example.restservice.dataModels;
+package com.example.restservice.dataModels.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

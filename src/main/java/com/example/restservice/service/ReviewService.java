@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.restservice.dataModels.AddReviewRequest;
+import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
