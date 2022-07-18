@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +23,7 @@ import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
+import com.example.restservice.dataModels.requests.EditMovieRequest;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
@@ -73,67 +75,33 @@ public class MovieService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        // get the users isAdmin permission, if not admin, return error
-        User user = userDAO.findById(user_id).get();
-        if (!user.getIsAdmin()) {
-            return ServiceErrors.userAdminPermissionError();
+        // check user is found in database
+        Optional<User> optionalEntity = userDAO.findById(user_id);
+            if (!optionalEntity.isEmpty()) {
+            // get the users isAdmin permission, if not admin, return error
+            User user = optionalEntity.get();
+            if (!user.getIsAdmin()) {
+                return ServiceErrors.userAdminPermissionError();
+            }
+        } else {
+            return ServiceErrors.userNotFoundFromTokenIdError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try{
+
+            // overwrite old cast in database (which is nothing since new movie)
+            movie.setCast(movie.getCast());
+            overwriteMovieDBCast(movie);
+            // overwrite old directors in database (which is nothing since new movie)
+            movie.setDirectors(movie.getDirectors());
+            overwriteMovieDBDirectors(movie);
+            // overwrite old genres in database (which is nothing since new movie)
+            movie.setGenres(movie.getGenreString());
+            overwriteMovieDBGenres(movie);
+
             Movie dbMovie = movieDAO.save(movie);
-            String cast = movie.getCast();
-            String directors = movie.getDirectors();
-            List<String> genres = movie.getGenreString();
-            //Add actors when adding movie
-            if (!cast.isEmpty()) {
-                //Change the cast to an array of strings.
-                List<String> actorList = Arrays.asList(cast.split(",[ ]*"));
-                //Make a new actor for each string
-                for (String a: actorList) {
-                    //Check if the actor exists in the database first.
-                    if (actorDAO.findActorByName(a) != null) {
-                        Actor dbActor = actorDAO.findActorByName(a);
-                        dbMovie.addActorToCast(dbActor);
-                        movieDAO.save(dbMovie);
-                    } else {
-                        Actor actor = new Actor(a);
-                        actorDAO.save(actor);
-                        dbMovie.addActorToCast(actor);
-                        movieDAO.save(dbMovie);
-                    }
-                }
-            }
-            //Add directors when adding movie
-            if (!directors.isEmpty()) {
-                List<String> directorsList = Arrays.asList(directors.split(",[ ]*"));
-                for (String d: directorsList) {
-                    if (directorDAO.findDirectorByName(d) != null) {
-                        Director dbDirector = directorDAO.findDirectorByName(d);
-                        dbMovie.addDirector(dbDirector);
-                        movieDAO.save(dbMovie);
-                    } else {
-                        Director director = new Director(d);
-                        directorDAO.save(director);
-                        dbMovie.addDirector(director);
-                        movieDAO.save(dbMovie);
-                    }
-                }
-            }
-            if (!genres.isEmpty() && genres != null) {
-                for (String g : genres) {
-                    Genre genre = new Genre(g);
-                    if (genreDAO.findGenreByName(genre.getName()) != null) {
-                        //This means the Genre is in the database, so it is a valid genre.
-                        Genre dbGenre = genreDAO.findGenreByName(genre.getName());
-                        dbMovie.addGenreToDB(dbGenre);
-                        movieDAO.save(dbMovie);
-                    } else {
-                        //Return an invalid input error.
-                        return ServiceErrors.invalidInputError();
-                    }
-                }
-            }
+
             returnMessage.put("movieId", dbMovie.getId());
             returnMessage.put("name", dbMovie.getName());
             returnMessage.put("year", dbMovie.getYear());
@@ -179,7 +147,7 @@ public class MovieService {
             returnMessage.put("director", dbMovie.getDirectors());
             returnMessage.put("contentRating", dbMovie.getContentRating());
             returnMessage.put("cast", dbMovie.getCast());
-            returnMessage.put("runtime", dbMovie.getRtuntime());
+            returnMessage.put("runtime", dbMovie.getRuntime());
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
             JSONArray reviewArray = new JSONArray();
             for (Review review : dbMovie.getMovieReviews()) {
@@ -316,12 +284,120 @@ public class MovieService {
         return responseJson;
     }
 
+    public JSONObject editMovie(EditMovieRequest editMovieRequest) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
+        // split request into components
+        String token = editMovieRequest.getToken();
+        long movieId = editMovieRequest.getMovieId();
+        Movie editedMovieDetails = editMovieRequest.getMovie();
+
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id == null) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+        // get the users isAdmin permission, if not admin, return error
+        User user = userDAO.findById(user_id).get();
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.userAdminPermissionError();
+        }
+
+        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        Movie dbMovie = movieDAO.findMovieByID(movieId);
+
+        try{
+            // overwrite movie details
+            dbMovie.setName(editedMovieDetails.getName());
+            dbMovie.setYear(editedMovieDetails.getYear());
+            dbMovie.setPoster(editedMovieDetails.getPoster());
+            dbMovie.setDescription(editedMovieDetails.getDescription());
+            dbMovie.setContentRating(editedMovieDetails.getContentRating());
+            dbMovie.setRuntime(editedMovieDetails.getRuntime());
+            dbMovie.setTrailer(editedMovieDetails.getTrailer());
+
+            // overwrite old cast in database
+            dbMovie.setCast(editedMovieDetails.getCast());
+            overwriteMovieDBCast(dbMovie);
+            // overwrite old directors in database
+            dbMovie.setDirectors(editedMovieDetails.getDirectors());
+            overwriteMovieDBDirectors(dbMovie);
+            // overwrite old genres in database
+            dbMovie.setGenres(editedMovieDetails.getGenreString());
+            overwriteMovieDBGenres(dbMovie);
+
+            movieDAO.save(dbMovie);
+
+        } catch(IllegalArgumentException e){
+            return ServiceErrors.invalidInputError();
+        }
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
 
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("genres",  new JSONArray(Genre.genreCollectionToStrList(genreDAO.findAll())));
         return new JSONObject(returnMessage);
+    }
+
+
+    private void overwriteMovieDBCast(Movie dbMovie) {
+        dbMovie.clearDBCast();
+        String cast = dbMovie.getCast();
+        if (!cast.isEmpty()) {
+            //Change the cast to an array of strings.
+            List<String> actorList = Arrays.asList(cast.split(",[ ]*"));
+            //Make a new actor for each string
+            for (String a: actorList) {
+                //Check if the actor exists in the database first.
+                if (actorDAO.findActorByName(a) != null) {
+                    Actor dbActor = actorDAO.findActorByName(a);
+                    dbMovie.addActorToCast(dbActor);
+                } else {
+                    Actor actor = new Actor(a);
+                    actorDAO.save(actor);
+                    dbMovie.addActorToCast(actor);
+                }
+            }
+        }
+    }
+
+    private void overwriteMovieDBDirectors(Movie dbMovie) {
+        dbMovie.clearDBDirectors();
+        String directors = dbMovie.getDirectors();
+        if (!directors.isEmpty()) {
+            List<String> directorsList = Arrays.asList(directors.split(",[ ]*"));
+            for (String d: directorsList) {
+                if (directorDAO.findDirectorByName(d) != null) {
+                    Director dbDirector = directorDAO.findDirectorByName(d);
+                    dbMovie.addDirector(dbDirector);
+                } else {
+                    Director director = new Director(d);
+                    directorDAO.save(director);
+                    dbMovie.addDirector(director);
+                }
+            }
+        }
+    }
+
+
+    private void overwriteMovieDBGenres(Movie dbMovie) {
+        List<String> genres = dbMovie.getGenreString();
+        if (!genres.isEmpty() && genres != null) {
+            for (String g : genres) {
+                Genre genre = new Genre(g);
+                if (genreDAO.findGenreByName(genre.getName()) != null) {
+                    //This means the Genre is in the database, so it is a valid genre.
+                    Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                    dbMovie.addGenreToDB(dbGenre);
+                } else {
+                    //Return an invalid input error.
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
     }
 }
 

@@ -60,7 +60,10 @@ public class UserService {
         // }
 
         // find the user in database by their email
-        User user = userDAO.findUserByEmailPassword(email, password);
+
+        //TODO: FIX THIS, ITS BROKEN
+        //User user = userDAO.findUserByEmailPassword(email, password);
+        User user = userDAO.findUserByEmail(email);
         // Check that the email exists in the database
         if (user == null) {
             return ServiceErrors.generateErrorMessage("The email and password you entered don't match");
@@ -112,7 +115,10 @@ public class UserService {
         try {
             // if user is successfully added, put user in dbUser
             // set return response values
-            user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
+
+            //TODO: FIX THIS, ITS BROKEN
+            //user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
+            user = userDAO.save(user);
 
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
             returnMessage.put("userId", user.getId());
