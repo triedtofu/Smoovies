@@ -75,16 +75,15 @@ public class MovieService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        // check user is found in database
-        Optional<User> optionalEntity = userDAO.findById(user_id);
-            if (!optionalEntity.isEmpty()) {
-            // get the users isAdmin permission, if not admin, return error
-            User user = optionalEntity.get();
-            if (!user.getIsAdmin()) {
-                return ServiceErrors.userAdminPermissionError();
-            }
-        } else {
+
+        // get the user in database, check if found
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) {
             return ServiceErrors.userNotFoundFromTokenIdError();
+        }
+        // get the users isAdmin permission, if not admin, return error
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.userAdminPermissionError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -263,11 +262,16 @@ public class MovieService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
+        // get the user in database, check if found
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
+        }
         // get the users isAdmin permission, if not admin, return error
-        User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
         }
+
 
         //Delete movie from database by id.
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
@@ -297,8 +301,12 @@ public class MovieService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
+        // get the user in database, check if found
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
+        }
         // get the users isAdmin permission, if not admin, return error
-        User user = userDAO.findById(user_id).get();
         if (!user.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
         }

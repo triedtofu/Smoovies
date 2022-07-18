@@ -155,7 +155,6 @@ public class UserService {
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
-
         if (user == null) return ServiceErrors.userIdInvalidError();
 
         Set<Movie> wishlist = user.getWishlistMovies();
@@ -202,8 +201,19 @@ public class UserService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        Movie movie = movieDAO.findById(movieId).get();
-        User user = userDAO.findById(user_id).get();
+
+        Movie movie = movieDAO.findById(movieId).orElse(null);
+        if (movie == null) return ServiceErrors.movieIdInvalidError();
+        
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        
+
+        // get the users isAdmin permission, if not admin, return error
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.userAdminPermissionError();
+        }
+
         if (movie != null) {
             if (addRemove) {
                 user.addToWishlist(movie);
@@ -258,11 +268,9 @@ public class UserService {
         }
         
         // get the user corresponding to resetCode token
-        Optional<User> optionalEntity = userDAO.findById(tokenUserId);
-        User user = optionalEntity.get();
-        // if not found, return error
-        if(user == null) {
-            return ServiceErrors.resetCodeInvalidError();
+        User user = userDAO.findById(tokenUserId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
         } else {
             // if first time changing password, change password
             if (tokenPassword.equals(user.getPassword())) {
@@ -290,19 +298,28 @@ public class UserService {
         if (admin_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        // get the users isAdmin permission, if not admin, return error
-        User admin = userDAO.findById(admin_id).get();
+
+        // get the user in database, check if found
+        User admin = userDAO.findById(admin_id).orElse(null);
+        if (admin == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
+        }
+        // get the admins isAdmin permission, if not admin, return error
         if (!admin.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
         }
+
         // check if userId to be banned is valid format
         if (!ServiceInputChecks.checkId(userId)) {
             return ServiceErrors.userIdInvalidError();
         }
 
         // get the user corresponding to userId to be banned
-        Optional<User> optionalEntity = userDAO.findById(userId);
-        User user = optionalEntity.get();        
+        User user = userDAO.findById(userId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userIdInvalidError();
+        }
+        // ban the user if not already banned
         if (user.getIsBanned().equals(true)) {
             return ServiceErrors.userAlreadyBannedError();
         } else {
