@@ -254,13 +254,7 @@ public class UserService {
         } else {
             // if first time changing password, change password
             if (tokenPassword.equals(user.getPassword())) {
-                // if its the same password, return error
-                if (user.getPassword().equals(newPassword)) {
-                    return ServiceErrors.resetPasswordIsTheSame();
-                } else {
-                    user.setPassword(resetPasswordRequest.getPassword());
-                    userDAO.save(user);
-                }
+                userDAO.updateUserPassword(user.getEmail(), newPassword);
             }
             // otherwise return invalid link error
             else {
@@ -271,5 +265,4 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
 }
