@@ -1,6 +1,6 @@
 package com.example.restservice.dataModels.requests;
 
-import com.example.restservice.dataModels.Review;
+//import com.example.restservice.dataModels.Review;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AddReviewRequest {

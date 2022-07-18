@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -133,7 +132,7 @@ public class Movie {
         return year;
     }
 
-    public int getRtuntime() {
+    public int getRuntime() {
         return runtime;
     }
 
@@ -203,5 +202,57 @@ public class Movie {
         for (User u : userWishlists) {
             u.removeWishlist(this);
         }
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public void setTrailer(String trailer) {
+        this.trailer = trailer;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDirectors(String directors) {
+        this.directors = directors;
+    }
+
+    public void setContentRating(String contentRating) {
+        this.contentRating = contentRating;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setCast(String cast) {
+        this.cast = cast;
+    }
+
+    public void clearDBGenres() {
+        this.movieGenres.clear();
+    }
+
+    public void clearDBCast() {
+        this.actorsInMovie.clear();
+    }
+
+    public void clearDBDirectors() {
+        this.directorsInMovie.clear();
     }
 }

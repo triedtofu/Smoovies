@@ -12,8 +12,8 @@ import AddMovie from './pages/AddMovie';
 import TestingUI from './pages/TestingUI';
 import Profile from './pages/Profile';
 import Page404 from './pages/Page404';
+import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import ResetPasswordSuccess from './pages/ResetPasswordSuccess';
 
 const Router = () => {
   return (
@@ -21,8 +21,8 @@ const Router = () => {
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/resetpassword" element={<ResetPassword />} />
-      <Route path="/resetpassword/success" element={<ResetPasswordSuccess />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
       <Route path="/movie/:id" element={<Movie />} />
       <Route path="/search" element={<Search />} />

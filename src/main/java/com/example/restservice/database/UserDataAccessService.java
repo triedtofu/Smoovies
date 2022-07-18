@@ -28,6 +28,9 @@ public interface UserDataAccessService extends JpaRepository<User, Long>{
     @Query(value = "INSERT INTO users (email, is_admin, name, password) VALUES (:email, false, :name, crypt(:password, gen_salt('bf'))) RETURNING *", nativeQuery = true)
     User saveUser(@Param("email") String email, @Param("password") String password, @Param("name") String name);
 
+    @Query(value = "UPDATE users SET password = crypt(:password, gen_salt('bf')) WHERE email = :email RETURNING *", nativeQuery = true)
+    User updateUserPassword(@Param("email") String email, @Param("password") String password);
+
     public default Boolean uniqueEmail(String email) {
         User user = findUserByEmail(email);
         if (user == null) {

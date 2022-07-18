@@ -191,6 +191,14 @@ public class ServiceErrors {
     public static JSONObject UserWishlistNotFoundError() {
         return generateErrorMessage("User wishlist not found.");
     }
+    
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User not found, userId in token does not exist in database."}
+     */
+    public static JSONObject userNotFoundFromTokenIdError() {
+        return generateErrorMessage("User not found, userId in token does not exist in database.");
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //

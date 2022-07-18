@@ -4,7 +4,7 @@ import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -18,7 +18,7 @@ import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.BanUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
-import com.example.restservice.dataModels.Genre;
+//import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
@@ -60,7 +60,10 @@ public class UserService {
         // }
 
         // find the user in database by their email
-        User user = userDAO.findUserByEmailPassword(email, password);
+
+        //TODO: FIX THIS, ITS BROKEN
+        //User user = userDAO.findUserByEmailPassword(email, password);
+        User user = userDAO.findUserByEmail(email);
         // Check that the email exists in the database
         if (user == null) {
             return ServiceErrors.generateErrorMessage("The email and password you entered don't match");
@@ -112,7 +115,10 @@ public class UserService {
         try {
             // if user is successfully added, put user in dbUser
             // set return response values
-            user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
+
+            //TODO: FIX THIS, ITS BROKEN
+            //user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
+            user = userDAO.save(user);
 
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
             returnMessage.put("userId", user.getId());
@@ -149,7 +155,6 @@ public class UserService {
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
-
         if (user == null) return ServiceErrors.userIdInvalidError();
 
         Set<Movie> wishlist = user.getWishlistMovies();
@@ -186,18 +191,27 @@ public class UserService {
      */
     public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
 
-        // TODO: check inputs for errors
         if (!ServiceInputChecks.checkId(movieId)) {
             return ServiceErrors.userIdInvalidError();
         }
-
         // verify the token and extract the users email
         Long user_id = ServiceJWTHelper.getTokenId(token.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        Movie movie = movieDAO.findById(movieId).get();
-        User user = userDAO.findById(user_id).get();
+
+        Movie movie = movieDAO.findById(movieId).orElse(null);
+        if (movie == null) return ServiceErrors.movieIdInvalidError();
+        
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        
+
+        // get the users isAdmin permission, if not admin, return error
+        if (!user.getIsAdmin()) {
+            return ServiceErrors.userAdminPermissionError();
+        }
+
         if (movie != null) {
             if (addRemove) {
                 user.addToWishlist(movie);
@@ -221,7 +235,7 @@ public class UserService {
         } else {
             //send email
             // use the users current password as the signKey, this will allow the password to be reset once
-            String link = "https://comp3900-lawnchair-front.herokuapp.com/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
+            String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
             String subject = "Smoovies - Reset Password Request";
             String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
             emailSenderService.sendEmail(user.getEmail(), subject, body);
@@ -252,21 +266,13 @@ public class UserService {
         }
         
         // get the user corresponding to resetCode token
-        Optional<User> optionalEntity = userDAO.findById(tokenUserId);
-        User user = optionalEntity.get();
-        // if not found, return error
-        if(user == null) {
-            return ServiceErrors.resetCodeInvalidError();
+        User user = userDAO.findById(tokenUserId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
         } else {
             // if first time changing password, change password
             if (tokenPassword.equals(user.getPassword())) {
-                // if its the same password, return error
-                if (user.getPassword().equals(newPassword)) {
-                    return ServiceErrors.resetPasswordIsTheSame();
-                } else {
-                    user.setPassword(resetPasswordRequest.getPassword());
-                    userDAO.save(user);
-                }
+                userDAO.updateUserPassword(user.getEmail(), newPassword);
             }
             // otherwise return invalid link error
             else {
@@ -277,7 +283,6 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
 
     public JSONObject banUser(BanUserRequest banUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -291,19 +296,28 @@ public class UserService {
         if (admin_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-        // get the users isAdmin permission, if not admin, return error
-        User admin = userDAO.findById(admin_id).get();
+
+        // get the user in database, check if found
+        User admin = userDAO.findById(admin_id).orElse(null);
+        if (admin == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
+        }
+        // get the admins isAdmin permission, if not admin, return error
         if (!admin.getIsAdmin()) {
             return ServiceErrors.userAdminPermissionError();
         }
+
         // check if userId to be banned is valid format
         if (!ServiceInputChecks.checkId(userId)) {
             return ServiceErrors.userIdInvalidError();
         }
 
         // get the user corresponding to userId to be banned
-        Optional<User> optionalEntity = userDAO.findById(userId);
-        User user = optionalEntity.get();        
+        User user = userDAO.findById(userId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userIdInvalidError();
+        }
+        // ban the user if not already banned
         if (user.getIsBanned().equals(true)) {
             return ServiceErrors.userAlreadyBannedError();
         } else {

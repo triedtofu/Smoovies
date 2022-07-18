@@ -105,7 +105,7 @@ public class ServiceInputChecks {
         return true;
     }
 
-        // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
+    // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
     // Will have to clear database each time to test this 
     public static Boolean checkUniqueEmail(String email, UserDataAccessService userDAO) {
         return userDAO.uniqueEmail(email);
