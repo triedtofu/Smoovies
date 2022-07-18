@@ -86,6 +86,10 @@ public class ServiceErrors {
         return generateErrorMessage("Invalid reset code.");
     }
 
+    public static JSONObject reviewAlreadyExistsError() {
+        return generateErrorMessage("A user is unable to add 2 reviews to a movie");
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //

@@ -181,8 +181,17 @@ public class MovieService {
             returnMessage.put("cast", dbMovie.getCast());
             returnMessage.put("runtime", dbMovie.getRtuntime());
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-
-            //TODO: add reviews
+            JSONArray reviewArray = new JSONArray();
+            for (Review review : dbMovie.getMovieReviews()) {
+                HashMap<String, Object> movieReview = new HashMap<String,Object>();
+                movieReview.put("user", review.getUser().getId());
+                movieReview.put("name", review.getUser().getName());
+                movieReview.put("review", review.getReviewString());
+                movieReview.put("rating", review.getRating());
+                JSONObject movieReviewJSON = new JSONObject(movieReview);
+                reviewArray.put(movieReviewJSON);
+            }
+            returnMessage.put("reviews", reviewArray);
         }
         // otherwise if movie not found, return error
         else {
