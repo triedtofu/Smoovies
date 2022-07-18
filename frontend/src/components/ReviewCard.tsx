@@ -22,7 +22,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
           emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
         />
       </div>
-      <div>"{review.review}"</div>
+      <div>{review.review}</div>
     </div>
   );
 };
