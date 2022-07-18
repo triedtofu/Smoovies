@@ -443,6 +443,38 @@ paths:
           $ref: '#/components/responses/InputError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/user/deleteReview:
+    post:
+      tags:
+        - Users
+      summary: Delete a review
+      description: Route to delete a review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
   /api/user/requestResetPassword:
     post:
       tags:
