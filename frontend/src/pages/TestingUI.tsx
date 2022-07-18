@@ -12,15 +12,24 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ReviewCard from '../components/ReviewCard';
 import Container from '@mui/material/Container';
 
-import { apiGetMovie, apiUserWishlist, apiPutUserWishlist } from '../util/api';
+import {
+  apiGetMovie,
+  apiUserWishlist,
+  apiPutUserWishlist,
+  apiDeleteMovie,
+} from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
 
-import * as ScrollMagic from 'scrollmagic';
-import { TimelineMax, TweenMax } from 'gsap';
-import { ScrollMagicPluginGsap } from 'scrollmagic-plugin-gsap';
+import { useInView } from 'react-intersection-observer';
 
-ScrollMagicPluginGsap(ScrollMagic, TweenMax, TimelineMax);
+import {
+  motion,
+  useViewportScroll,
+  useTransform,
+  useMotionValue,
+  useAnimation,
+} from 'framer-motion';
 
 interface buttonProps {
   state: number;
@@ -36,6 +45,12 @@ const TestingUI = () => {
   );
   const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
+
+  const { ref, inView } = useInView({
+    threshold: 0.2,
+  });
+
+  const animation = useAnimation();
 
   React.useEffect(() => {
     setErrorStr('');
@@ -60,7 +75,7 @@ const TestingUI = () => {
   }, [params]);
 
   React.useEffect(() => {
-    if (!movie || !cookies.token) return;
+    if (!movie || !cookies.token || cookies.admin) return;
 
     try {
       apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
@@ -74,6 +89,22 @@ const TestingUI = () => {
       console.log(error);
     }
   }, [movie]);
+
+  React.useEffect(() => {
+    console.log('usedeffect hook working');
+    if (inView) {
+      animation.start({
+        x: 0,
+        transition: {
+          type: 'string',
+          duration: 1,
+          bounce: 0.3,
+        },
+      });
+    } else {
+      animation.start({ x: '-100vw' });
+    }
+  }, [inView]);
 
   const WishlistButton = ({ state }: buttonProps) => {
     if (state === 1)
@@ -100,6 +131,26 @@ const TestingUI = () => {
       );
 
     return <></>;
+  };
+
+  const deleteMovie = () => {
+    apiDeleteMovie(cookies.token, movie!.id).then(() => {
+      setMovie(undefined);
+      setErrorStr('Movie has been deleted.');
+    });
+  };
+
+  const AdminButton = () => {
+    if (!cookies.admin) return <></>;
+
+    return (
+      <div>
+        <Button variant="outlined">Edit</Button>
+        <Button variant="outlined" color="error" onClick={deleteMovie}>
+          Delete
+        </Button>
+      </div>
+    );
   };
 
   if (errorStr) return <p>{errorStr}</p>;
@@ -144,26 +195,101 @@ const TestingUI = () => {
     // TODO
   };
 
-  const controller = new ScrollMagic.Controller();
-
-  const scene = new ScrollMagic.Scene({
-    triggerElement: '#trigger1',
-  }) as any;
-  
-  scene.setTween('#animate1', 0.5, { scale: 1.5 }) // trigger a TweenMax.to tween
-    .addIndicators({ name: '1 (duration: 0)' }) // add indicators (requires plugin)
-    .addTo(controller);
-
   if (!movie) return <></>;
 
   return (
     <Container maxWidth="md">
-      <div id="trigger1" className="spacer s0"></div>
-      <div id="animate1" style={{ display: 'flex' }}>
-        <img
-          src={movie.poster}
-          style={{ width: '200px', justifyContent: 'center' }}
-        />
+      <div className={styles.title_div}>
+        <h1>
+          {movie.name} ({movie.year})
+        </h1>
+
+        <WishlistButton state={button} />
+        <AdminButton />
+      </div>
+
+      <div style={{ maxWidth: '740px' }}>
+        <Youtube code={movie.trailer} />
+      </div>
+
+      <br />
+      <div ref={ref}>
+        <motion.div style={{ display: 'flex' }} animate={animation}>
+          <img src={movie.poster} style={{ width: '200px' }} />
+
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <h2>{movie.name}</h2>
+            <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
+              <p>
+                Genre: {movie.genres.join(', ')}
+                <br />
+                Director: {movie.director}
+                <br />
+                Cast:{' '}
+                {movie.cast
+                  .split(',')
+                  .map((s) => s.trim())
+                  .join(', ')}
+                <br />
+                Content Rating: {movie.contentRating}
+                <br />
+                Average Rating: {movie.averageRating}
+                <br />
+                Runtime: {movie.runtime} minutes
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+      <div>
+        <h3>Movie Info</h3>
+
+        <p>{movie.description}</p>
+      </div>
+      <div>
+        <h2>Reviews</h2>
+        <div style={{ display: 'flex' }}>
+          {movie.reviews.map((review) => (
+            <ReviewCard key={review.user} review={review} />
+          ))}
+        </div>
+      </div>
+      <br />
+      <div>
+        <div
+          style={{
+            paddingBottom: '10px',
+            paddingLeft: '30px',
+            border: '1px solid black',
+          }}
+        >
+          <div
+            style={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              display: 'flex',
+            }}
+          >
+            <h2>Write a Review</h2>
+            <Rating
+              style={{ paddingRight: '30px' }}
+              name="half-rating"
+              defaultValue={2.5}
+              precision={0.5}
+            />
+          </div>
+          <TextareaAutosize
+            aria-label="minimum height"
+            minRows={5}
+            placeholder="Write your review here"
+            style={{ width: '95%' }}
+          />
+          <br />
+          <Button size="small" variant="contained" onClick={submitReview}>
+            Submit
+          </Button>
+          <br />
+        </div>
       </div>
     </Container>
   );

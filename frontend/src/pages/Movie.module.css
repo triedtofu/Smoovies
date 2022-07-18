@@ -3,3 +3,31 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.MovieBody {
+  background: linear-gradient(180deg, #c7c7da, #ffe5b4);
+}
+
+.wrapper {
+  width: 150px;
+  height: 150px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+}
+
+.item {
+  width: inherit;
+  height: inherit;
+  background: white;
+  transform-origin: 50% 100%;
+}
