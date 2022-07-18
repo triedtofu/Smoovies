@@ -108,7 +108,7 @@ public class UserService {
             // set return response values
             user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
 
-            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail()));
+            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
             returnMessage.put("userId", user.getId());
             returnMessage.put("name", user.getName());
         } catch(IllegalArgumentException e){
