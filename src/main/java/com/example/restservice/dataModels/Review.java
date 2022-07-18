@@ -66,4 +66,8 @@ public class Review {
         return rating;
     }
 
+    public User getUser() {
+        return user;
+    }
+
 }

@@ -31,6 +31,8 @@ public class ReviewService {
         String token = addReviewRequest.getToken();
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+
         // check valid inputs
         // check movieId exists/is valid
         Movie movie = movieDAO.findMovieByID(addReviewRequest.getMovieId());
@@ -45,9 +47,15 @@ public class ReviewService {
 
         User user = userDAO.findUserById(user_id);
 
+        
+        
         if (user == null) {
             return ServiceErrors.userIdInvalidError();
         }
+
+        Review dbReview = reviewDAO.findReview(movie.getId(), user.getId());
+
+        if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
 
         Review review = new Review(movie, user, addReviewRequest.getReview(), addReviewRequest.getRating());
         
