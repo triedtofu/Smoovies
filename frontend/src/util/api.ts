@@ -1,7 +1,7 @@
-const baseUrl = '';
+// const baseUrl = '';
 // const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
 
@@ -100,5 +100,13 @@ export const apiPutUserWishlist = (
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, turnon }),
+  });
+};
+
+export const apiRequestResetPassword = (email: string) => {
+  return apiFetch<Record<string, never>>('/user/requestResetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
   });
 };
