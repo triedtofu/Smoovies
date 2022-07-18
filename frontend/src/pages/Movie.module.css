@@ -1,4 +1,4 @@
-.title_div {
+.titleDiv {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,4 +30,9 @@
   height: inherit;
   background: white;
   transform-origin: 50% 100%;
+}
+
+.reviewsDiv {
+  display: flex;
+  gap: 10px;
 }

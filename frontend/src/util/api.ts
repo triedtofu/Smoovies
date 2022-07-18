@@ -50,14 +50,14 @@ export const apiMovieSearch = (name: string) => {
 export const apiGetMovie = (id: number) => {
   return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
     data.averageRating = 3.14;
-    data.reviews = [
+    data.reviews.push(
       {
         user: 1729,
         name: 'Dave',
         review: "It's Morbin Time",
         rating: 5,
       },
-    ];
+    );
     return data;
   });
 };
@@ -81,6 +81,14 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
     body: JSON.stringify({ token, movieId }),
   });
 };
+
+export const apiAddReview = (token: string, movieId: number, review: string, rating: number) => {
+  apiFetch<Record<string, never>>('/movie/addReview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, review, rating }),
+  });
+}
 
 // Users
 

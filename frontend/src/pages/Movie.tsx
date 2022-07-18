@@ -5,11 +5,10 @@ import { useCookies } from 'react-cookie';
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
 import Youtube from '../components/Youtube';
+import ReviewCard from '../components/ReviewCard';
+import ReviewInput from '../components/ReviewInput';
 
 import Button from '@mui/material/Button';
-import Rating from '@mui/material/Rating';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import ReviewCard from '../components/ReviewCard';
 import Container from '@mui/material/Container';
 
 import {
@@ -17,6 +16,7 @@ import {
   apiUserWishlist,
   apiPutUserWishlist,
   apiDeleteMovie,
+  apiAddReview,
 } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
@@ -192,8 +192,8 @@ const TestingUI = () => {
     }
   };
 
-  const submitReview = () => {
-    // TODO
+  const submitReview = (rating: number, review: string) => {
+    apiAddReview(cookies.token, parseInt(params.id!), review, rating);
   };
 
   if (!movie) return <></>;
@@ -201,7 +201,7 @@ const TestingUI = () => {
   return (
     <div className={styles.MovieBody}>
       <Container maxWidth="md">
-        <div className={styles.title_div}>
+        <div className={styles.titleDiv}>
           <h1>
             {movie.name} ({movie.year})
           </h1>
@@ -215,7 +215,8 @@ const TestingUI = () => {
         </div>
 
         <br />
-        <div ref={ref}>
+
+        <div ref={ref} style={{ display: 'flex' }}>
           <motion.div
             style={{ display: 'flex' }}
             initial={{ x: '-100vw' }}
@@ -253,51 +254,22 @@ const TestingUI = () => {
 
           <p>{movie.description}</p>
         </div>
+
         <div>
           <h2>Reviews</h2>
-          <div style={{ display: 'flex' }}>
+          <div className={styles.reviewsDiv}>
             {movie.reviews.map((review) => (
               <ReviewCard key={review.user} review={review} />
             ))}
           </div>
         </div>
         <br />
-        <div>
-          <div
-            style={{
-              paddingBottom: '10px',
-              paddingLeft: '30px',
-              border: '1px solid black',
-            }}
-          >
-            <div
-              style={{
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                display: 'flex',
-              }}
-            >
-              <h2>Write a Review</h2>
-              <Rating
-                style={{ paddingRight: '30px' }}
-                name="half-rating"
-                defaultValue={2.5}
-                precision={0.5}
-              />
-            </div>
-            <TextareaAutosize
-              aria-label="minimum height"
-              minRows={5}
-              placeholder="Write your review here"
-              style={{ width: '95%' }}
-            />
-            <br />
-            <Button size="small" variant="contained" onClick={submitReview}>
-              Submit
-            </Button>
-            <br />
-          </div>
-        </div>
+
+        {cookies.token ? (
+          <ReviewInput submitReview={submitReview} />
+        ) : (
+          <p>Login/Register to write a review!</p>
+        )}
       </Container>
     </div>
   );
