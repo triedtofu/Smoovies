@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import RequiredTextField from './RequiredTextField';
 import MyFormControl from './MyFormControl';
 import styles from './AuthForm.module.css';
+import ToggleablePassword from './ToggleablePassword';
 
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
@@ -57,10 +58,9 @@ const RegisterForm = (props: RegisterProps) => {
           />
         </MyFormControl>
         <MyFormControl>
-          <RequiredTextField
+          <ToggleablePassword
             name="password"
             label="Enter your password"
-            type="password"
             value={password1}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword1(e.target.value)
@@ -77,10 +77,9 @@ const RegisterForm = (props: RegisterProps) => {
           />
         </MyFormControl>
         <MyFormControl>
-          <RequiredTextField
+          <ToggleablePassword
             name="confirm-password"
             label="Confirm your password"
-            type="password"
             value={password2}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword2(e.target.value)

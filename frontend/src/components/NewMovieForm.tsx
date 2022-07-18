@@ -14,6 +14,8 @@ import styles from './NewMovieForm.module.css';
 import RequiredTextField from './RequiredTextField';
 import Youtube from './Youtube';
 
+import { youtubeURLToCode } from '../util/helper';
+
 export type SubmitMovie = (
   name: string,
   year: number,
@@ -33,6 +35,8 @@ interface NewMovieProps {
   allGenres: string[];
 }
 
+let timeout: undefined | NodeJS.Timeout = undefined;
+
 const NewMovieForm = (props: NewMovieProps) => {
   const [name, setName] = React.useState('');
   const [year, setYear] = React.useState('');
@@ -43,12 +47,23 @@ const NewMovieForm = (props: NewMovieProps) => {
   const [genres, setGenres] = React.useState<string[]>([]);
   const [contentRating, setContentRating] = React.useState('');
   const [cast, setCast] = React.useState('');
-  const [trailerUrl, setTrailerUrl] = React.useState('');
   const [runtime, setRuntime] = React.useState('');
+  
+  const [posterUrl, setPosterUrl] = React.useState('');
+  const [trailerUrl, setTrailerUrl] = React.useState('');
 
   React.useEffect(() => {
-    setTrailer(trailerUrl);
+    setTrailer(youtubeURLToCode(trailerUrl) ?? '');
   }, [trailerUrl]);
+
+  React.useEffect(() => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      setPoster(posterUrl);
+    }, 1000);
+
+    return () => clearTimeout();
+  }, [posterUrl]);
 
   const newMovieSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -102,7 +117,7 @@ const NewMovieForm = (props: NewMovieProps) => {
             name="year"
             label="Year"
             value={year}
-            inputProps={{ maxLength: 4 }}
+            inputProps={{ maxLength: 4, inputMode: 'numeric', pattern: '[0-9]*' }}
             onChange={(e) => {
               setYear(e.target.value);
             }}
@@ -182,12 +197,12 @@ const NewMovieForm = (props: NewMovieProps) => {
           size="small"
           fullWidth
           placeholder="image url"
-          value={poster}
-          onChange={e => setPoster(e.target.value)}
+          value={posterUrl}
+          onChange={e => setPosterUrl(e.target.value)}
         />
 
         {trailerUrl && <div className={styles.youtube}>
-          <Youtube code={trailerUrl}/>
+          <Youtube code={trailer}/>
         </div>}
 
         <RequiredTextField

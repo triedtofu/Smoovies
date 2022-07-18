@@ -7,25 +7,38 @@ public class AddReviewRequest {
 
     private String token;
 
-    private Review review;
+    private String reviewText;
+
+    private Long movie_id;
+    
+    private int rating;
     
     public AddReviewRequest(
         @JsonProperty("token") String token,
-        @JsonProperty("movieId") int movieId,
+        @JsonProperty("movieId") Long movieId,
         @JsonProperty("review") String reviewText,
         @JsonProperty("rating") int rating) {
     
-        Review review = new Review(movieId, reviewText, rating);
-        this.review = review;
         this.token = token;
+        this.reviewText = reviewText;
+        this.rating = rating;
+        this.movie_id = movieId;
     }
     
     public String getToken() {
         return token;
     }
 
-    public Review getReview() {
-        return review;
+    public String getReview() {
+        return reviewText;
+    }
+
+    public Long getMovieId() {
+        return movie_id;
+    }
+
+    public int getRating() {
+        return rating;
     }
 }
 
