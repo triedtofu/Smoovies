@@ -245,7 +245,7 @@ paths:
         '400':
           $ref: '#/components/responses/InputError'
   /api/movie/editMovie:
-    post:
+    put:
       tags:
         - Movies
       summary: Edit a movie
