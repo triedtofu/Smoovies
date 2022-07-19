@@ -181,6 +181,7 @@ public class MovieService {
             returnMessage.put("cast", dbMovie.getCast());
             returnMessage.put("runtime", dbMovie.getRtuntime());
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
+            returnMessage.put("averageRating", dbMovie.getAverageRating());
             JSONArray reviewArray = new JSONArray();
             for (Review review : dbMovie.getMovieReviews()) {
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
@@ -305,7 +306,6 @@ public class MovieService {
         //Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
-            
             reviewDAO.deleteByMovie(dbMovie);
             movieDAO.deleteById(dbMovie.getId());
         } else {
@@ -315,8 +315,6 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
-
 
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();

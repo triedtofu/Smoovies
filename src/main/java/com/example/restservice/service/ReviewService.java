@@ -55,14 +55,15 @@ public class ReviewService {
 
         Review dbReview = reviewDAO.findReview(movie.getId(), user.getId());
 
-        if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
+        //if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
 
         Review review = new Review(movie, user, addReviewRequest.getReview(), addReviewRequest.getRating());
-        
         movie.addReviewToMovie(review);
         user.addReviewUser(review);
-        userDAO.save(user);
+        //Make changes to the average rating.
+        movie.recalculateAverageRating();
         movieDAO.save(movie);
+        userDAO.save(user);
         reviewDAO.save(review);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
