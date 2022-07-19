@@ -58,9 +58,9 @@ public class ReviewService {
         if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
 
         Review review = new Review(movie, user, addReviewRequest.getReview(), addReviewRequest.getRating());
-        
         movie.addReviewToMovie(review);
         user.addReviewUser(review);
+        movie.recalculateAverageRating();
         userDAO.save(user);
         movieDAO.save(movie);
         reviewDAO.save(review);

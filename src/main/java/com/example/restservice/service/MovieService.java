@@ -158,6 +158,7 @@ public class MovieService {
                 reviewArray.put(movieReviewJSON);
             }
             returnMessage.put("reviews", reviewArray);
+            returnMessage.put("averageRating", dbMovie.getAverageRating());
         }
         // otherwise if movie not found, return error
         else {
