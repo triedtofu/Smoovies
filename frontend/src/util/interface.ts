@@ -55,3 +55,9 @@ export interface WishlistResponse {
 export interface MovieSummaries {
   movies: MovieSummary[];
 }
+
+export interface AddMovieResponse {
+  movieId: number;
+  name: string;
+  year: number;
+}
