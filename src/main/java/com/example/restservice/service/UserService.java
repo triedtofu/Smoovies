@@ -27,8 +27,6 @@ import com.example.restservice.database.UserDataAccessService;
 
 @Service
 public class UserService {
-
-
     @Autowired
 	private UserDataAccessService userDAO;
 
@@ -37,7 +35,6 @@ public class UserService {
 
     @Autowired
     private EmailSenderService emailSenderService;
-
 
     /**
      * Logs a user in based on their email and password.
@@ -53,25 +50,20 @@ public class UserService {
         if (!ServiceInputChecks.checkEmail(email)) {
             return ServiceErrors.userEmailInvalidError();
         }
-        // TODO: Should this check even be here? we dont need to check if the password is correct format when trying to login?
-        // String error = ServiceInputChecks.checkPassword(password);
-        // if (!error.equals("")) {
-        //     return ServiceErrors.generateErrorMessage(error);
-        // }
 
         // find the user in database by their email
+        User user = userDAO.findUserByEmailPassword(email, password);
 
-        //TODO: FIX THIS, ITS BROKEN
-        //User user = userDAO.findUserByEmailPassword(email, password);
-        User user = userDAO.findUserByEmail(email);
         // Check that the email exists in the database
         if (user == null) {
             return ServiceErrors.generateErrorMessage("The email and password you entered don't match");
         }
+
         // check the user is not banned
         if (user.getIsBanned()) {
             return ServiceErrors.userBannedError();
         }
+
         //Password verification step
         // if (!password.equals(user.getPassword())) {
         //     return ServiceErrors.userPasswordIncorrectError();
@@ -116,9 +108,7 @@ public class UserService {
             // if user is successfully added, put user in dbUser
             // set return response values
 
-            //TODO: FIX THIS, ITS BROKEN
-            //user = userDAO.saveUser(user.getEmail(), user.getPassword(), user.getName());
-            user = userDAO.save(user);
+            user = userDAO.addNewUser(user.getEmail(), user.getIsAdmin(), user.getName(), user.getPassword());
 
             returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
             returnMessage.put("userId", user.getId());
@@ -202,10 +192,10 @@ public class UserService {
 
         Movie movie = movieDAO.findById(movieId).orElse(null);
         if (movie == null) return ServiceErrors.movieIdInvalidError();
-        
+
         User user = userDAO.findById(user_id).orElse(null);
         if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
-        
+
 
         // get the users isAdmin permission, if not admin, return error
         if (!user.getIsAdmin()) {
@@ -233,7 +223,7 @@ public class UserService {
         if (user == null) {
             return ServiceErrors.userEmailNotFoundError();
         } else {
-            //send email
+            // send email
             // use the users current password as the signKey, this will allow the password to be reset once
             String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
             String subject = "Smoovies - Reset Password Request";
@@ -257,14 +247,14 @@ public class UserService {
         // check that the user id and password in token exists, this will check that the token is valid as well
         if (tokenUserId == null || tokenPassword == null) {
             return ServiceErrors.resetCodeInvalidError();
-        } 
+        }
 
         // check that the new password is valid
         String error = ServiceInputChecks.checkPassword(newPassword);
         if (!error.equals("")) {
             return ServiceErrors.generateErrorMessage(error);
         }
-        
+
         // get the user corresponding to resetCode token
         User user = userDAO.findById(tokenUserId).orElse(null);
         if (user == null) {
