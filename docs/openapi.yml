@@ -236,10 +236,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  movieId:
                     $ref: '#/components/schemas/MovieId'
                   name:
                     $ref: '#/components/schemas/MovieName'
+                  year:
+                    $ref: '#/components/schemas/MovieYear'
         '400':
           $ref: '#/components/responses/InputError'
   /api/movie/editMovie:
