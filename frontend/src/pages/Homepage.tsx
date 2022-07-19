@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
 import styles from './Homepage.module.css';
 
@@ -24,6 +25,10 @@ const Homepage = () => {
 
   return (
     <Container maxWidth="lg">
+      <Helmet>
+        <title>Trending - Smoovies</title>
+      </Helmet>
+
       <h1>Trending</h1>
       
       {movies.length > 0 && <div className={styles.container}>

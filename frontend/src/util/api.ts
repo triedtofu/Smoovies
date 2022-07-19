@@ -11,6 +11,7 @@ import {
   SpecificMovieResponse,
   WishlistResponse,
   AddMovieResponse,
+  UserReviewResponse
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) =>  {
@@ -56,18 +57,11 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
-    data.averageRating = 3.14;
-    data.reviews.push(
-      {
-        user: 1729,
-        name: 'Dave',
-        review: "It's Morbin Time",
-        rating: 5,
-      },
-    );
-    return data;
-  });
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`)
+    .then(data => {
+      data.id = id;
+      return data;
+    })
 };
 
 export const apiGetGenres = () => {
@@ -80,7 +74,15 @@ export const apiAddMovie = (token: string, movie: MovieDetails) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, ...movie }),
   });
-}
+};
+
+export const apiEditMovie = (token: string, id: number, movie: MovieDetails) => {
+  return apiFetch<Record<string, never>>('/movie/editMovie', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, id, ...movie }),
+  });
+};
 
 export const apiDeleteMovie = (token: string, movieId: number) => {
   return apiFetch<Record<string, never>>('/movie/deleteMovie', {
@@ -91,7 +93,7 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
 };
 
 export const apiAddReview = (token: string, movieId: number, review: string, rating: number) => {
-  apiFetch<Record<string, never>>('/movie/addReview', {
+  return apiFetch<Record<string, never>>('/movie/addReview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, review, rating }),
@@ -116,6 +118,10 @@ export const apiPutUserWishlist = (
     body: JSON.stringify({ token, movieId, turnon }),
   });
 };
+
+export const apiGetUserReviews = (userId: number) => {
+  return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
+}
 
 export const apiRequestResetPassword = (email: string) => {
   return apiFetch<Record<string, never>>('/user/requestResetPassword', {
