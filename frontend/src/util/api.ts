@@ -11,6 +11,7 @@ import {
   SpecificMovieResponse,
   WishlistResponse,
   AddMovieResponse,
+  UserReviewResponse
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) =>  {
@@ -91,7 +92,7 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
 };
 
 export const apiAddReview = (token: string, movieId: number, review: string, rating: number) => {
-  apiFetch<Record<string, never>>('/movie/addReview', {
+  return apiFetch<Record<string, never>>('/movie/addReview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, review, rating }),
@@ -116,6 +117,10 @@ export const apiPutUserWishlist = (
     body: JSON.stringify({ token, movieId, turnon }),
   });
 };
+
+export const apiGetUserReviews = (userId: number) => {
+  return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
+}
 
 export const apiRequestResetPassword = (email: string) => {
   return apiFetch<Record<string, never>>('/user/requestResetPassword', {

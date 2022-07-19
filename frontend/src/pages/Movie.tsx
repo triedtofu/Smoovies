@@ -54,6 +54,12 @@ const TestingUI = () => {
 
   const animation = useAnimation();
 
+  const updateMovie = (id: number) => {
+    apiGetMovie(id)
+      .then((data) => setMovie({ ...data, id }))
+      .catch((error) => setErrorStr(getErrorMessage(error)));
+  }
+
   React.useEffect(() => {
     setErrorStr('');
     setMovie(undefined);
@@ -68,9 +74,7 @@ const TestingUI = () => {
 
     try {
       const id = parseInt(idStr);
-      apiGetMovie(id)
-        .then((data) => setMovie({ ...data, id }))
-        .catch((error) => setErrorStr(getErrorMessage(error)));
+      updateMovie(id);
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
@@ -193,7 +197,8 @@ const TestingUI = () => {
   };
 
   const submitReview = (rating: number, review: string) => {
-    apiAddReview(cookies.token, parseInt(params.id!), review, rating);
+    apiAddReview(cookies.token, parseInt(params.id!), review, rating)
+      .then(() => updateMovie(parseInt(params.id!)));
   };
 
   if (!movie) return <></>;
@@ -265,11 +270,12 @@ const TestingUI = () => {
         </div>
         <br />
 
-        {cookies.token ? (
+        {!cookies.token && <p>Login/Register to write a review!</p>}
+
+        {cookies.token && 
+          !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) && 
           <ReviewInput submitReview={submitReview} />
-        ) : (
-          <p>Login/Register to write a review!</p>
-        )}
+        }
       </Container>
     </div>
   );
