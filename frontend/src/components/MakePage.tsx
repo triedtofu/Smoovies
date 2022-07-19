@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet';
 
 import Navbar from './Navbar';
 import NavbarLoggedIn from './NavbarLoggedIn';
@@ -41,6 +42,9 @@ const MakePage = (Component: React.ElementType) => {
     
     return (
       <>
+        <Helmet>
+          <title>Smoovies</title>
+        </Helmet>
         <Nav cookies={cookies} />
         <Component />
       </>

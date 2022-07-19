@@ -1,12 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet';
 
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
 import Youtube from '../components/Youtube';
 import ReviewCard from '../components/ReviewCard';
 import ReviewInput from '../components/ReviewInput';
+import MyLink from '../components/MyLink';
 
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -204,80 +206,81 @@ const TestingUI = () => {
   if (!movie) return <></>;
 
   return (
-    <div className={styles.MovieBody}>
-      <Container maxWidth="md">
-        <div className={styles.titleDiv}>
-          <h1>
-            {movie.name} ({movie.year})
-          </h1>
+    <Container maxWidth="md">
+      <Helmet>
+        <title>{`${movie.name} - Smoovies`}</title>
+      </Helmet>
+      <div className={styles.titleDiv}>
+        <h1>
+          {movie.name} ({movie.year})
+        </h1>
 
-          <WishlistButton state={button} />
-          <AdminButton />
-        </div>
+        <WishlistButton state={button} />
+        <AdminButton />
+      </div>
 
-        <div style={{ maxWidth: '740px' }}>
-          <Youtube code={movie.trailer} />
-        </div>
+      <div style={{ maxWidth: '740px' }}>
+        <Youtube code={movie.trailer} />
+      </div>
 
-        <br />
+      <br />
 
-        <div ref={ref} style={{ display: 'flex' }}>
-          <motion.div
-            style={{ display: 'flex' }}
-            initial={{ x: '-100vw' }}
-            animate={animation}
-            transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
-          >
-            <img src={movie.poster} style={{ width: '200px' }} />
+      <div ref={ref} style={{ display: 'flex' }}>
+        <motion.div
+          style={{ display: 'flex' }}
+          initial={{ x: '-100vw' }}
+          animate={animation}
+          transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
+        >
+          <img src={movie.poster} style={{ width: '200px' }} />
 
-            <div style={{ width: '100%', textAlign: 'center' }}>
-              <h2>{movie.name}</h2>
-              <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
-                <p>
-                  Genre: {movie.genres.join(', ')}
-                  <br />
-                  Director: {movie.director}
-                  <br />
-                  Cast:{' '}
-                  {movie.cast
-                    .split(',')
-                    .map((s) => s.trim())
-                    .join(', ')}
-                  <br />
-                  Content Rating: {movie.contentRating}
-                  <br />
-                  Average Rating: {movie.averageRating}
-                  <br />
-                  Runtime: {movie.runtime} minutes
-                </p>
-              </div>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <h2>{movie.name}</h2>
+            <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
+              <p>
+                Genre: {movie.genres.join(', ')}
+                <br />
+                Director: {movie.director}
+                <br />
+                Cast:{' '}
+                {movie.cast
+                  .split(',')
+                  .map((s) => s.trim())
+                  .join(', ')}
+                <br />
+                Content Rating: {movie.contentRating}
+                <br />
+                Average Rating: {movie.averageRating}
+                <br />
+                Runtime: {movie.runtime} minutes
+              </p>
             </div>
-          </motion.div>
-        </div>
-        <div>
-          <h3>Movie Info</h3>
-
-          <p>{movie.description}</p>
-        </div>
-
-        <div>
-          <h2>Reviews</h2>
-          <div className={styles.reviewsDiv}>
-            {movie.reviews.map((review) => (
-              <ReviewCard key={review.user} review={review} />
-            ))}
           </div>
+        </motion.div>
+      </div>
+      <div>
+        <h3>Movie Info</h3>
+
+        <p>{movie.description}</p>
+      </div>
+
+      <div>
+        <h2>Reviews</h2>
+        <div className={styles.reviewsDiv}>
+          {movie.reviews.map((review) => (
+            <ReviewCard key={review.user} review={review} />
+          ))}
         </div>
-        <br />
+      </div>
+      <br />
 
-        {!cookies.token && <p>Login/Register to write a review!</p>}
+      {!cookies.token && <p><MyLink to="/login">Login</MyLink>/<MyLink to="/register">Register</MyLink> to write a review!</p>}
 
-        {cookies.token && 
-          !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) && 
-          <ReviewInput submitReview={submitReview} />
-        }
-      </Container>
-    </div>
+      {cookies.token && 
+        !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) && 
+        <ReviewInput submitReview={submitReview} />
+      }
+    </Container>
   );
 };
 
