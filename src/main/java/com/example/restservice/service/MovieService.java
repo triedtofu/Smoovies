@@ -186,6 +186,7 @@ public class MovieService {
                 dbMovieDetails.put("poster", movie.getPoster());
                 dbMovieDetails.put("description", movie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
+                dbMovieDetails.put("averageRating", movie.getAverageRating());
 
                 //Make it into a JSONObject
                 JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
@@ -272,11 +273,10 @@ public class MovieService {
         }
 
 
-        //Delete movie from database by id.
-        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        // Delete movie from database by id.
+        // Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
-            
             reviewDAO.deleteByMovie(dbMovie);
             movieDAO.deleteById(dbMovie.getId());
         } else {
@@ -310,7 +310,7 @@ public class MovieService {
             return ServiceErrors.userAdminPermissionError();
         }
 
-        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        // Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(movieId);
 
         try{
@@ -349,16 +349,15 @@ public class MovieService {
         return new JSONObject(returnMessage);
     }
 
-
     private void overwriteMovieDBCast(Movie dbMovie) {
         dbMovie.clearDBCast();
         String cast = dbMovie.getCast();
         if (!cast.isEmpty()) {
-            //Change the cast to an array of strings.
+            // Change the cast to an array of strings.
             List<String> actorList = Arrays.asList(cast.split(",[ ]*"));
-            //Make a new actor for each string
+            // Make a new actor for each string
             for (String a: actorList) {
-                //Check if the actor exists in the database first.
+                // Check if the actor exists in the database first.
                 if (actorDAO.findActorByName(a) != null) {
                     Actor dbActor = actorDAO.findActorByName(a);
                     dbMovie.addActorToCast(dbActor);
@@ -388,7 +387,6 @@ public class MovieService {
             }
         }
     }
-
 
     private void overwriteMovieDBGenres(Movie dbMovie) {
         List<String> genres = dbMovie.getGenreString();

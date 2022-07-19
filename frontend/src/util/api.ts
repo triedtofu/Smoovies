@@ -57,18 +57,7 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then((data) => {
-    data.averageRating = 3.14;
-    data.reviews.push(
-      {
-        user: 1729,
-        name: 'Dave',
-        review: "It's Morbin Time",
-        rating: 5,
-      },
-    );
-    return data;
-  });
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`);
 };
 
 export const apiGetGenres = () => {
