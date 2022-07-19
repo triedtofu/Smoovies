@@ -9,6 +9,6 @@ import com.example.restservice.dataModels.Genre;
 
 @Repository
 public interface GenreDataAccessService extends JpaRepository<Genre, Long> {
-    @Query(value = "SELECT * from genres g WHERE g.name iLIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * from genres g WHERE g.name = LOWER(:name)", nativeQuery = true)
     public Genre findGenreByName(@Param("name") String name);
 }

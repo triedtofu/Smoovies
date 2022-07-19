@@ -196,12 +196,6 @@ public class UserService {
         User user = userDAO.findById(user_id).orElse(null);
         if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
 
-
-        // get the users isAdmin permission, if not admin, return error
-        if (!user.getIsAdmin()) {
-            return ServiceErrors.userAdminPermissionError();
-        }
-
         if (movie != null) {
             if (addRemove) {
                 user.addToWishlist(movie);

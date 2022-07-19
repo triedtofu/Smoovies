@@ -394,16 +394,15 @@ public class MovieService {
         if (!genres.isEmpty() && genres != null) {
             for (String g : genres) {
                 Genre genre = new Genre(g);
-                if (genreDAO.findGenreByName(genre.getName()) != null) {
-                    //This means the Genre is in the database, so it is a valid genre.
-                    Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                if (dbGenre != null) {
+                    // This means the Genre is in the database, so it is a valid genre.
                     dbMovie.addGenreToDB(dbGenre);
                 } else {
-                    //Return an invalid input error.
+                    // Return an invalid input error.
                     throw new IllegalArgumentException();
                 }
             }
         }
     }
 }
-
