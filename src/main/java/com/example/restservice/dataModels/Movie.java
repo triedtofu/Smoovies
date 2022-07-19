@@ -263,14 +263,26 @@ public class Movie {
 
     public void recalculateAverageRating() {
         double total = 0;
-        if (movieReviews.isEmpty()) return;
-        for (Review review : movieReviews) {
-            total = total + review.getRating();
+        
+        if (movieReviews.size() == 0) {
+            this.average_rating = new BigDecimal(0.0);
+            return;
+        } else {
+            for (Review review : movieReviews) {
+                total = total + review.getRating();
+            }
+            
+            this.average_rating = new BigDecimal(total/movieReviews.size());
         }
-        this.average_rating = new BigDecimal(total/movieReviews.size());
+
+        
     }
 
     public double getAverageRating() {
         return average_rating.doubleValue();
+    }
+
+    public void removeMovieReview(Review r) {
+        movieReviews.remove(r);
     }
 }

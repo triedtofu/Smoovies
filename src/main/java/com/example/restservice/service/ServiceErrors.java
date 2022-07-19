@@ -167,6 +167,13 @@ public class ServiceErrors {
         return generateErrorMessage("Email not found.");
     }
 
+    public static JSONObject userNotFound() {
+        return generateErrorMessage("User is not found");
+    }
+
+    public static JSONObject reviewNotFound() {
+        return generateErrorMessage("No review has been found by the user to the requested movie");
+    }
     
     /**
      * Returns JSONObject with error message

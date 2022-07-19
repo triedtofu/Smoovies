@@ -7,10 +7,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.requests.AddReviewRequest;
+import com.example.restservice.dataModels.requests.DeleteReviewRequest;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
@@ -88,6 +89,37 @@ public class ReviewService {
             reviewArray.put(userReviewJson);
         }
         returnMessage.put("reviews", reviewArray);
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+    /**
+     * Check for:
+     * If review exists, if user exists, if movie exists, if user_id matches the token.
+     * @param deleteReviewRequest
+     * @return
+     */
+    public JSONObject deleteReview (DeleteReviewRequest deleteReviewRequest) {
+        HashMap<String, Object> returnMessage = new HashMap<String,Object>();
+
+        String token = deleteReviewRequest.getToken();
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id != deleteReviewRequest.getUserId()) return ServiceErrors.userNotFound();
+        
+        Movie dbMovie = movieDAO.findMovieByID(deleteReviewRequest.getMovieId());
+        if (dbMovie == null) return ServiceErrors.movieNotFoundError();
+
+        Review dbreview = reviewDAO.findReview(deleteReviewRequest.getMovieId(), deleteReviewRequest.getUserId());
+        if (dbreview == null) return ServiceErrors.reviewNotFound();
+
+        User dbUser = userDAO.findUserById(user_id);
+        if (user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        //Remove the review from the movie and user.
+        dbUser.removeUserReview(dbreview);
+        dbMovie.removeMovieReview(dbreview);
+        dbMovie.recalculateAverageRating();
+        movieDAO.save(dbMovie);
+        userDAO.save(dbUser);
+        reviewDAO.delete(dbreview);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
