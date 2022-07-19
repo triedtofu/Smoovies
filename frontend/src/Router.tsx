@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Page404 from './pages/Page404';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import EditMovie from './pages/EditMovie';
 
 const Router = () => {
   return (
@@ -25,6 +26,7 @@ const Router = () => {
       <Route path="/resetpassword" element={<ResetPassword />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
       <Route path="/movie/:id" element={<Movie />} />
+      <Route path="/movie/:id/edit" element={<EditMovie />} />
       <Route path="/search" element={<Search />} />
       <Route path="/higherorlower" element={<HigherOrLower />} />
       <Route path="/addmovie" element={<AddMovie />} />

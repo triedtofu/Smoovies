@@ -1,7 +1,9 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Helmet } from 'react-helmet';
+import { useInView } from 'react-intersection-observer';
+import { motion, useAnimation } from 'framer-motion';
 
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
@@ -23,26 +25,15 @@ import {
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
 
-import { useInView } from 'react-intersection-observer';
-
-import {
-  motion,
-  useViewportScroll,
-  useTransform,
-  useMotionValue,
-  useAnimation,
-} from 'framer-motion';
-
 interface buttonProps {
   state: number;
 }
 
 const TestingUI = () => {
-  const { scrollYProgress } = useViewportScroll();
-  const scale = useTransform(scrollYProgress, [0, 1], [0.2, 2]);
   const [cookies] = useCookies();
-
+  const navigate = useNavigate();
   const params = useParams();
+  const animation = useAnimation();
 
   const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
     undefined
@@ -54,11 +45,9 @@ const TestingUI = () => {
     threshold: 0.2,
   });
 
-  const animation = useAnimation();
-
   const updateMovie = (id: number) => {
     apiGetMovie(id)
-      .then((data) => setMovie({ ...data, id }))
+      .then((data) => setMovie(data))
       .catch((error) => setErrorStr(getErrorMessage(error)));
   }
 
@@ -117,7 +106,6 @@ const TestingUI = () => {
     if (state === 1)
       return (
         <Button
-          style={{ marginLeft: '30px' }}
           variant="outlined"
           onClick={addMovieToWishlist}
         >
@@ -128,7 +116,6 @@ const TestingUI = () => {
     if (state === 2)
       return (
         <Button
-          style={{ marginLeft: '30px' }}
           variant="outlined"
           color="error"
           onClick={removeMovieFromWishlist}
@@ -151,8 +138,8 @@ const TestingUI = () => {
     if (!cookies.admin) return <></>;
 
     return (
-      <div>
-        <Button variant="outlined">Edit</Button>
+      <div className={styles.adminButtonsDiv}>
+        <Button variant="outlined" onClick={() => navigate('edit')}>Edit</Button>
         <Button variant="outlined" color="error" onClick={deleteMovie}>
           Delete
         </Button>
@@ -250,7 +237,7 @@ const TestingUI = () => {
                 <br />
                 Content Rating: {movie.contentRating}
                 <br />
-                Average Rating: {movie.averageRating}
+                Average Rating: {movie.averageRating} / 5
                 <br />
                 Runtime: {movie.runtime} minutes
               </p>
@@ -276,8 +263,8 @@ const TestingUI = () => {
 
       {!cookies.token && <p><MyLink to="/login">Login</MyLink>/<MyLink to="/register">Register</MyLink> to write a review!</p>}
 
-      {cookies.token && 
-        !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) && 
+      {cookies.token &&
+        !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) &&
         <ReviewInput submitReview={submitReview} />
       }
     </Container>

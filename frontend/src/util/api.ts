@@ -57,7 +57,11 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`);
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`)
+    .then(data => {
+      data.id = id;
+      return data;
+    })
 };
 
 export const apiGetGenres = () => {
@@ -70,7 +74,15 @@ export const apiAddMovie = (token: string, movie: MovieDetails) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, ...movie }),
   });
-}
+};
+
+export const apiEditMovie = (token: string, id: number, movie: MovieDetails) => {
+  return apiFetch<Record<string, never>>('/movie/editMovie', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, id, ...movie }),
+  });
+};
 
 export const apiDeleteMovie = (token: string, movieId: number) => {
   return apiFetch<Record<string, never>>('/movie/deleteMovie', {
