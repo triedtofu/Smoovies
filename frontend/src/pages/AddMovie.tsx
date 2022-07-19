@@ -9,6 +9,7 @@ import NewMovieForm, { SubmitMovie } from '../components/NewMovieForm';
 
 import { apiGetGenres, apiAddMovie } from '../util/api';
 import { getErrorMessage } from '../util/helper';
+
 const AddMovie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();

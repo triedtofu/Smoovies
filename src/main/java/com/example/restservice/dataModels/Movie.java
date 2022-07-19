@@ -92,7 +92,7 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private Set<Review> movieReviews = new HashSet<>();
 
-    @Column(precision=1,scale=2)
+    @Column(precision=2,scale=1)
     private BigDecimal average_rating;
 
     public Movie() {

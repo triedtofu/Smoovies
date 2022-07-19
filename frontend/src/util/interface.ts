@@ -18,6 +18,18 @@ export interface Review {
   rating: number;
 }
 
+export interface UserReview {
+  movieId: number;
+  movieName: string;
+  review: string;
+  rating: number;
+}
+
+export interface UserReviewResponse {
+  username: string;
+  reviews: UserReview[];
+}
+
 export interface MovieDetails {
   name: string;
   year: number;
