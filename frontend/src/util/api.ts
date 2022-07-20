@@ -16,7 +16,7 @@ import {
   DirectorResponse,
 } from './interface';
 
-const apiFetch = <Type>(path: string, init?: RequestInit) =>  {
+const apiFetch = <Type>(path: string, init?: RequestInit) => {
   return fetch(baseUrl + '/api' + path, init)
     .then((res) => res.json())
     .then((data) => {
@@ -59,15 +59,16 @@ export const apiMovieSearch = (name: string) => {
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`)
-    .then(data => {
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then(
+    (data) => {
       data.id = id;
       return data;
-    })
+    }
+  );
 };
 
 export const apiGetGenres = () => {
-  return apiFetch<{genres: string[]}>('/movie/genres');
+  return apiFetch<{ genres: string[] }>('/movie/genres');
 };
 
 export const apiAddMovie = (token: string, movie: MovieDetails) => {
@@ -78,7 +79,11 @@ export const apiAddMovie = (token: string, movie: MovieDetails) => {
   });
 };
 
-export const apiEditMovie = (token: string, id: number, movie: MovieDetails) => {
+export const apiEditMovie = (
+  token: string,
+  id: number,
+  movie: MovieDetails
+) => {
   return apiFetch<Record<string, never>>('/movie/editMovie', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -94,15 +99,18 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
   });
 };
 
-export const apiAddReview = (token: string, movieId: number, review: string, rating: number) => {
+export const apiAddReview = (
+  token: string,
+  movieId: number,
+  review: string,
+  rating: number
+) => {
   return apiFetch<Record<string, never>>('/movie/addReview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, review, rating }),
   });
-}
-
-// Users
+};
 
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
@@ -161,10 +169,10 @@ export const apiBanUser = (token: string, userId: number) => {
 
 export const apiGetActor = (id: number) => {
   return apiFetch<ActorResponse>(`/actor/getActor?id=${id}`);
-}
+};
 
 // Directors
 
 export const apiGetDirector = (id: number) => {
   return apiFetch<DirectorResponse>(`/director/getDirector?id=${id}`);
-}
+};
