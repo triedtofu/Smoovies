@@ -44,4 +44,8 @@ public class Actor {
         this.name = name;
     }
  
+    public Set<Movie> getMovieActorsIn() {
+        return actorIsIn;
+    }
+ 
 }
