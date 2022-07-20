@@ -34,6 +34,8 @@ const TestingUI = () => {
   const navigate = useNavigate();
   const params = useParams();
   const animation = useAnimation();
+  const animation2 = useAnimation();
+  const animation3 = useAnimation();
 
   const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
     undefined
@@ -41,7 +43,15 @@ const TestingUI = () => {
   const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
 
-  const { ref, inView } = useInView({
+  const [ref, inView] = useInView({
+    threshold: 0.2,
+  });
+
+  const [ref2, inView2] = useInView({
+    threshold: 0.2,
+  });
+
+  const [ref3, inView3] = useInView({
     threshold: 0.2,
   });
 
@@ -49,7 +59,7 @@ const TestingUI = () => {
     apiGetMovie(id)
       .then((data) => setMovie(data))
       .catch((error) => setErrorStr(getErrorMessage(error)));
-  }
+  };
 
   React.useEffect(() => {
     setErrorStr('');
@@ -92,8 +102,8 @@ const TestingUI = () => {
       animation.start({
         x: 0,
         transition: {
-          type: 'string',
-          duration: 1,
+          type: 'spring',
+          duration: 0.7,
           bounce: 0.3,
         },
       });
@@ -102,13 +112,40 @@ const TestingUI = () => {
     }
   }, [inView]);
 
+  React.useEffect(() => {
+    if (inView2) {
+      animation2.start({
+        y: 0,
+        transition: {
+          type: 'spring',
+          duration: 0.5,
+          bounce: 0.3,
+        },
+      });
+    } else {
+      animation2.start({ y: '100vh' });
+    }
+  }, [inView2]);
+
+  React.useEffect(() => {
+    if (inView3) {
+      animation3.start({
+        y: 0,
+        transition: {
+          type: 'spring',
+          duration: 0.5,
+          bounce: 0.3,
+        },
+      });
+    } else {
+      animation3.start({ y: '50vh' });
+    }
+  }, [inView3]);
+
   const WishlistButton = ({ state }: buttonProps) => {
     if (state === 1)
       return (
-        <Button
-          variant="outlined"
-          onClick={addMovieToWishlist}
-        >
+        <Button variant="outlined" onClick={addMovieToWishlist}>
           Add To Wishlist
         </Button>
       );
@@ -139,7 +176,9 @@ const TestingUI = () => {
 
     return (
       <div className={styles.adminButtonsDiv}>
-        <Button variant="outlined" onClick={() => navigate('edit')}>Edit</Button>
+        <Button variant="outlined" onClick={() => navigate('edit')}>
+          Edit
+        </Button>
         <Button variant="outlined" color="error" onClick={deleteMovie}>
           Delete
         </Button>
@@ -186,8 +225,9 @@ const TestingUI = () => {
   };
 
   const submitReview = (rating: number, review: string) => {
-    apiAddReview(cookies.token, parseInt(params.id!), review, rating)
-      .then(() => updateMovie(parseInt(params.id!)));
+    apiAddReview(cookies.token, parseInt(params.id!), review, rating).then(() =>
+      updateMovie(parseInt(params.id!))
+    );
   };
 
   if (!movie) return <></>;
@@ -217,7 +257,7 @@ const TestingUI = () => {
           style={{ display: 'flex' }}
           initial={{ x: '-100vw' }}
           animate={animation}
-          transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
+          transition={{ type: 'spring', duration: 0.7, bounce: 0.3 }}
         >
           <img src={movie.poster} style={{ width: '200px' }} />
 
@@ -245,28 +285,54 @@ const TestingUI = () => {
           </div>
         </motion.div>
       </div>
-      <div>
-        <h3>Movie Info</h3>
 
-        <p>{movie.description}</p>
+      <div ref={ref3}>
+        <motion.div
+          initial={{ y: '50vh' }}
+          animate={animation3}
+          transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
+        >
+          <h3>Movie Info</h3>
+
+          <p>{movie.description}</p>
+        </motion.div>
       </div>
 
-      <div>
-        <h2>Reviews</h2>
-        <div className={styles.reviewsDiv}>
-          {movie.reviews.map((review) => (
-            <ReviewCard key={review.user} review={review} />
-          ))}
+      <br />
+      <div ref={ref2}>
+        <div>
+          <h2>Reviews</h2>
+          <div className={styles.reviewsDiv}>
+            {movie.reviews.map((review) => (
+              <ReviewCard key={review.user} review={review} />
+            ))}
+          </div>
+        </div>
+        <br />
+
+        {!cookies.token && (
+          <p>
+            <MyLink to="/login">Login</MyLink>/
+            <MyLink to="/register">Register</MyLink> to write a review!
+          </p>
+        )}
+        <div>
+          <motion.div
+            initial={{ y: '100vh' }}
+            animate={animation2}
+            transition={{ type: 'spring', duration: 0.3, bounce: 0.3 }}
+          >
+            {cookies.token &&
+              !movie.reviews.find(
+                (review) =>
+                  review.user === parseInt(parseJwt(cookies.token).jti)
+              ) && <ReviewInput submitReview={submitReview} />}
+          </motion.div>
         </div>
       </div>
       <br />
-
-      {!cookies.token && <p><MyLink to="/login">Login</MyLink>/<MyLink to="/register">Register</MyLink> to write a review!</p>}
-
-      {cookies.token &&
-        !movie.reviews.find(review => review.user === parseInt(parseJwt(cookies.token).jti)) &&
-        <ReviewInput submitReview={submitReview} />
-      }
+      <br />
+      <br />
     </Container>
   );
 };
