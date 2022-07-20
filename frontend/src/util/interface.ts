@@ -73,3 +73,13 @@ export interface AddMovieResponse {
   name: string;
   year: number;
 }
+
+export interface ActorResponse {
+  name: string;
+  movies: MovieSummary[];
+}
+
+export interface DirectorResponse {
+  name: string;
+  movies: MovieSummary[];
+}
