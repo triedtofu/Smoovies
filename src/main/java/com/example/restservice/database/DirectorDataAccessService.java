@@ -11,4 +11,7 @@ import com.example.restservice.dataModels.Director;
 public interface DirectorDataAccessService extends JpaRepository<Director, Long> {
     @Query(value = "SELECT * FROM directors d WHERE d.name = :name", nativeQuery = true)
     public Director findDirectorByName (@Param("name") String name);
+
+    @Query(value = "SELECT * FROM directors d WHERE d.id = :id", nativeQuery = true)
+    public Director findDirectorById(@Param("id") Long id);
 }
