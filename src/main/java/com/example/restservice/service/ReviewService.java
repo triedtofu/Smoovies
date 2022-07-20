@@ -82,6 +82,7 @@ public class ReviewService {
             HashMap<String, Object> userReview = new HashMap<String,Object>();
             userReview.put("movieId", review.getMovie().getId());
             userReview.put("movieName", review.getMovie().getName());
+            userReview.put("poster", review.getMovie().getPoster());
             userReview.put("review", review.getReviewString());
             userReview.put("rating", review.getRating());
             JSONObject userReviewJson = new JSONObject(userReview);
