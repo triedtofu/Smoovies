@@ -11,7 +11,9 @@ import {
   SpecificMovieResponse,
   WishlistResponse,
   AddMovieResponse,
-  UserReviewResponse
+  UserReviewResponse,
+  ActorResponse,
+  DirectorResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) =>  {
@@ -138,3 +140,15 @@ export const apiResetPassword = (resetCode: string, password: string) => {
     body: JSON.stringify({ resetCode, password }),
   });
 };
+
+// Actors
+
+export const apiGetActor = (id: number) => {
+  return apiFetch<ActorResponse>(`/actor/getActor?id=${id}`);
+}
+
+// Directors
+
+export const apiGetDirector = (id: number) => {
+  return apiFetch<DirectorResponse>(`/director/getDirector?id=${id}`);
+}
