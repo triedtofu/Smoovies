@@ -100,10 +100,10 @@ public class ReviewService {
      */
     public JSONObject deleteReview (DeleteReviewRequest deleteReviewRequest) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
-
+        //Token -- user submitting the request, user_id is for identification of the review;
         String token = deleteReviewRequest.getToken();
-        Long user_id = ServiceJWTHelper.getTokenId(token, null);
-        if (user_id != deleteReviewRequest.getUserId()) return ServiceErrors.userNotFound();
+        Long token_user_id = ServiceJWTHelper.getTokenId(token, null);
+        
         
         Movie dbMovie = movieDAO.findMovieByID(deleteReviewRequest.getMovieId());
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
@@ -111,16 +111,35 @@ public class ReviewService {
         Review dbreview = reviewDAO.findReview(deleteReviewRequest.getMovieId(), deleteReviewRequest.getUserId());
         if (dbreview == null) return ServiceErrors.reviewNotFound();
 
-        User dbUser = userDAO.findUserById(user_id);
-        if (user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        User dbRequestUser = userDAO.findUserById(token_user_id);
+        if (token_user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
         //Remove the review from the movie and user.
-        dbUser.removeUserReview(dbreview);
-        dbMovie.removeMovieReview(dbreview);
-        dbMovie.recalculateAverageRating();
-        movieDAO.save(dbMovie);
-        userDAO.save(dbUser);
-        reviewDAO.delete(dbreview);
+        //deleteReviewFromDatabase(dbMovie, dbUser, dbreview);
+        User dbReviewUser = userDAO.findUserById(deleteReviewRequest.getUserId());
+        if (dbRequestUser.getIsAdmin()) {
+            //If is admin, can delete any review.
+            deleteReviewFromDatabase(dbMovie, dbReviewUser, dbreview);
+        } else {
+            //Check that the user_id from the review match the user_id of the token.
+            if (dbRequestUser.getId() != dbReviewUser.getId()) return ServiceErrors.wrongOwnershipReviewError();
+            deleteReviewFromDatabase(dbMovie, dbReviewUser, dbreview);
+        }
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
+    }
+    /**
+     * 
+     * @param movie The movie in the review;
+     * @param user The user who wrote the review;
+     * @param review
+     */
+    private void deleteReviewFromDatabase(Movie movie, User user, Review review) {
+        user.removeUserReview(review);
+        movie.removeMovieReview(review);
+        movie.recalculateAverageRating();
+        movieDAO.save(movie);
+        userDAO.save(user);
+        reviewDAO.delete(review);
     }
 }

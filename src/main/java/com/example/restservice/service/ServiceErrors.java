@@ -104,7 +104,9 @@ public class ServiceErrors {
     public static JSONObject userPasswordIncorrectError() {
         return generateErrorMessage("Password is incorrect.");
     }
-   
+    public static JSONObject wrongOwnershipReviewError() {
+        return generateErrorMessage("Can not delete review of other users");
+    }
     /**
      * Returns JSONObject with error message
      * @return {"error": "Email is already in use"}
