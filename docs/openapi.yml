@@ -17,6 +17,10 @@ tags:
     description: Managing movie data
   - name: Users
     description: Managing user profiles
+  - name: Actors
+    description: Managing actor data
+  - name: Directors
+    description: Managing director data
 paths:
   /api/user/login:
     post:
@@ -577,6 +581,58 @@ paths:
           $ref: '#/components/responses/AccessError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/actor/getActor:
+    get:
+      tags:
+        - Actors
+      summary: Get the details of a specific actor
+      description: Returns the details of a specific actor
+      parameters:
+        - $ref: '#/components/parameters/ActorIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Actor'
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/director/getDirector:
+    get:
+      tags:
+        - Directors
+      summary: Get the details of a specific director
+      description: Returns the details of a specific director
+      parameters:
+        - $ref: '#/components/parameters/DirectorIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Director'
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes:
     bearerAuth:
@@ -748,6 +804,20 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/MovieId'
+    ActorIdParam:
+      name: id
+      in: query
+      description: ID of the actor
+      required: true
+      schema:
+        $ref: '#/components/schemas/ActorId'
+    DirectorIdParam:
+      name: id
+      in: query
+      description: ID of the director
+      required: true
+      schema:
+        $ref: '#/components/schemas/DirectorId'
     SearchNameParam:
       name: name
       in: query
