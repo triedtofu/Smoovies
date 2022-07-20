@@ -160,7 +160,9 @@ paths:
       summary: Search for movies
       description: Returns the details of movies matching the search criteria
       parameters:
-        - $ref: '#/components/parameters/MovieNameParam'
+        - $ref: '#/components/parameters/SearchNameParam'
+        - $ref: '#/components/parameters/MovieGenresParam'
+        - $ref: '#/components/parameters/ContentRatingParam'
       responses:
         '200':
           description: OK
@@ -173,6 +175,24 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieSummary'
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/Actor'
+                        id:
+                          $ref: '#/components/schemas/ActorId'
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/Director'
+                        id:
+                          $ref: '#/components/schemas/DirectorId'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -614,6 +634,18 @@ components:
       type: string
       description: Name of a director
       example: Steven Spielberg
+    DirectorId:
+      type: number
+      description: ID of the director
+      example: 1729
+    Actor:
+      type: string
+      description: Name of a actor
+      example: Johnny Depp
+    ActorId:
+      type: number
+      description: ID of the actor
+      example: 1729
     Genre:
       type: string
       description: Genre of a movie
@@ -716,13 +748,28 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/MovieId'
-    MovieNameParam:
+    SearchNameParam:
       name: name
       in: query
-      description: Name of the movie
+      description: Search query
       required: true
       schema:
         $ref: '#/components/schemas/MovieName'
+    MovieGenresParam:
+      name: genres
+      in: query
+      description: List of genres
+      required: false
+      schema:
+        type: string
+        example: action,fantasy
+    ContentRatingParam:
+      name: contentRating
+      in: query
+      description: Content rating
+      required: false
+      schema:
+        $ref: '#/components/schemas/ContentRating'
   responses:
     InputError:
       description: Input error
