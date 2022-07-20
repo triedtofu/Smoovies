@@ -461,6 +461,8 @@ paths:
                           $ref: '#/components/schemas/MovieId'
                         movieName:
                           $ref: '#/components/schemas/MovieName'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
                         review:
                           $ref: '#/components/schemas/ReviewString'
                         rating:
