@@ -11,4 +11,7 @@ import com.example.restservice.dataModels.Actor;
 public interface ActorDataAccessService extends JpaRepository<Actor, Long> {
     @Query(value = "SELECT * FROM actors a WHERE a.name = :name", nativeQuery = true)
     public Actor findActorByName(@Param("name") String name);
+
+    @Query(value = "SELECT * FROM actors a WHERE a.id = :id", nativeQuery = true)
+    public Actor findActorById(@Param("id") Long id);
 }
