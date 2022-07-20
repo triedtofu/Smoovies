@@ -21,6 +21,7 @@ import {
   apiPutUserWishlist,
   apiDeleteMovie,
   apiAddReview,
+  apiDeleteReview,
 } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { SpecificMovieResponse } from '../util/interface';
@@ -29,7 +30,9 @@ interface buttonProps {
   state: number;
 }
 
-const TestingUI = () => {
+let addingReview = false;
+
+const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const params = useParams();
@@ -44,14 +47,17 @@ const TestingUI = () => {
   const [button, setButton] = React.useState(0);
 
   const [ref, inView] = useInView({
+    triggerOnce: true,
     threshold: 0.2,
   });
 
   const [ref2, inView2] = useInView({
+    triggerOnce: true,
     threshold: 0.2,
   });
 
   const [ref3, inView3] = useInView({
+    triggerOnce: true,
     threshold: 0.2,
   });
 
@@ -225,10 +231,30 @@ const TestingUI = () => {
   };
 
   const submitReview = (rating: number, review: string) => {
-    apiAddReview(cookies.token, parseInt(params.id!), review, rating).then(() =>
-      updateMovie(parseInt(params.id!))
-    );
+    if (addingReview) return;
+
+    addingReview = true;
+    apiAddReview(cookies.token, parseInt(params.id!), review, rating).then(() => {
+      addingReview = false;
+      updateMovie(parseInt(params.id!));
+    })
+      .catch(() => addingReview = false);
   };
+
+  const deleteReview = (movieId: number, reviewUser: number) => {
+    apiDeleteReview(cookies.token, movieId, reviewUser)
+      .then(() => updateMovie(movieId));
+    // TODO handle error
+  };
+
+  const deleteButtonFunc = (reviewUser: number) => {
+    if (cookies.token && 
+      (cookies.admin || reviewUser === parseInt(parseJwt(cookies.token).jti))) {
+      return () => deleteReview(movie!.id, reviewUser);
+    }
+
+    return undefined;
+  }
 
   if (!movie) return <></>;
 
@@ -298,17 +324,19 @@ const TestingUI = () => {
         </motion.div>
       </div>
 
-      <br />
       <div ref={ref2}>
         <div>
           <h2>Reviews</h2>
           <div className={styles.reviewsDiv}>
             {movie.reviews.map((review) => (
-              <ReviewCard key={review.user} review={review} />
+              <ReviewCard
+                key={review.user}
+                onDelete={deleteButtonFunc(review.user)}
+                review={review}
+              />
             ))}
           </div>
         </div>
-        <br />
 
         {!cookies.token && (
           <p>
@@ -316,25 +344,21 @@ const TestingUI = () => {
             <MyLink to="/register">Register</MyLink> to write a review!
           </p>
         )}
-        <div>
-          <motion.div
-            initial={{ y: '100vh' }}
-            animate={animation2}
-            transition={{ type: 'spring', duration: 0.3, bounce: 0.3 }}
-          >
-            {cookies.token &&
-              !movie.reviews.find(
-                (review) =>
-                  review.user === parseInt(parseJwt(cookies.token).jti)
-              ) && <ReviewInput submitReview={submitReview} />}
+
+        <br />
+
+        {cookies.token &&
+          !movie.reviews.find(
+            (review) =>
+              review.user === parseInt(parseJwt(cookies.token).jti)
+          ) &&
+          <motion.div animate={animation2}>
+            <ReviewInput submitReview={submitReview} />
           </motion.div>
-        </div>
+        }
       </div>
-      <br />
-      <br />
-      <br />
     </Container>
   );
 };
 
-export default MakePage(TestingUI);
+export default MakePage(Movie);
