@@ -117,6 +117,8 @@ public class ReviewService {
         //Remove the review from the movie and user.
         //deleteReviewFromDatabase(dbMovie, dbUser, dbreview);
         User dbReviewUser = userDAO.findUserById(deleteReviewRequest.getUserId());
+        if (dbReviewUser.getIsBanned()) return ServiceErrors.userBannedError();
+
         if (dbRequestUser.getIsAdmin()) {
             //If is admin, can delete any review.
             deleteReviewFromDatabase(dbMovie, dbReviewUser, dbreview);
