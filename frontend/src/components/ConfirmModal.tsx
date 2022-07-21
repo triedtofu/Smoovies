@@ -27,7 +27,7 @@ const ConfirmModal = (props: ConfirmModalProps) => {
       </DialogTitle>
       <DialogContent>
         {props.body && `${props.body}`}
-        {props.error && <FormLabel error>{props.error}</FormLabel>}
+        {props.error && <div><FormLabel error>Error: {props.error}</FormLabel></div>}
       </DialogContent>
       <DialogActions>
         <Button color="error" onClick={props.cancel}>No</Button>
