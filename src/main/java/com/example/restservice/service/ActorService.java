@@ -37,6 +37,7 @@ public class ActorService {
             HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
             dbMovieDetails.put("id", movie.getId());
             dbMovieDetails.put("name", movie.getName());
+            dbMovieDetails.put("year", movie.getYear());
             dbMovieDetails.put("poster", movie.getPoster());
             dbMovieDetails.put("description", movie.getDescription());
             dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
