@@ -1,6 +1,8 @@
 package com.example.restservice.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 // import java.util.ArrayList;
@@ -19,12 +21,13 @@ import com.example.restservice.dataModels.Actor;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 // import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
-import com.example.restservice.dataModels.Review;
+import com.example.restservice.dataModels.requests.SearchRequest;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
@@ -206,22 +209,42 @@ public class MovieService {
      * @param name
      * @return JSONObject containing  {"movies": JSONArray of movies}
      */
-    public JSONObject searchMovieByName(String name) {
+    public JSONObject searchMovieByName(SearchRequest searchRequest) {
 
-        if (!ServiceInputChecks.checkName(name)) {
+        if (!ServiceInputChecks.checkName(searchRequest.getName())) {
             return ServiceErrors.movieNameInvalidError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
+        
+        List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        //Filter 
+        List<Movie> filteredMovies = dbMovies;
+        
+        if (searchRequest.getContentRating() != null && !searchRequest.getContentRating().isEmpty()) {
+            List<Movie> removeValues = new ArrayList<>();
+            for (Movie m : filteredMovies) {
+                if (!m.getContentRating().equals(searchRequest.getContentRating())) removeValues.add(m);
 
-        List<Movie> dbMovies = movieDAO.searchMovieByName(name);
+            }
+            filteredMovies.removeAll(removeValues);
+        }
+        //Filter the movies even more based on genre...
+        if (searchRequest.getGenres() != null && !searchRequest.getGenres().isEmpty()) {
+            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
+            List<Movie> removeValues = new ArrayList<>();
+            for (Movie m : filteredMovies) {
+                //if they are disjoint, they have no elements in common, so remove them from list
+                if (Collections.disjoint(m.getGenreListStr(), inputGenreList)) removeValues.add(m);
+            }
+            filteredMovies.removeAll(removeValues);
+        }
+
         // TODO: if valid movies are found (list of movies is larger than size 0)
-        if (dbMovies.size() > 0) {
-            for(int i = 0; i < dbMovies.size(); i++) {
-                Movie dbMovie = dbMovies.get(i);
+        if (filteredMovies.size() > 0) {
+            for(int i = 0; i < filteredMovies.size(); i++) {
+                Movie dbMovie = filteredMovies.get(i);
                 HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
                 dbMovieDetails.put("id", dbMovie.getId());
                 dbMovieDetails.put("name", dbMovie.getName());
@@ -230,17 +253,35 @@ public class MovieService {
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
                 dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
-
+                dbMovieDetails.put("contentRating", dbMovie.getContentRating());
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
         }
-        // otherwise if no movies found, return not found error
-        else {
-            return ServiceErrors.movieNotFoundError();
-        }
-
         returnMessage.put("movies", moviesArray);
+        
+        JSONArray actorsArray = new JSONArray();
+        List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
+        for (Actor a : dbActors) {
+            HashMap<String,Object> dbActorDetails = new HashMap<String,Object>();
+            dbActorDetails.put("name", a.getName());
+            dbActorDetails.put("id", a.getId());
+            JSONObject dbActorDetailsJson = new JSONObject(dbActorDetails);
+            actorsArray.put(dbActorDetailsJson);
+        }
+        returnMessage.put("actors", actorsArray);
+
+        JSONArray directorsArray = new JSONArray();
+        List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
+        for (Director d : dbdirectors) {
+            HashMap<String,Object> dbDirectordetails = new HashMap<String,Object>();
+            dbDirectordetails.put("name", d.getName());
+            dbDirectordetails.put("id", d.getId());
+            JSONObject dbDirectordetailsJson = new JSONObject(dbDirectordetails);
+            directorsArray.put(dbDirectordetailsJson);
+        }
+        returnMessage.put("directors", directorsArray);
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }

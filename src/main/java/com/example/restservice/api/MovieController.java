@@ -23,6 +23,7 @@ import com.example.restservice.dataModels.requests.AddMovieRequest;
 import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
+import com.example.restservice.dataModels.requests.SearchRequest;
 //import com.example.restservice.dataModels.MovieIdRequest;
 import com.example.restservice.service.MovieService;
 import com.example.restservice.service.ReviewService;
@@ -68,8 +69,9 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
-        JSONObject response = movieService.searchMovieByName(name);
+    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name, @RequestParam(name = "contentRating", required = false) String contentRating, @RequestParam(name = "genres", required = false) String genres)  {
+        SearchRequest searchRequest = new SearchRequest(name, genres, contentRating);
+        JSONObject response = movieService.searchMovieByName(searchRequest);
         return ControllerResponses.generateHttpResponse(response);
     }
 

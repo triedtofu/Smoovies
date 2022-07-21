@@ -133,6 +133,14 @@ export const apiGetUserReviews = (userId: number) => {
   return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
 };
 
+export const apiDeleteReview = (token: string, movieId: number, userId: number) => {
+  return apiFetch<Record<string, never>>('/user/deleteReview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, userId }),
+  });
+};
+
 export const apiRequestResetPassword = (email: string) => {
   return apiFetch<Record<string, never>>('/user/requestResetPassword', {
     method: 'POST',
@@ -146,6 +154,14 @@ export const apiResetPassword = (resetCode: string, password: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ resetCode, password }),
+  });
+};
+
+export const apiBanUser = (token: string, userId: number) => {
+  return apiFetch<Record<string, never>>('/user/banUser', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, userId }),
   });
 };
 

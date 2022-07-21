@@ -42,4 +42,12 @@ public class Director {
     public void setName (String name) {
         this.name = name;
     }
+
+    public Set<Movie> getDirectorIsIn() {
+        return directorIsIn;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }

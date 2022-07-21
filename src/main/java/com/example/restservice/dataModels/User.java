@@ -143,4 +143,5 @@ public class User {
     public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
     }
+
 }
