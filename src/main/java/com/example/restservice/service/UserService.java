@@ -135,7 +135,6 @@ public class UserService {
      * @return wishlist of user
      */
     public JSONObject getUserWishlist(long id) {
-
         // TODO: check id for errors
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.userIdInvalidError();
@@ -146,6 +145,11 @@ public class UserService {
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
         if (user == null) return ServiceErrors.userIdInvalidError();
+        
+        // check the user is not banned
+        if (user.getIsBanned()) {
+            return ServiceErrors.userBannedError();
+        }
 
         Set<Movie> wishlist = user.getWishlistMovies();
         List<Movie> wish = new ArrayList<>(wishlist);
@@ -197,6 +201,11 @@ public class UserService {
         User user = userDAO.findById(user_id).orElse(null);
         if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
 
+        // check the user is not banned
+        if (user.getIsBanned()) {
+            return ServiceErrors.userBannedError();
+        }
+
         if (movie != null) {
             if (addRemove) {
                 user.addToWishlist(movie);
@@ -215,16 +224,16 @@ public class UserService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         User user = userDAO.findUserByEmail(requestResetPasswordRequest.getEmail());
-        if (user == null) {
-            return ServiceErrors.userEmailNotFoundError();
-        } else {
-            // send email
-            // use the users current password as the signKey, this will allow the password to be reset once
-            String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
-            String subject = "Smoovies - Reset Password Request";
-            String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
-            emailSenderService.sendEmail(user.getEmail(), subject, body);
-        }
+
+        if (user == null) return ServiceErrors.userEmailNotFoundError();
+        if (user.getIsBanned()) return ServiceErrors.userBannedError();
+
+        // send email
+        // use the users current password as the signKey, this will allow the password to be reset once
+        String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
+        String subject = "Smoovies - Reset Password Request";
+        String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
+        emailSenderService.sendEmail(user.getEmail(), subject, body);
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
@@ -252,17 +261,17 @@ public class UserService {
 
         // get the user corresponding to resetCode token
         User user = userDAO.findById(tokenUserId).orElse(null);
-        if (user == null) {
-            return ServiceErrors.userNotFoundFromTokenIdError();
-        } else {
-            // if first time changing password, change password
-            if (tokenPassword.equals(user.getPassword())) {
-                userDAO.updateUserPassword(user.getEmail(), newPassword);
-            }
-            // otherwise return invalid link error
-            else {
-                return ServiceErrors.resetLinkInvalid();
-            }
+
+        if (user == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        if (user.getIsBanned()) return ServiceErrors.userBannedError();
+
+        // if first time changing password, change password
+        if (tokenPassword.equals(user.getPassword())) {
+            userDAO.updateUserPassword(user.getEmail(), newPassword);
+        }
+        // otherwise return invalid link error
+        else {
+            return ServiceErrors.resetLinkInvalid();
         }
 
         JSONObject responseJson = new JSONObject(returnMessage);
@@ -303,12 +312,12 @@ public class UserService {
             return ServiceErrors.userIdInvalidError();
         }
         // ban the user if not already banned
-        if (user.getIsBanned().equals(true)) {
+        if (user.getIsBanned()) {
             return ServiceErrors.userAlreadyBannedError();
-        } else {
-            user.setIsBanned(true);
-            userDAO.save(user);
         }
+
+        user.setIsBanned(true);
+        userDAO.save(user);
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;

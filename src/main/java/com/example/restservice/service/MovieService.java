@@ -152,6 +152,8 @@ public class MovieService {
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
             JSONArray reviewArray = new JSONArray();
             for (Review review : dbMovie.getMovieReviews()) {
+                if (review.getUser().getIsBanned()) continue;
+                
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
                 movieReview.put("user", review.getUser().getId());
                 movieReview.put("name", review.getUser().getName());

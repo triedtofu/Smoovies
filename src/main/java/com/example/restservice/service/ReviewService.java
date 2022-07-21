@@ -33,7 +33,6 @@ public class ReviewService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
-
         // check valid inputs
         // check movieId exists/is valid
         Movie movie = movieDAO.findMovieByID(addReviewRequest.getMovieId());
@@ -48,11 +47,10 @@ public class ReviewService {
 
         User user = userDAO.findUserById(user_id);
 
-        
-        
-        if (user == null) {
-            return ServiceErrors.userIdInvalidError();
-        }
+        if (user == null) return ServiceErrors.userIdInvalidError();
+
+        // check the user is not banned
+        if (user.getIsBanned()) return ServiceErrors.userBannedError();
 
         Review dbReview = reviewDAO.findReview(movie.getId(), user.getId());
 
@@ -71,9 +69,11 @@ public class ReviewService {
 
     public JSONObject getUserReviews(Long id) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
-        
+
         User user = userDAO.findUserById(id);
-        if (user == null) {return ServiceErrors.userIdInvalidError();}
+        if (user == null) return ServiceErrors.userIdInvalidError();
+        if (user.getIsBanned()) return ServiceErrors.userBannedError();
+
         returnMessage.put("username", user.getName());
 
         //Loop through their reviews.
@@ -104,8 +104,8 @@ public class ReviewService {
         //Token -- user submitting the request, user_id is for identification of the review;
         String token = deleteReviewRequest.getToken();
         Long token_user_id = ServiceJWTHelper.getTokenId(token, null);
-        
-        
+
+
         Movie dbMovie = movieDAO.findMovieByID(deleteReviewRequest.getMovieId());
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
 
@@ -130,7 +130,7 @@ public class ReviewService {
         return responseJson;
     }
     /**
-     * 
+     *
      * @param movie The movie in the review;
      * @param user The user who wrote the review;
      * @param review
