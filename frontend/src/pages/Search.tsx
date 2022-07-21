@@ -80,38 +80,15 @@ const Search = () => {
     resetResults();
     setFetched(false);
 
-    const name = searchParams.get('name') ?? '';
-
-    if (name === '') return;
-
-    try {
-      apiMovieSearch(name)
-        .then((res) => {
-          setMovies(res.movies);
-          setActors(res.actors);
-          setDirectors(res.directors);
-          setFetched(true);
-        })
-        .catch((err) => {
-          setMovies([]);
-          setFetched(true);
-        });
-    } catch (err) {
-      console.log(err);
-      setMovies([]);
-    }
-  }, [searchParams]);
-
-  React.useEffect(() => {
-    resetResults();
-    setFetched(false);
-
     const myContentRatings = contentRatings.length != 0 ? [...contentRatings] : undefined;
     const myGenres = genres.length != 0 ? [...genres] : undefined;
 
     const name = searchParams.get('name') ?? '';
 
-    if (name === '') return;
+    if (name === '') {
+      setFetched(true);
+      return;
+    }
 
     try {
       apiMovieSearch(name, myGenres, myContentRatings)
@@ -130,7 +107,7 @@ const Search = () => {
       setMovies([]);
     }
 
-  }, [genres, contentRatings]);
+  }, [searchParams, genres, contentRatings]);
 
   React.useEffect(() => {
     apiGetGenres().then(data => setAllGenres(data.genres));
@@ -139,6 +116,8 @@ const Search = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  console.log(fetched);
 
   return (
     <Container maxWidth="lg">
@@ -205,7 +184,7 @@ const Search = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         {fetched && actors.length === 0 && <p>No actors found.</p>}
-        {actors.length > 0 && 
+        {actors.length > 0 &&
           actors.map(actor => (
             <PersonResultCard
               key={actor.id}
@@ -217,7 +196,7 @@ const Search = () => {
       </TabPanel>
       <TabPanel value={value} index={2}>
         {fetched && directors.length === 0 && <p>No directors found.</p>}
-        {directors.length > 0 && 
+        {directors.length > 0 &&
           directors.map(director => (
             <PersonResultCard
               key={director.id}
