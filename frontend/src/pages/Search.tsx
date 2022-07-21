@@ -70,11 +70,15 @@ const Search = () => {
 
   const [contentRatings, setContentRatings] = React.useState<string[]>([]);
 
-  React.useEffect(() => {
-    setFetched(false);
+  const resetResults = () => {
+    setMovies([]);
+    setActors([]);
+    setDirectors([]);
+  };
 
-    setContentRatings([]);
-    setGenres([]);
+  React.useEffect(() => {
+    resetResults();
+    setFetched(false);
 
     const name = searchParams.get('name') ?? '';
 
@@ -99,6 +103,8 @@ const Search = () => {
   }, [searchParams]);
 
   React.useEffect(() => {
+    resetResults();
+    setFetched(false);
 
     const myContentRatings = contentRatings.length != 0 ? [...contentRatings] : undefined;
     const myGenres = genres.length != 0 ? [...genres] : undefined;
@@ -141,6 +147,9 @@ const Search = () => {
       </Helmet>
 
       <h1>Results: {searchParams.get('name')}</h1>
+
+      {!fetched && <h2>Searching...</h2>}
+
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Movies" {...a11yProps(0)} />
@@ -150,18 +159,6 @@ const Search = () => {
       </Box>
       <TabPanel value={value} index={0}>
         <form className={styles.form}>
-          {/* <FormControl className={styles.flexContents1} size="small" >
-            <InputLabel>Content Rating</InputLabel>
-            <Select
-              value={contentRating}
-              label="Content Rating"
-              onChange={(e) => setContentRating(e.target.value)}
-            >
-              {['NR', 'G', 'PG', 'PG-13', 'M', 'MA 15+', 'R', 'TV-PG', 'TV-14'].map(rating => {
-                return <MenuItem key={rating} value={rating}>{rating}</MenuItem>
-              })}
-            </Select>
-          </FormControl> */}
           <Autocomplete
             className={styles.flexContents1}
             multiple
