@@ -21,6 +21,7 @@ export interface Review {
 export interface UserReview {
   movieId: number;
   movieName: string;
+  poster: string;
   review: string;
   rating: number;
 }
@@ -59,6 +60,12 @@ export interface MovieSummary {
   averageRating: number;
 }
 
+export interface SpecificMovieResponse extends MovieDetails {
+  id: number;
+  averageRating: number;
+  reviews: Review[];
+}
+
 export interface WishlistResponse {
   movies: MovieSummary[];
   username: string;
@@ -72,4 +79,30 @@ export interface AddMovieResponse {
   movieId: number;
   name: string;
   year: number;
+}
+
+export interface ActorResponse {
+  name: string;
+  movies: MovieSummary[];
+}
+
+export interface DirectorResponse {
+  name: string;
+  movies: MovieSummary[];
+}
+
+export interface ActorSearch {
+  name: string;
+  id: number;
+}
+
+export interface DirectorSearch {
+  name: string;
+  id: number;
+}
+
+export interface SearchResponse {
+  movies: MovieSummary[];
+  actors: ActorSearch[];
+  directors: DirectorSearch[];
 }

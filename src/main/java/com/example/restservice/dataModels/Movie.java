@@ -274,8 +274,6 @@ public class Movie {
             
             this.average_rating = new BigDecimal(total/movieReviews.size());
         }
-
-        
     }
 
     public double getAverageRating() {

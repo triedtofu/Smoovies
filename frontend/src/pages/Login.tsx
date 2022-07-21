@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet';
 
 import Container from '@mui/material/Container';
 
@@ -30,6 +31,10 @@ const Login = () => {
 
   return (
     <Container maxWidth="sm">
+      <Helmet>
+        <title>Login - Smoovies</title>
+      </Helmet>
+
       <h1>Login</h1>
       <LoginForm submit={login} error={loginErr} />
     </Container>

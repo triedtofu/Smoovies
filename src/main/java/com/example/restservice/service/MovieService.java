@@ -152,6 +152,8 @@ public class MovieService {
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
             JSONArray reviewArray = new JSONArray();
             for (Review review : dbMovie.getMovieReviews()) {
+                if (review.getUser().getIsBanned()) continue;
+                
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
                 movieReview.put("user", review.getUser().getId());
                 movieReview.put("name", review.getUser().getName());
@@ -217,26 +219,26 @@ public class MovieService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray moviesArray = new JSONArray();
-        
+
         List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
-        //Filter 
+        //Filter
         List<Movie> filteredMovies = dbMovies;
-        List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
-        
-        if (!searchRequest.getContentRating().isEmpty()) {
+
+        if (searchRequest.getContentRating() != null && !searchRequest.getContentRating().isEmpty()) {
+            List<String> inputContentRatingList = Arrays.asList(searchRequest.getContentRating().split(",[ ]*"));
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
-                if (!m.getContentRating().equals(searchRequest.getContentRating())) removeValues.add(m);
-
+                if (!inputContentRatingList.contains(m.getContentRating())) removeValues.add(m);
             }
             filteredMovies.removeAll(removeValues);
         }
         //Filter the movies even more based on genre...
-        if (!searchRequest.getGenres().isEmpty()) {
+        if (searchRequest.getGenres() != null && !searchRequest.getGenres().isEmpty()) {
+            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
-                //if they are disjoint, they have no elements in common, so remove them from list
-                if (Collections.disjoint(m.getGenreListStr(), inputGenreList)) removeValues.add(m);
+                // if they are disjoint, they have no elements in common, so remove them from list
+                if (!m.getGenreListStr().containsAll(inputGenreList)) removeValues.add(m);
             }
             filteredMovies.removeAll(removeValues);
         }
@@ -259,7 +261,7 @@ public class MovieService {
             }
         }
         returnMessage.put("movies", moviesArray);
-        
+
         JSONArray actorsArray = new JSONArray();
         List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
         for (Actor a : dbActors) {

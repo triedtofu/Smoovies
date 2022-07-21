@@ -250,7 +250,7 @@ const TestingUI = () => {
         <h2>Reviews</h2>
         <div style={{ display: 'flex' }}>
           {movie.reviews.map((review) => (
-            <ReviewCard key={review.user} review={review} />
+            <ReviewCard key={review.user} onDelete={undefined} review={review} />
           ))}
         </div>
       </div>
