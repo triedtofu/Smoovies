@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { apiRequestResetPassword } from '../util/api';
 import { getErrorMessage } from '../util/helper';
@@ -10,8 +10,6 @@ import ResetPasswordForm from '../components/ResetPasswordForm';
 import Container from '@mui/material/Container';
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
-
   const [errorStr, setErrorStr] = React.useState('');
   const [success, setSuccess] = React.useState(false);
 
@@ -33,6 +31,10 @@ const ForgotPassword = () => {
 
   return (
     <Container maxWidth="sm">
+      <Helmet>
+        <title>Forgot Password - Smoovies</title>
+      </Helmet>
+
       <h2>Forgot your password?</h2>
       <h2>Enter your email.</h2>
       <ResetPasswordForm submit={resetPassword} error={errorStr} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet';
 
 import Container from '@mui/material/Container';
 
@@ -29,6 +30,10 @@ const Register = () => {
 
   return (
     <Container maxWidth="sm">
+      <Helmet>
+        <title>Register - Smoovies</title>
+      </Helmet>
+
       <h1>Register</h1>
 
       <RegisterForm submit={register} error={registerErr} />
