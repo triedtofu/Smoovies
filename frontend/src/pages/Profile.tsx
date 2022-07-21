@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import MakePage from '../components/MakePage';
 import ReviewResultCard from '../components/ReviewResultCard';
 
-import { apiGetUserReviews } from '../util/api';
+import { apiGetUserReviews, apiDeleteReview } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { UserReview } from '../util/interface';
 
@@ -19,9 +19,7 @@ const Profile = () => {
   const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
 
-  React.useEffect(() => {
-    setReviews([]);
-    setName('');
+  const refreshPage = () => {
     setErrorStr('');
     const idStr = params.id ?? '';
 
@@ -33,7 +31,6 @@ const Profile = () => {
     try {
       apiGetUserReviews(parseInt(idStr))
         .then((data) => {
-          console.log(data);
           setReviews(data.reviews);
           setName(data.username);
         })
@@ -41,10 +38,17 @@ const Profile = () => {
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
+  };  
+
+  React.useEffect(() => {
+    setReviews([]);
+    setName('');
+    refreshPage();
   }, [params]);
 
-  const removeReview = (reviewId: number) => {
-    // TODO
+  const removeReview = (movieId: number) => {
+    apiDeleteReview(cookies.token, movieId, parseJwt(cookies.token).jti)
+      .then(() => refreshPage());
   };
 
   // returns whether the remove from review button should be shown
@@ -78,7 +82,7 @@ const Profile = () => {
           buttonClick={showButton() ? () => removeReview(review.movieId) : null}
         />
       ))}
-      {reviews.length === 0 && <p>No Reviews made by this user.</p>}
+      {reviews.length === 0 && <p>No reviews.</p>}
     </Container>
   );
 };
