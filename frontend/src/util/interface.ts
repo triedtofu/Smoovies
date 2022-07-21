@@ -83,3 +83,19 @@ export interface DirectorResponse {
   name: string;
   movies: MovieSummary[];
 }
+
+export interface ActorSearch {
+  name: string;
+  id: number;
+}
+
+export interface DirectorSearch {
+  name: string;
+  id: number;
+}
+
+export interface SearchResponse {
+  movies: MovieSummary[];
+  actors: ActorSearch[];
+  directors: DirectorSearch[];
+}
