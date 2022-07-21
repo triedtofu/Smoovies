@@ -236,7 +236,7 @@ public class MovieService {
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
                 // if they are disjoint, they have no elements in common, so remove them from list
-                if (Collections.disjoint(m.getGenreListStr(), inputGenreList)) removeValues.add(m);
+                if (!m.getGenreListStr().containsAll(inputGenreList)) removeValues.add(m);
             }
             filteredMovies.removeAll(removeValues);
         }
