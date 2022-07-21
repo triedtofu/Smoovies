@@ -293,7 +293,10 @@ const Movie = () => {
               <p>
                 Genre: {movie.genres.join(', ')}
                 <br />
-                Director: {movie.director}
+                Director: {movie.director
+                  .split(',')
+                  .map((s) => s.trim())
+                  .join(', ')}
                 <br />
                 Cast:{' '}
                 {movie.cast

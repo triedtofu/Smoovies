@@ -217,16 +217,16 @@ public class MovieService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray moviesArray = new JSONArray();
-        
+
         List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
-        //Filter 
+        //Filter
         List<Movie> filteredMovies = dbMovies;
-        
+
         if (searchRequest.getContentRating() != null && !searchRequest.getContentRating().isEmpty()) {
+            List<String> inputContentRatingList = Arrays.asList(searchRequest.getContentRating().split(",[ ]*"));
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
-                if (!m.getContentRating().equals(searchRequest.getContentRating())) removeValues.add(m);
-
+                if (!inputContentRatingList.contains(m.getContentRating())) removeValues.add(m);
             }
             filteredMovies.removeAll(removeValues);
         }
@@ -235,8 +235,8 @@ public class MovieService {
             List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
-                //if they are disjoint, they have no elements in common, so remove them from list
-                if (Collections.disjoint(m.getGenreListStr(), inputGenreList)) removeValues.add(m);
+                // if they are disjoint, they have no elements in common, so remove them from list
+                if (!m.getGenreListStr().containsAll(inputGenreList)) removeValues.add(m);
             }
             filteredMovies.removeAll(removeValues);
         }
@@ -259,7 +259,7 @@ public class MovieService {
             }
         }
         returnMessage.put("movies", moviesArray);
-        
+
         JSONArray actorsArray = new JSONArray();
         List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
         for (Actor a : dbActors) {

@@ -1,0 +1,13 @@
+.card {
+  margin: 10px;
+  display: flex;
+  align-items: flex-start;
+}
+
+#card_media {
+  width: 100px;
+}
+
+.card_content {
+  width: 100%;
+}
