@@ -14,6 +14,7 @@ import {
   UserReviewResponse,
   ActorResponse,
   DirectorResponse,
+  SearchResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) => {
@@ -54,7 +55,7 @@ export const apiMovieHomepage = () => {
 };
 
 export const apiMovieSearch = (name: string) => {
-  return apiFetch<MovieSummaries>(`/movie/search?name=${name}`);
+  return apiFetch<SearchResponse>(`/movie/search?name=${name}`);
 };
 
 // TODO update once api is done
