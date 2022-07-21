@@ -1,5 +1,6 @@
 package com.example.restservice.dataModels;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -27,15 +30,15 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "name")
-    private  String name;
-    
+    private String name;
+
     @Column(name = "year")
-    private  int year;
+    private int year;
 
     @Column(name = "poster")
     private String poster;
-  
-    @Column(name = "description")
+
+    @Column(name = "description", columnDefinition= "text")
     private String description;
 
     @Column(name = "director")
@@ -43,6 +46,9 @@ public class Movie {
 
     @Column(name = "contentRating")
     private String contentRating;
+
+    @Column(name = "runtime")
+    private int runtime;
 
     @ManyToMany(mappedBy = "wishList")
     private Set<User> userWishlists = new HashSet<>();
@@ -53,7 +59,7 @@ public class Movie {
     @Transient
     private List<String> genres = new ArrayList<>();
 
-    @Column(name = "trailer") 
+    @Column(name = "trailer")
     private String trailer;
 
     @JsonIgnore
@@ -82,7 +88,12 @@ public class Movie {
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> movieGenres = new HashSet<>();
-  
+
+    @OneToMany(mappedBy = "movie")
+    private Set<Review> movieReviews = new HashSet<>();
+
+    @Column(precision=2,scale=1)
+    private BigDecimal average_rating;
 
     public Movie() {
         super();
@@ -97,7 +108,9 @@ public class Movie {
                 @JsonProperty("contentRating") String contentRating,
                 @JsonProperty("cast") String cast,
                 @JsonProperty("genres") List<String> genres,
-                @JsonProperty("trailer") String trailer) {
+                @JsonProperty("trailer") String trailer,
+                @JsonProperty("runtime") int runtime
+                ) {
         super();
         this.name = name;
         this.year = year;
@@ -108,7 +121,8 @@ public class Movie {
         this.cast = cast;
         this.genres = genres;
         this.trailer = trailer;
-
+        this.runtime = runtime;
+        this.average_rating = new BigDecimal(0.00);
     }
 
     public long getId() {
@@ -121,6 +135,10 @@ public class Movie {
 
     public int getYear() {
         return year;
+    }
+
+    public int getRuntime() {
+        return runtime;
     }
 
     public String getPoster() {
@@ -161,7 +179,7 @@ public class Movie {
 
     public void addGenreToDB(Genre g) {
         this.movieGenres.add(g);
-    } 
+    }
 
     public String getTrailer() {
         return this.trailer;
@@ -170,15 +188,99 @@ public class Movie {
     public Set<Genre> getGenreList() {
         return this.movieGenres;
     }
-    /**
-     * Clears the sets of actors, directors, reviews, 
-     */
-    public void deleteMovieDependencies() {
-        this.actorsInMovie.clear();
-        this.directorsInMovie.clear();
+
+    public List<String> getGenreListStr() {
+        return Genre.genreCollectionToStrList(this.movieGenres);
+    }
+
+
+    public void addReviewToMovie(Review review) {
+        this.movieReviews.add(review);
+    }
+
+    public Set<Review> getMovieReviews() {
+        return movieReviews;
+    }
+
+    @PreRemove
+    private void removeMoviesFromUserWishlists(){
+        for (User u : userWishlists) {
+            u.removeWishlist(this);
+        }
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public void setTrailer(String trailer) {
+        this.trailer = trailer;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDirectors(String directors) {
+        this.directors = directors;
+    }
+
+    public void setContentRating(String contentRating) {
+        this.contentRating = contentRating;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public void setCast(String cast) {
+        this.cast = cast;
+    }
+
+    public void clearDBGenres() {
         this.movieGenres.clear();
     }
-   
 
+    public void clearDBCast() {
+        this.actorsInMovie.clear();
+    }
 
+    public void clearDBDirectors() {
+        this.directorsInMovie.clear();
+    }
+
+    public void recalculateAverageRating() {
+        double total = 0;
+        
+        if (movieReviews.size() == 0) {
+            this.average_rating = new BigDecimal(0.0);
+            return;
+        } else {
+            for (Review review : movieReviews) {
+                total = total + review.getRating();
+            }
+            
+            this.average_rating = new BigDecimal(total/movieReviews.size());
+        }
+    }
+
+    public double getAverageRating() {
+        return average_rating.doubleValue();
+    }
+
+    public void removeMovieReview(Review r) {
+        movieReviews.remove(r);
+    }
 }

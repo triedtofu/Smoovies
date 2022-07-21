@@ -1,5 +1,17 @@
-.title_div {
+.titleDiv {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.reviewsDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.adminButtonsDiv {
+  display: flex;
+  gap: 5px;
 }

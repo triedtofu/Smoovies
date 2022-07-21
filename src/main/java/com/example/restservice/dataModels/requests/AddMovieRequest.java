@@ -1,5 +1,6 @@
-package com.example.restservice.dataModels;
+package com.example.restservice.dataModels.requests;
 
+import com.example.restservice.dataModels.Movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
@@ -19,9 +20,10 @@ public class AddMovieRequest {
             @JsonProperty("contentRating") String contentRating,
             @JsonProperty("cast") String cast,
             @JsonProperty("genres") List<String> genres,
-            @JsonProperty("trailer") String trailer) {
+            @JsonProperty("trailer") String trailer,
+            @JsonProperty("runtime") int runtime) {
 
-        Movie movie = new Movie(name, year, poster, description, directors, contentRating, cast, genres, trailer);
+        Movie movie = new Movie(name, year, poster, description, directors, contentRating, cast, genres, trailer, runtime);
         this.movie = movie;
         this.token = token;
     }

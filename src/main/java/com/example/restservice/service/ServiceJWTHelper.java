@@ -14,9 +14,11 @@ import io.jsonwebtoken.Claims;
 // Source : https://medium.com/beingcoders/implement-jwt-token-in-9-minutes-1d579ff9731d
 public class ServiceJWTHelper {
 
- 
+    private static String defaultSignKey = "sercretKeyMustBeThisLonggggggggggggggggggggggggggggg";
+    private static String resetSignKey = "reset";
+
     //Sample method to construct a JWT
-    public static String generateJWT(String id, String subject) {
+    public static String generateJWT(String id, String subject, String signKey) {
         
         long ttlMillis = tokenTimeInMilliSeconds();
 
@@ -25,9 +27,16 @@ public class ServiceJWTHelper {
     
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-    
+
         //We will sign our JWT with our ApiKey secret
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("sercretKeyMustBeThisLonggggggggggggggggggggggggggggg");
+        byte[] apiKeySecretBytes;
+        if (signKey != null) {
+            // if sign key isnt long enough, pad it 
+            signKey = padSignKey(signKey);
+            apiKeySecretBytes = DatatypeConverter.parseBase64Binary(signKey);
+        } else {
+            apiKeySecretBytes = DatatypeConverter.parseBase64Binary(defaultSignKey);
+        }
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
     
         //Let's set the JWT Claims
@@ -48,14 +57,24 @@ public class ServiceJWTHelper {
     }
 
     //Sample method to validate and read the JWT
-    private static Claims verifyJWT(String jwt) {
+    private static Claims verifyJWT(String jwt, String signKey) {
     
         //This line will throw an exception if it is not a signed JWS (as expected)
         try {
-            Claims claims = Jwts.parserBuilder()         
-            .setSigningKey(DatatypeConverter.parseBase64Binary("sercretKeyMustBeThisLonggggggggggggggggggggggggggggg"))
-            .build()
-            .parseClaimsJws(jwt).getBody();
+            Claims claims;
+            if (signKey != null) {
+                // if sign key isnt long enough, pad it 
+                signKey = padSignKey(signKey);
+                claims = Jwts.parserBuilder()         
+                .setSigningKey(DatatypeConverter.parseBase64Binary(signKey))
+                .build()
+                .parseClaimsJws(jwt).getBody();
+            } else {
+                claims = Jwts.parserBuilder()         
+                .setSigningKey(DatatypeConverter.parseBase64Binary(defaultSignKey))
+                .build()
+                .parseClaimsJws(jwt).getBody();
+            }
             return claims;
         } catch (JwtException e) {
             return null;
@@ -67,8 +86,13 @@ public class ServiceJWTHelper {
         return 60 * 60 * 1000; 
     }
 
-    public static String getTokenEmail(String jwt) {
-        Claims claims = verifyJWT(jwt);
+    public static long tokenTimeInHours() {
+        // currently 1 hr
+        return tokenTimeInMilliSeconds()/60/60/1000; 
+    }
+
+    public static String getTokenSubject(String jwt, String signKey) {
+        Claims claims = verifyJWT(jwt, signKey);
         if (claims != null) {
             return claims.getSubject();
         }
@@ -76,11 +100,23 @@ public class ServiceJWTHelper {
         
     }
 
-    public static Long getTokenId(String jwt) {
-        Claims claims = verifyJWT(jwt);
+    public static Long getTokenId(String jwt, String signKey) {
+        Claims claims = verifyJWT(jwt, signKey);
         if (claims != null) {
             return Long.valueOf(claims.getId());
         }
         return null;
+    }
+
+    public static String getResetSignKey() {
+        return resetSignKey;
+    }
+
+    // pads the sign key to 50 characters with all "a" to the right
+    private static String padSignKey(String signKey) {
+        if (signKey.length() < 50) {
+            signKey = String.format("%-50s", signKey ).replace(' ', 'a');
+        }
+        return signKey;
     }
 }

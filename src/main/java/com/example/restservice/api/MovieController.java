@@ -13,16 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.restservice.dataModels.DeleteMovieRequest;
-import com.example.restservice.dataModels.AddMovieRequest;
-import com.example.restservice.dataModels.AddReviewRequest;
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.requests.AddMovieRequest;
+import com.example.restservice.dataModels.requests.AddReviewRequest;
+import com.example.restservice.dataModels.requests.DeleteMovieRequest;
+import com.example.restservice.dataModels.requests.EditMovieRequest;
+import com.example.restservice.dataModels.requests.SearchRequest;
 //import com.example.restservice.dataModels.MovieIdRequest;
 import com.example.restservice.service.MovieService;
+import com.example.restservice.service.ReviewService;
 
 //import com.example.restservice.api.ControllerResponses;
 
@@ -31,18 +35,19 @@ import com.example.restservice.service.MovieService;
 public class MovieController {
     @Autowired
     private final MovieService movieService;
+
+    @Autowired
+    private final ReviewService reviewService;
     
     @Autowired
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, ReviewService reviewService) {
         this.movieService = movieService;
+        this.reviewService = reviewService;
     }
     
     @PostMapping("/addMovie")
     public ResponseEntity<Object> addMovie(@RequestBody AddMovieRequest movie) {
-
-        // admin accounts are created in backend, if calling this api, assume it is from frontend (therefore admin = false)
         JSONObject response = movieService.addMovie(movie);
-
         return ControllerResponses.generateHttpResponse(response);
     }
 
@@ -64,8 +69,9 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name) {
-        JSONObject response = movieService.searchMovieByName(name);
+    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name, @RequestParam(name = "contentRating", required = false) String contentRating, @RequestParam(name = "genres", required = false) String genres)  {
+        SearchRequest searchRequest = new SearchRequest(name, genres, contentRating);
+        JSONObject response = movieService.searchMovieByName(searchRequest);
         return ControllerResponses.generateHttpResponse(response);
     }
 
@@ -77,13 +83,19 @@ public class MovieController {
 
     @PostMapping("/addReview")
     public ResponseEntity<Object> addReview(@RequestBody AddReviewRequest request) {
-        JSONObject response = movieService.addReview(request);
+        JSONObject response = reviewService.addReview(request);
         return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/genres")
     public ResponseEntity<Object> getAllGenres() {
         JSONObject response = movieService.getAllGenres();
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @PutMapping("/editMovie")
+    public ResponseEntity<Object> getAllGenres(@RequestBody EditMovieRequest request) {
+        JSONObject response = movieService.editMovie(request);
         return ControllerResponses.generateHttpResponse(response);
     }
 }

@@ -8,13 +8,9 @@ import MyLink from './MyLink';
 
 import Box from '@mui/material/Box';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { styled } from '@mui/material/styles';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch, { SwitchProps } from '@mui/material/Switch';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [checked, setChecked] = React.useState(false);
 
   const submitSearch = (movieSearch: string) => {
     navigate(`/search?name=${movieSearch}`);

@@ -37,7 +37,11 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
   };
 
   const gotoProfilePage = () => {
-    // TODO
+    navigate(`/user/${props.id}`);
+  };
+
+  const gotoEditProfilePage = () => {
+    navigate(`/user/${props.id}/edit`);
   };
 
   const gotoWishlist = () => {
@@ -66,9 +70,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <MyLink to="/higherorlower" className={styles.Links}>
-          Higher or Lower
-        </MyLink>
+        <MyLink to="/higherorlower">Higher or Lower</MyLink>
         <div>|</div>
         <div className={styles.dashboard}>
           <Button
@@ -91,6 +93,7 @@ const NavbarLoggedIn = (props: NavbarLoggedInProps) => {
             }}
           >
             <MenuItem onClick={gotoProfilePage}>My Profile</MenuItem>
+            <MenuItem onClick={gotoEditProfilePage}>Edit Profile</MenuItem>
             <MenuItem onClick={gotoWishlist}>My Wishlist</MenuItem>
             <MenuItem onClick={gotoBanlist}>My Banlist</MenuItem>
 

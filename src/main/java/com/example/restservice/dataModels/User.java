@@ -3,6 +3,7 @@ package com.example.restservice.dataModels;
 import java.util.HashSet;
 import java.util.Set;
 
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,6 +40,9 @@ public class User {
     @Column(name = "token")
     private String token;
 
+    @Column(name = "isBanned")
+    private Boolean isBanned;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -46,6 +51,9 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "movie_id")
     )
     Set<Movie> wishList = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Review> userReviews = new HashSet<>();
 
     public User() {
         super();
@@ -56,13 +64,15 @@ public class User {
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String password,
                 @JsonProperty("token") String token,
-                Boolean isAdmin) {
+                Boolean isAdmin,
+                Boolean isBanned) {
         super();
         this.name = name;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
         this.token = token;
+        this.isBanned = isBanned;
     }
 
     public Long getId() {
@@ -93,6 +103,10 @@ public class User {
         return this.token;
     }
 
+    public Boolean getIsBanned() {
+        return isBanned;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -107,4 +121,27 @@ public class User {
     public void removeWishlist(Movie movie) {
         wishList.remove(movie);
     }
+
+
+    public Set<Review> getUserReviews() {
+        return userReviews;
+    }
+
+    public void addReviewUser(Review r) {
+        this.userReviews.add(r);
+    }
+
+    public void removeUserReview(Review r) {
+        this.userReviews.remove(r);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+
+    }
+
+    public void setIsBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
+    }
+
 }

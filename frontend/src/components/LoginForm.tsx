@@ -7,6 +7,7 @@ import MyFormControl from './MyFormControl';
 import MyLink from './MyLink';
 import RequiredTextField from './RequiredTextField';
 import styles from './AuthForm.module.css';
+import ToggleablePassword from './ToggleablePassword';
 
 interface LoginProps {
   submit: (email: string, password: string) => Promise<void>;
@@ -25,7 +26,7 @@ const LoginForm = (props: LoginProps) => {
   return (
     <>
       <form onSubmit={loginSubmit}>
-        <FormLabel error={Boolean(props.error)}>{props.error}</FormLabel>
+        <FormLabel error={!!props.error}>{props.error}</FormLabel>
         <MyFormControl>
           <RequiredTextField
             name="email"
@@ -36,20 +37,11 @@ const LoginForm = (props: LoginProps) => {
           />
         </MyFormControl>
         <MyFormControl>
-          <RequiredTextField
+          <ToggleablePassword
             name="password"
             label="Enter your password"
-            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            // onPaste={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
-            // onCopy={(e) => {
-            //   e.preventDefault();
-            //   return false;
-            // }}
           />
         </MyFormControl>
         <MyFormControl>
@@ -64,9 +56,9 @@ const LoginForm = (props: LoginProps) => {
         <MyLink className={styles.boxLink} to="/register">
           Register
         </MyLink>
-        &nbsp; | Forgot Password?
-        <MyLink className={styles.boxLink} to="/resetpassword">
-          Reset Password
+        |
+        <MyLink className={styles.boxLink} to="/forgotpassword">
+          Forgot Password?
         </MyLink>
       </div>
     </>

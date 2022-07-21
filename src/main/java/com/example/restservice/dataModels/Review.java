@@ -4,10 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "reviews")
@@ -17,11 +20,13 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "userId")
-    private  long userId;
-    
-    @Column(name = "movieId")
-    private  long movieId;  
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "movie_id")
+    private Movie movie;
 
     @Column(name = "review")
     private  String review;
@@ -33,37 +38,36 @@ public class Review {
         super();
     }
 
-    public Review(
-                @JsonProperty("movieId") int movieId,
-                @JsonProperty("review") String review,
-                @JsonProperty("rating") int rating) {
+    public Review(Movie movie, User user, String review, int rating) {
         super();
-        this.movieId = movieId;
+        this.user = user;
+        this.movie = movie;
         this.review = review;
         this.rating = rating;
     }
 
-    public long getId() {
-        return id;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
-    public long getUserId() {
-        return userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public long getMovieId() {
-        return movieId;
-    }
-
-    public String getReview() {
+    public String getReviewString() {
         return review;
+    }
+
+    public Movie getMovie() {
+        return movie;
     }
 
     public int getRating() {
         return rating;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public User getUser() {
+        return user;
     }
+
 }

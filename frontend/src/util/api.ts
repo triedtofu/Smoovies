@@ -3,9 +3,21 @@
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
 const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
-import { LoginResponse, MovieDetails, MovieSummaries, RegisterReponse, SpecificMovieResponse, WishlistResponse } from './interface';
+import {
+  LoginResponse,
+  MovieDetails,
+  MovieSummaries,
+  RegisterReponse,
+  SpecificMovieResponse,
+  WishlistResponse,
+  AddMovieResponse,
+  UserReviewResponse,
+  ActorResponse,
+  DirectorResponse,
+  SearchResponse,
+} from './interface';
 
-const apiFetch = <Type>(path: string, init: object) =>  {
+const apiFetch = <Type>(path: string, init?: RequestInit) => {
   return fetch(baseUrl + '/api' + path, init)
     .then((res) => res.json())
     .then((data) => {
@@ -39,43 +51,51 @@ export const apiAuthLogin = (email: string, password: string) => {
 // Movies
 
 export const apiMovieHomepage = () => {
-  return apiFetch<MovieSummaries>('/movie/homepage', {});
+  return apiFetch<MovieSummaries>('/movie/homepage');
 };
 
-export const apiMovieSearch = (name: string) => {
-  return apiFetch<MovieSummaries>(`/movie/search?name=${name}`, {});
+export const apiMovieSearch = (name: string, genres?: string[], contentRating?: string[]) => {
+  let searchStr = `name=${name}`;
+
+  if (genres) searchStr += `&genres=${genres.join(',')}`;
+  if (contentRating) searchStr += `&contentRating=${contentRating.join(',')}`;
+
+  return apiFetch<SearchResponse>(`/movie/search?${searchStr}`);
 };
 
 // TODO update once api is done
 export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`, {}).then((data) => {
-    data.trailer = data.trailer ? data.trailer.slice(-11) : 'SQK-QxxtE8Y';
-    data.averageRating = 3.14;
-    data.runTime = 114;
-    data.reviews = [
-      {
-        user: 1729,
-        name: 'Dave',
-        review: "It's Morbin Time",
-        rating: 5,
-      },
-    ];
-    data.genres = ['Action', 'Fantasy'];
-    return data;
-  });
+  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then(
+    (data) => {
+      data.id = id;
+      return data;
+    }
+  );
 };
 
 export const apiGetGenres = () => {
-  return apiFetch<{genres: string[]}>('/movie/genres', {});
+  return apiFetch<{ genres: string[] }>('/movie/genres');
 };
 
 export const apiAddMovie = (token: string, movie: MovieDetails) => {
-  return apiFetch<Record<string, never>>('/movie/addMovie', {
+  return apiFetch<AddMovieResponse>('/movie/addMovie', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, ...movie }),
   });
-}
+};
+
+export const apiEditMovie = (
+  token: string,
+  id: number,
+  movie: MovieDetails
+) => {
+  return apiFetch<Record<string, never>>('/movie/editMovie', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, id, ...movie }),
+  });
+};
 
 export const apiDeleteMovie = (token: string, movieId: number) => {
   return apiFetch<Record<string, never>>('/movie/deleteMovie', {
@@ -85,14 +105,22 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
   });
 };
 
-// Users
+export const apiAddReview = (
+  token: string,
+  movieId: number,
+  review: string,
+  rating: number
+) => {
+  return apiFetch<Record<string, never>>('/movie/addReview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, review, rating }),
+  });
+};
 
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
-  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`, {})
-    .catch(_ => {
-      return { movies: [] };
-    });
+  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`);
 };
 
 export const apiPutUserWishlist = (
@@ -105,4 +133,52 @@ export const apiPutUserWishlist = (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, turnon }),
   });
+};
+
+export const apiGetUserReviews = (userId: number) => {
+  return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
+};
+
+export const apiDeleteReview = (token: string, movieId: number, userId: number) => {
+  return apiFetch<Record<string, never>>('/user/deleteReview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, userId }),
+  });
+};
+
+export const apiRequestResetPassword = (email: string) => {
+  return apiFetch<Record<string, never>>('/user/requestResetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+};
+
+export const apiResetPassword = (resetCode: string, password: string) => {
+  return apiFetch<Record<string, never>>('/user/resetPassword', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ resetCode, password }),
+  });
+};
+
+export const apiBanUser = (token: string, userId: number) => {
+  return apiFetch<Record<string, never>>('/user/banUser', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, userId }),
+  });
+};
+
+// Actors
+
+export const apiGetActor = (id: number) => {
+  return apiFetch<ActorResponse>(`/actor/getActor?id=${id}`);
+};
+
+// Directors
+
+export const apiGetDirector = (id: number) => {
+  return apiFetch<DirectorResponse>(`/director/getDirector?id=${id}`);
 };

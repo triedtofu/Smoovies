@@ -78,6 +78,19 @@ public class ServiceErrors {
         return generateErrorMessage("User Id is invalid.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "Invalid reset code."}
+     */
+    public static JSONObject resetCodeInvalidError() {
+        return generateErrorMessage("Invalid reset code.");
+    }
+
+    public static JSONObject reviewAlreadyExistsError() {
+        return generateErrorMessage("A user is unable to add 2 reviews to a movie");
+    }
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 403 FORBIDDEN errors                                  //
@@ -91,7 +104,9 @@ public class ServiceErrors {
     public static JSONObject userPasswordIncorrectError() {
         return generateErrorMessage("Password is incorrect.");
     }
-   
+    public static JSONObject wrongOwnershipReviewError() {
+        return generateErrorMessage("Can not delete review of other users");
+    }
     /**
      * Returns JSONObject with error message
      * @return {"error": "Email is already in use"}
@@ -107,7 +122,39 @@ public class ServiceErrors {
     public static JSONObject userAdminPermissionError() {
         return generateErrorMessage("User is not an admin.");
     }
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "This reset link is no longer valid, please make a new request."}
+     */
+    public static JSONObject resetLinkInvalid() {
+        return generateErrorMessage("This reset link is no longer valid, please make a new request.");
+    }
     
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "New password can not be same as old password."}
+     */
+    public static JSONObject resetPasswordIsTheSame() {
+        return generateErrorMessage("New password can not be same as old password.");
+    }
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User is already banned."}
+     */
+    public static JSONObject userAlreadyBannedError() {
+        return generateErrorMessage("User is already banned.");
+    }
+
+     /**
+     * Returns JSONObject with error message
+     * @return {"error": "User is banned."}
+     */
+    public static JSONObject userBannedError() {
+        return generateErrorMessage("User is banned.");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //
@@ -122,6 +169,14 @@ public class ServiceErrors {
         return generateErrorMessage("Email not found.");
     }
 
+    public static JSONObject userNotFound() {
+        return generateErrorMessage("User is not found");
+    }
+
+    public static JSONObject reviewNotFound() {
+        return generateErrorMessage("No review has been found by the user to the requested movie");
+    }
+    
     /**
      * Returns JSONObject with error message
      * @return {"error": "Movie not found in database."}
@@ -144,6 +199,14 @@ public class ServiceErrors {
      */
     public static JSONObject UserWishlistNotFoundError() {
         return generateErrorMessage("User wishlist not found.");
+    }
+    
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User not found, userId in token does not exist in database."}
+     */
+    public static JSONObject userNotFoundFromTokenIdError() {
+        return generateErrorMessage("User not found, userId in token does not exist in database.");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
