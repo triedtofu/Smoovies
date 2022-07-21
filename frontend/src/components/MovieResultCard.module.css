@@ -4,8 +4,8 @@
   align-items: flex-start;
 }
 
-#card_media {
-  width: 175px;
+.card_media {
+  width: 175px !important;
 }
 
 .card_content {

@@ -49,7 +49,7 @@ const Profile = () => {
   }, [params]);
 
   const removeReview = (movieId: number) => {
-    apiDeleteReview(cookies.token, movieId, parseJwt(cookies.token).jti).then(
+    apiDeleteReview(cookies.token, movieId, parseInt(params.id!)).then(
       () => refreshPage()
     );
   };
@@ -63,15 +63,18 @@ const Profile = () => {
       return false;
     }
 
-    if (!cookies.token || idStr !== parseJwt(cookies.token).jti) return false;
+    if (!cookies.token || (!cookies.admin && idStr !== parseJwt(cookies.token).jti)) return false;
 
     return true;
   };
 
   const banUser = () => {
-    // TODO
+    setErrorStr('');
+    
     const idStr = params.id ?? '';
-    apiBanUser(cookies.token, parseInt(idStr));
+    apiBanUser(cookies.token, parseInt(idStr))
+      .then(() => refreshPage())
+      .catch(error => setErrorStr(getErrorMessage(error)));
   };
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;

@@ -117,8 +117,6 @@ const Search = () => {
     setValue(newValue);
   };
 
-  console.log(fetched);
-
   return (
     <Container maxWidth="lg">
       <Helmet>

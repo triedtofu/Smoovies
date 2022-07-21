@@ -25,7 +25,7 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
         component="img"
         image={movie.poster}
         alt={`Movie poster for ${movie.name}`}
-        id={styles.card_media}
+        className={styles.card_media}
       />
       <CardContent className={styles.card_content}>
         <MyLink to={`/movie/${movie.id}`}>

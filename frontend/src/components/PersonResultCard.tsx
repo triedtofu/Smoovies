@@ -21,7 +21,7 @@ const PersonResultCard = (props: PersonResultCardProps) => {
         component="img"
         image={props.image}
         alt={`Image of ${props.name}`}
-        id={styles.card_media}
+        className={styles.card_media}
       />
       <CardContent className={styles.card_content}>
         <MyLink to={props.link}>
