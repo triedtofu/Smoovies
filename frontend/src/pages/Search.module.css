@@ -1,0 +1,14 @@
+.form {
+  display: flex;
+  /* flex-direction: column; */
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.flexContents1 {
+  flex: 1;
+}
+
+.flexContents2 {
+  flex: 2;
+}

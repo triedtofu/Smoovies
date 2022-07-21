@@ -1,7 +1,7 @@
 // const baseUrl = '';
-// const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import {
   LoginResponse,
@@ -54,8 +54,13 @@ export const apiMovieHomepage = () => {
   return apiFetch<MovieSummaries>('/movie/homepage');
 };
 
-export const apiMovieSearch = (name: string) => {
-  return apiFetch<SearchResponse>(`/movie/search?name=${name}`);
+export const apiMovieSearch = (name: string, genres?: string[], contentRating?: string[]) => {
+  let searchStr = `name=${name}`;
+
+  if (genres) searchStr += `&genres=${genres.join(',')}`;
+  if (contentRating) searchStr += `&contentRating=${contentRating.join(',')}`;
+
+  return apiFetch<SearchResponse>(`/movie/search?${searchStr}`);
 };
 
 // TODO update once api is done
