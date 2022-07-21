@@ -34,4 +34,11 @@ Week6:
  - Added add movie functionality
  - added directors/actors and genres database
  - delete movie
- - 
+ 
+ Week 8:
+  - implemented review functionality,
+  - add review/delete review/review setup in database
+  - implemented search
+  - implemented get director details and actor details
+  - added api routes for the above
+  - added ratings for movie based on reviews.
