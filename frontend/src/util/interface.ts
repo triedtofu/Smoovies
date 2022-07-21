@@ -21,6 +21,7 @@ export interface Review {
 export interface UserReview {
   movieId: number;
   movieName: string;
+  poster: string;
   review: string;
   rating: number;
 }
@@ -57,6 +58,12 @@ export interface MovieSummary {
   description: string;
   genres: string[];
   averageRating: number;
+}
+
+export interface SpecificMovieResponse extends MovieDetails {
+  id: number;
+  averageRating: number;
+  reviews: Review[];
 }
 
 export interface WishlistResponse {
