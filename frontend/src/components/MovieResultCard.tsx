@@ -11,6 +11,8 @@ import styles from './MovieResultCard.module.css';
 import { MovieSummary } from '../util/interface';
 import MyLink from './MyLink';
 
+import DeleteIcon from '@mui/icons-material/Delete';
+
 interface MovieResultCardProps {
   buttonClick: (() => void) | null;
   movie: MovieSummary;
@@ -32,8 +34,8 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
           </Typography>
         </MyLink>
         <div>
-          {movie.genres.map(genre => (
-            <Chip key={genre} label={genre} sx={{margin: '5px'}}/>
+          {movie.genres.map((genre) => (
+            <Chip key={genre} label={genre} sx={{ margin: '5px' }} />
           ))}
         </div>
         <div>
@@ -43,19 +45,20 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
           <b>Description:</b> {movie.description}
         </div>
       </CardContent>
-      {buttonClick ?
+      {buttonClick ? (
         <Button
           variant="outlined"
           color="error"
           sx={{ margin: '10px' }}
           onClick={buttonClick}
         >
-          Remove
-        </Button> : 
+          <DeleteIcon></DeleteIcon>
+        </Button>
+      ) : (
         <div></div>
-      }
+      )}
     </Card>
   );
-}
+};
 
 export default MovieResultCard;

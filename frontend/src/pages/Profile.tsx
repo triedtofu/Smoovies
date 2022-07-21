@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import Container from '@mui/material/Container';
 
 import MakePage from '../components/MakePage';
-import MovieResultCard from '../components/MovieResultCard';
+import ReviewResultCard from '../components/ReviewResultCard';
 
 import { apiGetUserReviews } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
@@ -15,12 +15,12 @@ const Profile = () => {
   const params = useParams();
   const [cookies] = useCookies();
 
-  const [review, setReview] = React.useState<UserReview[]>([]);
+  const [reviews, setReviews] = React.useState<UserReview[]>([]);
   const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
 
   React.useEffect(() => {
-    setReview([]);
+    setReviews([]);
     setName('');
     setErrorStr('');
     const idStr = params.id ?? '';
@@ -34,7 +34,7 @@ const Profile = () => {
       apiGetUserReviews(parseInt(idStr))
         .then((data) => {
           console.log(data);
-          setReview(data.reviews);
+          setReviews(data.reviews);
           setName(data.username);
         })
         .catch((error) => setErrorStr(getErrorMessage(error)));
@@ -43,7 +43,11 @@ const Profile = () => {
     }
   }, [params]);
 
-  // returns whether the remove from wishlist button should be shown
+  const removeReview = (reviewId: number) => {
+    // TODO
+  };
+
+  // returns whether the remove from review button should be shown
   const showButton = () => {
     const idStr = params.id ?? '';
 
@@ -67,7 +71,14 @@ const Profile = () => {
           : `${name}'s Reviews`}
       </h1>
 
-      {review.length === 0 && <p>No Reviews made by this user.</p>}
+      {reviews.map((review) => (
+        <ReviewResultCard
+          key={review.movieId}
+          review={review}
+          buttonClick={showButton() ? () => removeReview(review.movieId) : null}
+        />
+      ))}
+      {reviews.length === 0 && <p>No Reviews made by this user.</p>}
     </Container>
   );
 };
