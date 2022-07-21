@@ -7,9 +7,11 @@ import Container from '@mui/material/Container';
 import MakePage from '../components/MakePage';
 import ReviewResultCard from '../components/ReviewResultCard';
 
-import { apiGetUserReviews, apiDeleteReview } from '../util/api';
+import { apiBanUser, apiGetUserReviews, apiDeleteReview } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { UserReview } from '../util/interface';
+import CancelIcon from '@mui/icons-material/Cancel';
+import Button from '@mui/material/Button';
 
 const Profile = () => {
   const params = useParams();
@@ -38,7 +40,7 @@ const Profile = () => {
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
-  };  
+  };
 
   React.useEffect(() => {
     setReviews([]);
@@ -47,8 +49,9 @@ const Profile = () => {
   }, [params]);
 
   const removeReview = (movieId: number) => {
-    apiDeleteReview(cookies.token, movieId, parseJwt(cookies.token).jti)
-      .then(() => refreshPage());
+    apiDeleteReview(cookies.token, movieId, parseJwt(cookies.token).jti).then(
+      () => refreshPage()
+    );
   };
 
   // returns whether the remove from review button should be shown
@@ -65,15 +68,35 @@ const Profile = () => {
     return true;
   };
 
+  const banUser = () => {
+    // TODO
+    const idStr = params.id ?? '';
+    apiBanUser(cookies.token, parseInt(idStr));
+  };
+
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
 
   return (
     <Container maxWidth="lg">
-      <h1>
-        {cookies.token && params.id === parseJwt(cookies.token).jti
-          ? 'Your Reviews'
-          : `${name}'s Reviews`}
-      </h1>
+      <div style={{ justifyContent: 'space-between' }}>
+        <h1
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginLeft: '10px',
+            marginRight: '10px',
+          }}
+        >
+          {cookies.token && params.id === parseJwt(cookies.token).jti
+            ? 'Your Reviews'
+            : `${name}'s Reviews`}
+          {cookies.token && cookies.admin && (
+            <Button variant="outlined" color="error" onClick={banUser}>
+              Ban User &nbsp;<CancelIcon></CancelIcon>
+            </Button>
+          )}
+        </h1>
+      </div>
 
       {reviews.map((review) => (
         <ReviewResultCard
