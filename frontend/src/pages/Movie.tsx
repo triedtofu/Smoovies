@@ -11,6 +11,7 @@ import Youtube from '../components/Youtube';
 import ReviewCard from '../components/ReviewCard';
 import ReviewInput from '../components/ReviewInput';
 import MyLink from '../components/MyLink';
+import ConfirmModal from '../components/ConfirmModal';
 
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -45,6 +46,10 @@ const Movie = () => {
   );
   const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
+  const [deleteMovieConfirm, setDeleteMovieConfirm] = React.useState(false);
+  const [deleteMovieErr, setDeleteMovieErr] = React.useState('');
+  const [deleteReviewErr, setDeleteReviewErr] = React.useState('');
+
 
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -171,10 +176,13 @@ const Movie = () => {
   };
 
   const deleteMovie = () => {
-    apiDeleteMovie(cookies.token, movie!.id).then(() => {
-      setMovie(undefined);
-      setErrorStr('Movie has been deleted.');
-    });
+    apiDeleteMovie(cookies.token, movie!.id)
+      .then(() => {
+        setMovie(undefined);
+        setErrorStr('Movie has been deleted.');
+        setDeleteMovieConfirm(false);
+      })
+      .catch(error => setDeleteMovieErr(getErrorMessage(error)));
   };
 
   const AdminButton = () => {
@@ -185,7 +193,7 @@ const Movie = () => {
         <Button variant="outlined" onClick={() => navigate('edit')}>
           Edit
         </Button>
-        <Button variant="outlined" color="error" onClick={deleteMovie}>
+        <Button variant="outlined" color="error" onClick={() => setDeleteMovieConfirm(true)}>
           Delete
         </Button>
       </div>
@@ -243,7 +251,8 @@ const Movie = () => {
 
   const deleteReview = (movieId: number, reviewUser: number) => {
     apiDeleteReview(cookies.token, movieId, reviewUser)
-      .then(() => updateMovie(movieId));
+      .then(() => updateMovie(movieId))
+      .catch(error => setDeleteReviewErr(getErrorMessage(error)));
     // TODO handle error
   };
 
@@ -270,6 +279,16 @@ const Movie = () => {
 
         <WishlistButton state={button} />
         <AdminButton />
+
+        {deleteMovieConfirm &&
+          <ConfirmModal
+            title="Delete movie"
+            body={`Are you sure you want to delete ${movie.name}? This action can't be undone.`}
+            confirm={deleteMovie}
+            cancel={() => setDeleteMovieConfirm(false)}
+            error={deleteMovieErr}
+          />
+        }
       </div>
 
       <div style={{ maxWidth: '740px' }}>
@@ -336,6 +355,7 @@ const Movie = () => {
                 key={review.user}
                 onDelete={deleteButtonFunc(review.user)}
                 review={review}
+                error={deleteReviewErr}
               />
             ))}
           </div>

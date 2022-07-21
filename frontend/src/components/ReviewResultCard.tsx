@@ -3,24 +3,27 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from './ReviewResultCard.module.css';
-import { UserReview } from '../util/interface';
 import MyLink from './MyLink';
+import ConfirmModal from './ConfirmModal';
 
-import DeleteIcon from '@mui/icons-material/Delete';
+import { UserReview } from '../util/interface';
+
 
 interface ReviewResultCardProps {
   buttonClick: (() => void) | null;
   review: UserReview;
+  error?: string;
 }
 
-const ReviewResultCard = ({ buttonClick, review }: ReviewResultCardProps) => {
+const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps) => {
+  const [confirmDelete, setConfirmDelete] = React.useState(false);
+
   return (
     <Card className={styles.card}>
       <CardMedia
@@ -48,13 +51,23 @@ const ReviewResultCard = ({ buttonClick, review }: ReviewResultCardProps) => {
           variant="outlined"
           color="error"
           sx={{ margin: '10px' }}
-          onClick={buttonClick}
+          onClick={() => setConfirmDelete(true)}
         >
           <DeleteIcon></DeleteIcon>
         </Button>
       ) : (
         <div></div>
       )}
+
+      {buttonClick && confirmDelete &&
+        <ConfirmModal
+          title="Delete review"
+          body="Are you sure you want to delete this review? This action can't be undone."
+          confirm={buttonClick}
+          cancel={() => setConfirmDelete(false)}
+          error={error ?? ''}
+        />
+      }
     </Card>
   );
 };
