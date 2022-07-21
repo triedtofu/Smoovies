@@ -46,4 +46,8 @@ public class Director {
     public Set<Movie> getDirectorIsIn() {
         return directorIsIn;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
