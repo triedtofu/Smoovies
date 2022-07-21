@@ -44,7 +44,7 @@ public class ActorService {
             JSONObject movieJsonObject = new JSONObject(dbMovieDetails);
             movieArray.put(movieJsonObject);
         }
-        returnMessage.put("mov`ies", movieArray);
+        returnMessage.put("movies", movieArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
