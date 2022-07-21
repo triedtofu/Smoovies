@@ -221,9 +221,8 @@ public class MovieService {
         List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
         //Filter 
         List<Movie> filteredMovies = dbMovies;
-        List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
         
-        if (!searchRequest.getContentRating().isEmpty()) {
+        if (searchRequest.getContentRating() != null && !searchRequest.getContentRating().isEmpty()) {
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
                 if (!m.getContentRating().equals(searchRequest.getContentRating())) removeValues.add(m);
@@ -232,7 +231,8 @@ public class MovieService {
             filteredMovies.removeAll(removeValues);
         }
         //Filter the movies even more based on genre...
-        if (!searchRequest.getGenres().isEmpty()) {
+        if (searchRequest.getGenres() != null && !searchRequest.getGenres().isEmpty()) {
+            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
             List<Movie> removeValues = new ArrayList<>();
             for (Movie m : filteredMovies) {
                 //if they are disjoint, they have no elements in common, so remove them from list
