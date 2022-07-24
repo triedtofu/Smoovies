@@ -6,9 +6,15 @@
 
 .card_media {
   width: 175px !important;
+  max-width: 50% !important;
 }
 
 .card_content {
   width: 100%;
 }
 
+@media (max-width: 600px) {
+  .description {
+    display: none;
+  }
+}

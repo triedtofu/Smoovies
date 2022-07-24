@@ -41,7 +41,7 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
         <div>
           <b>Rating:</b> {movie.averageRating} / 5
         </div>
-        <div>
+        <div className={styles.description}>
           <b>Description:</b> {movie.description}
         </div>
       </CardContent>
