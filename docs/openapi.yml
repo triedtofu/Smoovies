@@ -408,6 +408,38 @@ paths:
           $ref: '#/components/responses/InputError'
         '403':
           $ref: '#/components/responses/AccessError'
+  /api/movie/higherOrLower:
+    get:
+      tags:
+        - Movies
+      summary: Get higher or lower data
+      description: Returns the higher or lower data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      $ref: '#/components/schemas/MovieName'
+                    year:
+                      $ref: '#/components/schemas/MovieYear'
+                    averageRating:
+                      $ref: '#/components/schemas/AverageRating'
+                    poster:
+                      $ref: '#/components/schemas/MoviePoster'
+                    director:
+                      $ref: '#/components/schemas/Director'
+                    cast:
+                      $ref: '#/components/schemas/Cast'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
   /api/user/wishlist:
     get:
       tags:
