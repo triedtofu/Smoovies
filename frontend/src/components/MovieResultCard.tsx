@@ -28,7 +28,7 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
         className={styles.card_media}
       />
       <CardContent className={styles.card_content}>
-        <MyLink to={`/movie/${movie.id}`}>
+        <MyLink href={`/movie/${movie.id}`}>
           <Typography gutterBottom variant="h5" component="div">
             {`${movie.name} (${movie.year})`}
           </Typography>

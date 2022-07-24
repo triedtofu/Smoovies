@@ -22,7 +22,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
         alt={`Movie poster for ${movie.name}`}
       />
       <CardContent>
-        <MyLink to={`/movie/${movie.id}`}>
+        <MyLink href={`/movie/${movie.id}`}>
           <Typography
             gutterBottom
             variant="h5"

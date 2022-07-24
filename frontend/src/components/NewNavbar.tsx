@@ -112,13 +112,13 @@ const NewNavbar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { md: 'none' } }}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2 }}
             >
               <MenuIcon />
             </IconButton>
@@ -129,7 +129,7 @@ const NewNavbar = () => {
             component="a"
             href="#"
             sx={{
-              display: { xs: 'none', sm: 'block' },
+              display: { xs: 'none', md: 'block' },
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -150,7 +150,7 @@ const NewNavbar = () => {
               </form>
             </Search>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' } , alignItems: { md: 'center' }}}>
             {pages.map((page) => (
               <Button
                 key={page[0]}
@@ -161,7 +161,11 @@ const NewNavbar = () => {
               </Button>
             ))}
 
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={colorMode.toggleColorMode}
+              color="inherit"
+            >
               {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Box>
@@ -177,7 +181,7 @@ const NewNavbar = () => {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { md: 'block', lg: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box' },
           }}
         >

@@ -5,8 +5,8 @@
 }
 
 .card_media {
-  width: 175px !important;
-  max-width: 50% !important;
+  width: 175px;
+  max-width: 50%;
 }
 
 .card_content {

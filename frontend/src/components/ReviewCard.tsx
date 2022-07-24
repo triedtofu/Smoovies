@@ -23,7 +23,7 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   return (
     <div className={styles.reviewOuter}>
       <div className={styles.reviewHeader}>
-        <MyLink to={`/user/${review.user}`}>{review.name}</MyLink>
+        <MyLink href={`/user/${review.user}`}>{review.name}</MyLink>
         <Rating
           name="text-feedback"
           value={review.rating}

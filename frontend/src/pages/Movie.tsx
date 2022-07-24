@@ -257,7 +257,7 @@ const Movie = () => {
   };
 
   const deleteButtonFunc = (reviewUser: number) => {
-    if (cookies.token && 
+    if (cookies.token &&
       (cookies.admin || reviewUser === parseInt(parseJwt(cookies.token).jti))) {
       return () => deleteReview(movie!.id, reviewUser);
     }
@@ -307,8 +307,9 @@ const Movie = () => {
           <img src={movie.poster} style={{ width: '200px' }} />
 
           <div style={{ width: '100%', textAlign: 'center' }}>
-            <h2>{movie.name}</h2>
             <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
+              <h2>{movie.name}</h2>
+
               <p>
                 Genre: {movie.genres.join(', ')}
                 <br />
@@ -363,8 +364,8 @@ const Movie = () => {
 
         {!cookies.token && (
           <p>
-            <MyLink to="/login">Login</MyLink>/
-            <MyLink to="/register">Register</MyLink> to write a review!
+            <MyLink href="/login">Login</MyLink>/
+            <MyLink href="/register">Register</MyLink> to write a review!
           </p>
         )}
 

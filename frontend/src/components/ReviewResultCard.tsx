@@ -35,7 +35,7 @@ const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps)
       <CardContent className={styles.card_content}>
         <div style={{ display: 'flex' }}>
           <h1>
-            <MyLink to={`/movie/${review.movieId}`}>{review.movieName}</MyLink> &nbsp;&nbsp;&nbsp;
+            <MyLink href={`/movie/${review.movieId}`}>{review.movieName}</MyLink> &nbsp;&nbsp;&nbsp;
             <Rating name="read-only" value={review.rating} readOnly />
             &nbsp;&nbsp;&nbsp;
             {review.rating} / 5

@@ -1,12 +1,24 @@
 import React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 
 import { Context } from './context';
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles';
+
+import { LinkProps } from '@mui/material/Link';
 
 import Router from './Router';
+
+const LinkBehavior = React.forwardRef<
+  HTMLAnchorElement,
+  Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
+>((props, ref) => {
+  const { href, ...other } = props;
+  // Map href (MUI) -> to (react-router)
+  return <RouterLink ref={ref} to={href} {...other} />;
+});
 
 const App = () => {
   const ColorModeContext = Context;
@@ -27,19 +39,34 @@ const App = () => {
         palette: {
           mode,
         },
+        components: {
+          MuiLink: {
+            defaultProps: {
+              component: LinkBehavior,
+            } as LinkProps,
+          },
+          MuiButtonBase: {
+            defaultProps: {
+              LinkComponent: LinkBehavior,
+            },
+          },
+        }
       }),
     [mode],
   );
 
   return (
     <CookiesProvider>
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <HashRouter>
-            <Router />
-          </HashRouter>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
+      <StyledEngineProvider injectFirst>
+        <ColorModeContext.Provider value={colorMode}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <HashRouter>
+              <Router />
+            </HashRouter>
+          </ThemeProvider>
+        </ColorModeContext.Provider>
+      </StyledEngineProvider>
     </CookiesProvider>
   );
 };
