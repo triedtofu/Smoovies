@@ -6,6 +6,8 @@ import Navbar from './Navbar';
 import NavbarLoggedIn from './NavbarLoggedIn';
 import NavbarAdmin from './NavbarAdmin';
 
+import NewNavbar from './NewNavbar';
+
 import { parseJwt } from '../util/helper';
 
 const MakePage = (Component: React.ElementType) => {
@@ -36,7 +38,7 @@ const MakePage = (Component: React.ElementType) => {
           />
         )
       } else {
-        return <Navbar />;
+        return <NewNavbar />;
       }
     }
     
