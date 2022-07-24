@@ -376,6 +376,38 @@ paths:
           $ref: '#/components/responses/InputError'
         '403':
           $ref: '#/components/responses/AccessError'
+  /api/movie/likeReview:
+    put:
+      tags:
+        - Movies
+      summary: Like or unlike a review
+      description: Allow an authorised user to like or unlike a review. If 'turnon' is set to true, then the action likes the review. If 'turnon' is set to false, then the action unlikes the review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+                turnon:
+                  $ref: '#/components/schemas/TurnOn'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
   /api/user/wishlist:
     get:
       tags:
@@ -409,7 +441,7 @@ paths:
       tags:
         - Users
       summary: Add or remove a movie from wishlist
-      description: Allow an authorised user to add or remove a movie from their wishlist. If 'on' is set to true, then the action adds the movie. If 'on' is set to false, then the action removes the movie.
+      description: Allow an authorised user to add or remove a movie from their wishlist. If 'turnon' is set to true, then the action adds the movie. If 'turnon' is set to false, then the action removes the movie.
       requestBody:
         required: true
         content:
@@ -587,8 +619,8 @@ paths:
     put:
       tags:
         - Users
-      summary: Blacklist a user
-      description: Route for users to blacklist a user
+      summary: Blacklist or unblacklist a user
+      description: Allow the current user to blacklist or unblacklist a user. If 'turnon' is set to true then the action blacklists a user. If 'turnon' is set to false, then the action unblacklists a user.
       requestBody:
         required: true
         content:
