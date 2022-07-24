@@ -583,6 +583,38 @@ paths:
           $ref: '#/components/responses/AccessError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/user/blacklist:
+    put:
+      tags:
+        - Users
+      summary: Blacklist a user
+      description: Route for users to blacklist a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+                turnon:
+                  $ref: '#/components/schemas/TurnOn'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
   /api/actor/getActor:
     get:
       tags:
