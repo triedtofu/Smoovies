@@ -17,20 +17,39 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 import { Context, useContext } from '../context';
 import Search from './NewSearch';
 
 const pages = [
-  ["Higher or Lower", "/higherorlower"],
-  ["Login", "/login"],
-  ["Register", "/register"],
+  ["Higher or Lower", "/higherorlower"]
 ];
 
-const NewNavbar = () => {
+interface NavbarLoggedInProps {
+  name: string;
+  id: number;
+  logout: () => void;
+}
+
+const Navbar = (props: NavbarLoggedInProps) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colorMode = useContext(Context);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const submitSearch = (movieSearch: string) => {
     navigate(`/search?name=${movieSearch}`);
@@ -42,8 +61,15 @@ const NewNavbar = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const profilePages = [
+    ["My Profile", `/user/${props.id}`],
+    ["Edit Profile", `/user/${props.id}/edit`],
+    ["My Wishlist", `user/${props.id}/wishlist`],
+    ["My Banlist", ""]
+  ];
+
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+    <Box sx={{ textAlign: 'center' }}>
       <Typography
         variant="h6"
         sx={{
@@ -60,6 +86,32 @@ const NewNavbar = () => {
             </ListItemButton>
           </ListItem>
         ))}
+
+        <ListItem>
+          <ListItemIcon sx={{ minWidth: '24px', pr: '8px' }}>
+            <AccountCircle />
+          </ListItemIcon>
+          <ListItemText primary={props.name} />
+        </ListItem>
+
+        <List disablePadding>
+          {/* <ListItemButton sx={{ pl: 4 }}>
+            <ListItemText primary="Starred" />
+          </ListItemButton> */}
+          {profilePages.map(item => (
+            <ListItem key={item[0]} disablePadding>
+              <ListItemButton sx={{ pl: 4 }} onClick={() => navigate(item[1])}>
+                <ListItemText primary={item[0]} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
+        <ListItem disablePadding>
+          <ListItemButton onClick={props.logout}>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -99,12 +151,44 @@ const NewNavbar = () => {
             {pages.map((page) => (
               <Button
                 key={page[0]}
-                onClick={() => navigate(page[1])}
+                onClick={() => navigate(`/${page[1]}`)}
                 sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'block' }}}
               >
                 {page[0]}
               </Button>
             ))}
+
+            <Button
+              sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'flex' }}}
+              startIcon={<AccountCircle />}
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}
+            >
+              {props.name}
+            </Button>
+
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              {profilePages.map(page => (
+                <MenuItem key={page[0]} onClick={() => navigate(page[1])}>
+                  {page[0]}
+                </MenuItem>
+              ))}
+
+              <Divider variant="middle" />
+
+              <MenuItem onClick={props.logout}>Logout</MenuItem>
+            </Menu>
 
             <IconButton
               onClick={colorMode.toggleColorMode}
@@ -136,4 +220,4 @@ const NewNavbar = () => {
   );
 }
 
-export default NewNavbar;
+export default Navbar;
