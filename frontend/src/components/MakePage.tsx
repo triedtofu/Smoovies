@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import Navbar from './Navbar';
 import NavbarLoggedIn from './NavbarLoggedIn';

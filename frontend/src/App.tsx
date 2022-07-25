@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter, Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import { HelmetProvider } from 'react-helmet-async';
 
 import { Context } from './context';
 
@@ -62,7 +63,9 @@ const App = () => {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <HashRouter>
-              <Router />
+              <HelmetProvider>
+                <Router />
+              </HelmetProvider>
             </HashRouter>
           </ThemeProvider>
         </ColorModeContext.Provider>
