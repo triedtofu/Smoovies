@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter, Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
-import { CookiesProvider } from 'react-cookie';
+import { CookiesProvider, useCookies } from 'react-cookie';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { Context } from './context';
@@ -23,12 +23,22 @@ const LinkBehavior = React.forwardRef<
 
 const App = () => {
   const ColorModeContext = Context;
+  const [cookies, setCookie] = useCookies();
 
   const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+
+  React.useEffect(() => {
+    if (cookies.mode) setMode(cookies.mode);
+  }, []);
+
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode(prevMode => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light';
+          setCookie("mode", newMode, { path: '/' });
+          return newMode;
+        });
       },
     }),
     [],
