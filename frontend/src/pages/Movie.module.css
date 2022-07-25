@@ -1,7 +1,9 @@
 .titleDiv {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-bottom: 5px;
 }
 
 .reviewsDiv {
@@ -10,8 +12,20 @@
   gap: 10px;
 }
 
-
 .adminButtonsDiv {
   display: flex;
   gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.movieSummary {
+  display: flex;
+}
+
+@media (max-width: 600px) {
+  .movieSummary {
+    flex-direction: column;
+    align-items: center;
+  }
 }

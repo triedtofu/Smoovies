@@ -2,14 +2,15 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
 import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { MovieSummary } from '../util/interface';
+
+import Typography from '@mui/material/Typography';
 
 const Wishlist = () => {
   const params = useParams();
@@ -73,11 +74,11 @@ const Wishlist = () => {
 
   return (
     <Container maxWidth="lg">
-      <h1>
+      <Typography variant="h4" component="h1">
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Wishlist'
           : `${name}'s Wishlist`}
-      </h1>
+      </Typography>
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 

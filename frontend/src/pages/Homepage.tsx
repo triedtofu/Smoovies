@@ -5,12 +5,12 @@ import styles from './Homepage.module.css';
 
 import MakePage from '../components/MakePage';
 import MovieCard from '../components/MovieCard';
-// import { useNavigate } from 'react-router-dom';
+import Container from '../components/MyContainer';
 
 import { apiMovieHomepage } from '../util/api';
 import { MovieSummary } from '../util/interface';
 
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 const Homepage = () => {
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
@@ -29,7 +29,7 @@ const Homepage = () => {
         <title>Trending - Smoovies</title>
       </Helmet>
 
-      <h1>Trending</h1>
+      <Typography gutterBottom variant="h4" component="h1">Trending</Typography>
       
       {movies.length > 0 && <div className={styles.container}>
         {movies.map(movie => (

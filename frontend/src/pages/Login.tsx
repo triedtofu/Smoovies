@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Helmet } from 'react-helmet-async';
 
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 import { apiAuthLogin } from '../util/api';
 import { getErrorMessage } from '../util/helper';
 
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import LoginForm from '../components/LoginForm';
 
@@ -35,7 +36,8 @@ const Login = () => {
         <title>Login - Smoovies</title>
       </Helmet>
 
-      <h1>Login</h1>
+      <Typography variant="h4" component="h1">Login</Typography>
+      
       <LoginForm submit={login} error={loginErr} />
     </Container>
   );

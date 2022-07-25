@@ -6,8 +6,9 @@ import { getErrorMessage } from '../util/helper';
 
 import MakePage from '../components/MakePage';
 import ResetPasswordForm from '../components/ResetPasswordForm';
+import Container from '../components/MyContainer';
 
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 const ForgotPassword = () => {
   const [errorStr, setErrorStr] = React.useState('');
@@ -35,8 +36,8 @@ const ForgotPassword = () => {
         <title>Forgot Password - Smoovies</title>
       </Helmet>
 
-      <h2>Forgot your password?</h2>
-      <h2>Enter your email.</h2>
+      <Typography gutterBottom variant="h5" component="h2">Forgot your password?</Typography>
+      <Typography variant="h5" component="h2">Enter your email.</Typography>
       <ResetPasswordForm submit={resetPassword} error={errorStr} />
     </Container>
   );

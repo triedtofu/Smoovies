@@ -64,7 +64,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
   const profilePages = [
     ["My Profile", `/user/${props.id}`],
     ["Edit Profile", `/user/${props.id}/edit`],
-    ["My Wishlist", `user/${props.id}/wishlist`],
+    ["My Wishlist", `/user/${props.id}/wishlist`],
     ["My Banlist", ""]
   ];
 

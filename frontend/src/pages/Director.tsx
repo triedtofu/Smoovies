@@ -2,8 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
@@ -34,7 +35,7 @@ const Director = () => {
         <title>{`${directorRes.name} - Smoovies`}</title>
       </Helmet>
 
-      <h1>{directorRes.name}</h1>
+      <Typography gutterBottom variant="h4" component="h1">{directorRes.name}</Typography>
 
       <h2>Directed:</h2>
 

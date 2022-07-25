@@ -4,11 +4,12 @@ import { useCookies } from 'react-cookie';
 
 import MakePage from '../components/MakePage';
 import NewMovieForm, { SubmitMovie } from '../components/NewMovieForm';
-
-import Container from '@mui/material/Container';
+import Container from '../components/MyContainer';
 
 import { apiGetMovie, apiEditMovie, apiGetGenres } from '../util/api';
 import { SpecificMovieResponse } from '../util/interface';
+
+import Typography from '@mui/material/Typography';
 
 const EditMovie = () => {
   const [cookies] = useCookies();
@@ -62,7 +63,7 @@ const EditMovie = () => {
 
   return (
     <Container maxWidth="sm">
-      <h1>Movie - Edit Details</h1>
+      <Typography gutterBottom variant="h4" component="h1">Movie - Edit Details</Typography>
 
       <NewMovieForm
         submit={newMovie}

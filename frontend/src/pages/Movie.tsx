@@ -12,9 +12,10 @@ import ReviewCard from '../components/ReviewCard';
 import ReviewInput from '../components/ReviewInput';
 import MyLink from '../components/MyLink';
 import ConfirmModal from '../components/ConfirmModal';
+import Container from '../components/MyContainer';
 
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 import {
   apiGetMovie,
@@ -273,9 +274,9 @@ const Movie = () => {
         <title>{`${movie.name} - Smoovies`}</title>
       </Helmet>
       <div className={styles.titleDiv}>
-        <h1>
+        <Typography gutterBottom variant="h4" component="h1">
           {movie.name} ({movie.year})
-        </h1>
+        </Typography>
 
         <WishlistButton state={button} />
         <AdminButton />
@@ -297,9 +298,9 @@ const Movie = () => {
 
       <br />
 
-      <div ref={ref} style={{ display: 'flex' }}>
+      <div ref={ref}>
         <motion.div
-          style={{ display: 'flex' }}
+          className={styles.movieSummary}
           initial={{ x: '-100vw' }}
           animate={animation}
           transition={{ type: 'spring', duration: 0.7, bounce: 0.3 }}
@@ -308,7 +309,7 @@ const Movie = () => {
 
           <div style={{ width: '100%', textAlign: 'center' }}>
             <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
-              <h2>{movie.name}</h2>
+              <Typography gutterBottom variant="h5" component="h2">{movie.name}</Typography>
 
               <p>
                 Genre: {movie.genres.join(', ')}
@@ -341,7 +342,7 @@ const Movie = () => {
           animate={animation3}
           transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
         >
-          <h3>Movie Info</h3>
+          <Typography variant="h6" component="h3">Movie Info</Typography>
 
           <p>{movie.description}</p>
         </motion.div>
@@ -349,7 +350,7 @@ const Movie = () => {
 
       <div ref={ref2}>
         <div>
-          <h2>Reviews</h2>
+          <Typography gutterBottom variant="h5" component="h2">Reviews</Typography>
           <div className={styles.reviewsDiv}>
             {movie.reviews.map((review) => (
               <ReviewCard

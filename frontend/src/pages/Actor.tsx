@@ -2,13 +2,14 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
 import { ActorResponse } from '../util/interface';
 import { apiGetActor } from '../util/api';
+
+import Typography from '@mui/material/Typography';
 
 const Actor = () => {
   const params = useParams();
@@ -34,9 +35,9 @@ const Actor = () => {
         <title>{`${actorRes.name} - Smoovies`}</title>
       </Helmet>
 
-      <h1>{actorRes.name}</h1>
+      <Typography variant="h4" component="h1">{actorRes.name}</Typography>
 
-      <h2>Acted in:</h2>
+      <Typography variant="h5" component="h2">Acted in:</Typography>
 
       {actorRes.movies.map(movie => (
         <MovieResultCard

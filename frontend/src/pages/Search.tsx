@@ -2,19 +2,15 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 import PersonResultCard from '../components/PersonResultCard';
 
-import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
@@ -123,9 +119,9 @@ const Search = () => {
         <title>Search Results - Smoovies</title>
       </Helmet>
 
-      <h1>Results: {searchParams.get('name')}</h1>
+      <Typography gutterBottom variant="h4" component="h1">Results: {searchParams.get('name')}</Typography>
 
-      {!fetched && <h2>Searching...</h2>}
+      {!fetched && <Typography gutterBottom variant="h5" component="h2">Searching...</Typography>}
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} centered>

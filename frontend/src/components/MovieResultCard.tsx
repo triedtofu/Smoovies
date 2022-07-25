@@ -25,38 +25,41 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
         component="img"
         image={movie.poster}
         alt={`Movie poster for ${movie.name}`}
-        className={styles.card_media}
+        className={styles.cardMedia}
       />
-      <CardContent className={styles.card_content}>
-        <MyLink href={`/movie/${movie.id}`}>
-          <Typography gutterBottom variant="h5" component="div">
-            {`${movie.name} (${movie.year})`}
-          </Typography>
-        </MyLink>
+      <CardContent className={styles.cardContent}>
         <div>
-          {movie.genres.map((genre) => (
-            <Chip key={genre} label={genre} sx={{ margin: '5px' }} />
-          ))}
+          <MyLink href={`/movie/${movie.id}`}>
+            <Typography gutterBottom variant="h5" component="div">
+              {`${movie.name} (${movie.year})`}
+            </Typography>
+          </MyLink>
+          <div>
+            {movie.genres.map((genre) => (
+              <Chip key={genre} label={genre} sx={{ margin: '5px' }} />
+            ))}
+          </div>
+          <div>
+            <b>Rating:</b> {movie.averageRating} / 5
+          </div>
+          <div className={styles.description}>
+            <b>Description:</b> {movie.description}
+          </div>
         </div>
-        <div>
-          <b>Rating:</b> {movie.averageRating} / 5
-        </div>
-        <div className={styles.description}>
-          <b>Description:</b> {movie.description}
-        </div>
+
+        {buttonClick ? (
+          <Button
+            variant="outlined"
+            color="error"
+            // sx={{ margin: '10px' }}
+            onClick={buttonClick}
+          >
+            <DeleteIcon></DeleteIcon>
+          </Button>
+        ) : (
+          <div></div>
+        )}
       </CardContent>
-      {buttonClick ? (
-        <Button
-          variant="outlined"
-          color="error"
-          sx={{ margin: '10px' }}
-          onClick={buttonClick}
-        >
-          <DeleteIcon></DeleteIcon>
-        </Button>
-      ) : (
-        <div></div>
-      )}
     </Card>
   );
 };
