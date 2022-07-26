@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.BanUserRequest;
+import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.DeleteReviewRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
@@ -114,6 +115,15 @@ public class UserController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
+    @PutMapping("/blacklist")
+    public ResponseEntity<Object> blackListUser(@RequestBody BlacklistUserRequest blackListUserRequest) {
+        JSONObject response = userService.blackListUser(blackListUserRequest);
+        return ControllerResponses.generateHttpResponse(response);
+    }
 
-
+    @GetMapping("/blacklist")
+    public ResponseEntity<Object> getUserBlacklist(@RequestParam(name = "token") String token) {
+        JSONObject response = userService.getUserBlacklist(token);
+        return ControllerResponses.generateHttpResponse(response);
+    }
 }

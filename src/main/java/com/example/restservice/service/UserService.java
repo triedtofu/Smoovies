@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.AuthenticationToken;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.UserBlacklist;
 import com.example.restservice.dataModels.requests.BanUserRequest;
+import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
 //import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
+import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
 //import io.jsonwebtoken.Claims;
@@ -35,6 +38,9 @@ public class UserService {
 
     @Autowired
     private EmailSenderService emailSenderService;
+
+    @Autowired
+    private UserBlacklistDataAccessService userBlacklistDAO;
 
     /**
      * Logs a user in based on their email and password.
@@ -189,7 +195,7 @@ public class UserService {
         if (!ServiceInputChecks.checkId(movieId)) {
             return ServiceErrors.userIdInvalidError();
         }
-        // verify the token and extract the users email
+        // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(token.getToken(), null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
@@ -319,6 +325,81 @@ public class UserService {
         user.setIsBanned(true);
         userDAO.save(user);
 
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject blackListUser(BlacklistUserRequest blacklistUserRequest) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        // seperate elements of the request
+        String token = blacklistUserRequest.getToken();
+        long blacklistedUserId = blacklistUserRequest.getUserId();
+        Boolean addRemove = blacklistUserRequest.getAddRemove();
+
+        // verify the token and extract the users id
+        Long userId = ServiceJWTHelper.getTokenId(token, null);
+        if (userId == null) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+
+        // check that both the user and user to be banned exist in db
+        User user = userDAO.findById(userId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFoundFromTokenIdError();
+        }
+        user = userDAO.findById(blacklistedUserId).orElse(null);
+        if (user == null) {
+            return ServiceErrors.userNotFound();
+        }
+
+        // if add, add to blacklist table
+        if (addRemove) {
+            UserBlacklist userBlacklist = new UserBlacklist(userId, blacklistedUserId);
+            userBlacklistDAO.save(userBlacklist);
+        } 
+        // otherwise, remove from blacklist table
+        else {
+            UserBlacklist userBlacklist = userBlacklistDAO.findUserFromBlacklist(userId, blacklistedUserId);
+            // remove if user is found inside blacklist
+            if (userBlacklist != null) {
+                userBlacklistDAO.deleteById(userBlacklist.getId());
+            } else {
+                return ServiceErrors.userNotFoundInBlacklist();
+            }
+        }
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject getUserBlacklist(String token) {
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id == null) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        JSONArray blacklistArray = new JSONArray();
+
+        List<UserBlacklist> userIdList = userBlacklistDAO.findUserBlacklistById(user_id);
+
+        // find all users in blacklist and write in swagger format
+        for (int i = 0; i < userIdList.size(); i ++) {
+            User user = userDAO.findUserById(userIdList.get(i).getBlacklistedUserId());
+            HashMap<String,Object> userDetails = new HashMap<String,Object>();
+
+            userDetails.put("userId", user.getId());
+            userDetails.put("username", user.getName());
+
+            JSONObject userDetailsJson = new JSONObject(userDetails);
+
+            blacklistArray.put(userDetailsJson);
+        }
+
+        // create the return message
+        returnMessage.put("username", userDAO.findUserById(user_id).getName());
+        returnMessage.put("users", blacklistArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }

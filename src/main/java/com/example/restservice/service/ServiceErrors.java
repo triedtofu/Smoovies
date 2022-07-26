@@ -209,6 +209,14 @@ public class ServiceErrors {
         return generateErrorMessage("User not found, userId in token does not exist in database.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User not found in blacklist."}
+     */
+    public static JSONObject userNotFoundInBlacklist() {
+        return generateErrorMessage("User not found in blacklist.");
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Helper Functions                                           //
