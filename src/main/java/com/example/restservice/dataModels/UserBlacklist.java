@@ -15,10 +15,10 @@ public class UserBlacklist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private long userId;
    
-    @Column(name = "blacklistedUserId")
+    @Column(name = "blacklisted_user_id")
     private long blacklistedUserId;
 
     public UserBlacklist() {

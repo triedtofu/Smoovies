@@ -355,8 +355,14 @@ public class UserService {
 
         // if add, add to blacklist table
         if (addRemove) {
-            UserBlacklist userBlacklist = new UserBlacklist(userId, blacklistedUserId);
-            userBlacklistDAO.save(userBlacklist);
+            UserBlacklist userBlacklist = userBlacklistDAO.findUserFromBlacklist(userId, blacklistedUserId);
+            // add if user is not found inside blacklist already
+            if (userBlacklist == null) {
+                UserBlacklist newUserBlacklist = new UserBlacklist(userId, blacklistedUserId);
+                userBlacklistDAO.save(newUserBlacklist);
+            } else {
+                return ServiceErrors.userAlreadyInBlacklist();
+            }
         } 
         // otherwise, remove from blacklist table
         else {

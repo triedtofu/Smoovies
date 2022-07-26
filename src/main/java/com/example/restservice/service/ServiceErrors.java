@@ -86,11 +86,21 @@ public class ServiceErrors {
         return generateErrorMessage("Invalid reset code.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "A user is unable to add 2 reviews to a movie."}
+     */
     public static JSONObject reviewAlreadyExistsError() {
-        return generateErrorMessage("A user is unable to add 2 reviews to a movie");
+        return generateErrorMessage("A user is unable to add 2 reviews to a movie.");
     }
 
-
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "The user is already in the blacklist."}
+     */
+    public static JSONObject userAlreadyInBlacklist() {
+        return generateErrorMessage("The user is already in the blacklist.");
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 403 FORBIDDEN errors                                  //
