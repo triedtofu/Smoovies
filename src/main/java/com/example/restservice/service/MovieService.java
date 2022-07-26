@@ -1,6 +1,8 @@
 package com.example.restservice.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 // import java.util.ArrayList;
@@ -19,12 +21,13 @@ import com.example.restservice.dataModels.Actor;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
+import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 // import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
-import com.example.restservice.dataModels.Review;
+import com.example.restservice.dataModels.requests.SearchRequest;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
@@ -149,15 +152,19 @@ public class MovieService {
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
             JSONArray reviewArray = new JSONArray();
             for (Review review : dbMovie.getMovieReviews()) {
+                if (review.getUser().getIsBanned()) continue;
+                
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
                 movieReview.put("user", review.getUser().getId());
                 movieReview.put("name", review.getUser().getName());
                 movieReview.put("review", review.getReviewString());
                 movieReview.put("rating", review.getRating());
+                movieReview.put("likes", review.getLikes());
                 JSONObject movieReviewJSON = new JSONObject(movieReview);
                 reviewArray.put(movieReviewJSON);
             }
             returnMessage.put("reviews", reviewArray);
+            returnMessage.put("averageRating", dbMovie.getAverageRating());
         }
         // otherwise if movie not found, return error
         else {
@@ -185,6 +192,7 @@ public class MovieService {
                 dbMovieDetails.put("poster", movie.getPoster());
                 dbMovieDetails.put("description", movie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
+                dbMovieDetails.put("averageRating", movie.getAverageRating());
 
                 //Make it into a JSONObject
                 JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
@@ -204,22 +212,42 @@ public class MovieService {
      * @param name
      * @return JSONObject containing  {"movies": JSONArray of movies}
      */
-    public JSONObject searchMovieByName(String name) {
+    public JSONObject searchMovieByName(SearchRequest searchRequest) {
 
-        if (!ServiceInputChecks.checkName(name)) {
+        if (!ServiceInputChecks.checkName(searchRequest.getName())) {
             return ServiceErrors.movieNameInvalidError();
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
 
-        List<Movie> dbMovies = movieDAO.searchMovieByName(name);
+        List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        //Filter
+        List<Movie> filteredMovies = dbMovies;
+
+        if (searchRequest.getContentRating() != null && !searchRequest.getContentRating().isEmpty()) {
+            List<String> inputContentRatingList = Arrays.asList(searchRequest.getContentRating().split(",[ ]*"));
+            List<Movie> removeValues = new ArrayList<>();
+            for (Movie m : filteredMovies) {
+                if (!inputContentRatingList.contains(m.getContentRating())) removeValues.add(m);
+            }
+            filteredMovies.removeAll(removeValues);
+        }
+        //Filter the movies even more based on genre...
+        if (searchRequest.getGenres() != null && !searchRequest.getGenres().isEmpty()) {
+            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
+            List<Movie> removeValues = new ArrayList<>();
+            for (Movie m : filteredMovies) {
+                // if they are disjoint, they have no elements in common, so remove them from list
+                if (!m.getGenreListStr().containsAll(inputGenreList)) removeValues.add(m);
+            }
+            filteredMovies.removeAll(removeValues);
+        }
+
         // TODO: if valid movies are found (list of movies is larger than size 0)
-        if (dbMovies.size() > 0) {
-            for(int i = 0; i < dbMovies.size(); i++) {
-                Movie dbMovie = dbMovies.get(i);
+        if (filteredMovies.size() > 0) {
+            for(int i = 0; i < filteredMovies.size(); i++) {
+                Movie dbMovie = filteredMovies.get(i);
                 HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
                 dbMovieDetails.put("id", dbMovie.getId());
                 dbMovieDetails.put("name", dbMovie.getName());
@@ -227,17 +255,36 @@ public class MovieService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-
+                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
+                dbMovieDetails.put("contentRating", dbMovie.getContentRating());
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);
             }
         }
-        // otherwise if no movies found, return not found error
-        else {
-            return ServiceErrors.movieNotFoundError();
-        }
-
         returnMessage.put("movies", moviesArray);
+
+        JSONArray actorsArray = new JSONArray();
+        List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
+        for (Actor a : dbActors) {
+            HashMap<String,Object> dbActorDetails = new HashMap<String,Object>();
+            dbActorDetails.put("name", a.getName());
+            dbActorDetails.put("id", a.getId());
+            JSONObject dbActorDetailsJson = new JSONObject(dbActorDetails);
+            actorsArray.put(dbActorDetailsJson);
+        }
+        returnMessage.put("actors", actorsArray);
+
+        JSONArray directorsArray = new JSONArray();
+        List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
+        for (Director d : dbdirectors) {
+            HashMap<String,Object> dbDirectordetails = new HashMap<String,Object>();
+            dbDirectordetails.put("name", d.getName());
+            dbDirectordetails.put("id", d.getId());
+            JSONObject dbDirectordetailsJson = new JSONObject(dbDirectordetails);
+            directorsArray.put(dbDirectordetailsJson);
+        }
+        returnMessage.put("directors", directorsArray);
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -271,11 +318,10 @@ public class MovieService {
         }
 
 
-        //Delete movie from database by id.
-        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        // Delete movie from database by id.
+        // Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(request.getMovieId());
         if (dbMovie != null) {
-            
             reviewDAO.deleteByMovie(dbMovie);
             movieDAO.deleteById(dbMovie.getId());
         } else {
@@ -309,7 +355,7 @@ public class MovieService {
             return ServiceErrors.userAdminPermissionError();
         }
 
-        //Find the movie by id, clear all the sets from genre etc and then delete the movie
+        // Find the movie by id, clear all the sets from genre etc and then delete the movie
         Movie dbMovie = movieDAO.findMovieByID(movieId);
 
         try{
@@ -348,16 +394,15 @@ public class MovieService {
         return new JSONObject(returnMessage);
     }
 
-
     private void overwriteMovieDBCast(Movie dbMovie) {
         dbMovie.clearDBCast();
         String cast = dbMovie.getCast();
         if (!cast.isEmpty()) {
-            //Change the cast to an array of strings.
+            // Change the cast to an array of strings.
             List<String> actorList = Arrays.asList(cast.split(",[ ]*"));
-            //Make a new actor for each string
+            // Make a new actor for each string
             for (String a: actorList) {
-                //Check if the actor exists in the database first.
+                // Check if the actor exists in the database first.
                 if (actorDAO.findActorByName(a) != null) {
                     Actor dbActor = actorDAO.findActorByName(a);
                     dbMovie.addActorToCast(dbActor);
@@ -388,22 +433,20 @@ public class MovieService {
         }
     }
 
-
     private void overwriteMovieDBGenres(Movie dbMovie) {
         List<String> genres = dbMovie.getGenreString();
         if (!genres.isEmpty() && genres != null) {
             for (String g : genres) {
                 Genre genre = new Genre(g);
-                if (genreDAO.findGenreByName(genre.getName()) != null) {
-                    //This means the Genre is in the database, so it is a valid genre.
-                    Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                Genre dbGenre = genreDAO.findGenreByName(genre.getName());
+                if (dbGenre != null) {
+                    // This means the Genre is in the database, so it is a valid genre.
                     dbMovie.addGenreToDB(dbGenre);
                 } else {
-                    //Return an invalid input error.
+                    // Return an invalid input error.
                     throw new IllegalArgumentException();
                 }
             }
         }
     }
 }
-

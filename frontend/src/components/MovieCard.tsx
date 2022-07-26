@@ -37,7 +37,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
             <Chip key={index} label={genre} sx={{ margin: '5px' }} />
           ))}
         </div>
-        <div>Rating: {movie.averageRating}</div>
+        <div>Rating: {movie.averageRating} / 5</div>
       </CardContent>
     </Card>
   );

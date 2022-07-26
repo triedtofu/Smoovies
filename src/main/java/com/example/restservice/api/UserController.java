@@ -1,29 +1,28 @@
 package com.example.restservice.api;
 
-import com.example.restservice.dataModels.*;
-import com.example.restservice.service.ReviewService;
+import java.util.List;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.restservice.dataModels.AuthenticationToken;
+import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.BanUserRequest;
+import com.example.restservice.dataModels.requests.DeleteReviewRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
 import com.example.restservice.dataModels.requests.UpdateWishlistRequest;
+import com.example.restservice.service.ReviewService;
 import com.example.restservice.service.UserService;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.util.MultiValueMap;
-
-import org.json.JSONObject;
-
-import java.util.List;
 
 //import com.example.restservice.api.ControllerResponses;
 
@@ -108,5 +107,13 @@ public class UserController {
         JSONObject response = userService.banUser(updateWishlistRequest);
         return ControllerResponses.generateHttpResponse(response);
     }
+
+    @PostMapping("/deleteReview")
+    public ResponseEntity<Object> deleteReview(@RequestBody DeleteReviewRequest deleteReviewRequest) {
+        JSONObject response = reviewService.deleteReview(deleteReviewRequest);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+
 
 }

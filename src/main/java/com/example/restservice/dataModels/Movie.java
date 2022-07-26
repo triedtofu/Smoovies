@@ -1,5 +1,6 @@
 package com.example.restservice.dataModels;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,6 +92,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private Set<Review> movieReviews = new HashSet<>();
 
+    @Column(precision=2,scale=1)
+    private BigDecimal average_rating;
+
     public Movie() {
         super();
     }
@@ -118,6 +122,7 @@ public class Movie {
         this.genres = genres;
         this.trailer = trailer;
         this.runtime = runtime;
+        this.average_rating = new BigDecimal(0.00);
     }
 
     public long getId() {
@@ -254,5 +259,28 @@ public class Movie {
 
     public void clearDBDirectors() {
         this.directorsInMovie.clear();
+    }
+
+    public void recalculateAverageRating() {
+        double total = 0;
+        
+        if (movieReviews.size() == 0) {
+            this.average_rating = new BigDecimal(0.0);
+            return;
+        } else {
+            for (Review review : movieReviews) {
+                total = total + review.getRating();
+            }
+            
+            this.average_rating = new BigDecimal(total/movieReviews.size());
+        }
+    }
+
+    public double getAverageRating() {
+        return average_rating.doubleValue();
+    }
+
+    public void removeMovieReview(Review r) {
+        movieReviews.remove(r);
     }
 }

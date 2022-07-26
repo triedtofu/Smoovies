@@ -55,6 +55,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Review> userReviews = new HashSet<>();
 
+    @ManyToMany(mappedBy = "usersliked")
+    Set<Review> likedReviews;
+
     public User() {
         super();
     }
@@ -143,4 +146,5 @@ public class User {
     public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
     }
+
 }

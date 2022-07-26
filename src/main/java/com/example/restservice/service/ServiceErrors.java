@@ -104,7 +104,9 @@ public class ServiceErrors {
     public static JSONObject userPasswordIncorrectError() {
         return generateErrorMessage("Password is incorrect.");
     }
-   
+    public static JSONObject wrongOwnershipReviewError() {
+        return generateErrorMessage("Can not delete review of other users");
+    }
     /**
      * Returns JSONObject with error message
      * @return {"error": "Email is already in use"}
@@ -167,6 +169,13 @@ public class ServiceErrors {
         return generateErrorMessage("Email not found.");
     }
 
+    public static JSONObject userNotFound() {
+        return generateErrorMessage("User is not found");
+    }
+
+    public static JSONObject reviewNotFound() {
+        return generateErrorMessage("No review has been found by the user to the requested movie");
+    }
     
     /**
      * Returns JSONObject with error message

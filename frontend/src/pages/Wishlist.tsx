@@ -22,15 +22,15 @@ const Wishlist = () => {
   const removeMovie = (movieId: number) => {
     try {
       apiPutUserWishlist(cookies.token, movieId, false)
-        .then(_ => {
+        .then((_) => {
           // delete movie
-          setMovies(movies.filter(movie => movie.id != movieId));
+          setMovies(movies.filter((movie) => movie.id != movieId));
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   React.useEffect(() => {
     setMovies([]);
@@ -45,11 +45,11 @@ const Wishlist = () => {
 
     try {
       apiUserWishlist(parseInt(idStr))
-        .then(data => {
+        .then((data) => {
           setMovies(data.movies);
           setName(data.username);
         })
-        .catch(error => setErrorStr(getErrorMessage(error)));
+        .catch((error) => setErrorStr(getErrorMessage(error)));
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
@@ -67,17 +67,21 @@ const Wishlist = () => {
     if (!cookies.token || idStr !== parseJwt(cookies.token).jti) return false;
 
     return true;
-  }
+  };
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
 
   return (
     <Container maxWidth="lg">
-      <h1>{cookies.token && params.id === parseJwt(cookies.token).jti ? 'Your Wishlist' : `${name}'s Wishlist`}</h1>
-      
+      <h1>
+        {cookies.token && params.id === parseJwt(cookies.token).jti
+          ? 'Your Wishlist'
+          : `${name}'s Wishlist`}
+      </h1>
+
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
-      {movies.map(movie => (
+      {movies.map((movie) => (
         <MovieResultCard
           key={movie.id}
           movie={movie}
