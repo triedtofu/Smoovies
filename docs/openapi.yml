@@ -651,6 +651,36 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
   /api/user/blacklist:
+    get:
+      tags:
+        - Users
+      summary: Get the blacklist of the authorised user
+      parameters:
+        - $ref: '#/components/parameters/UserTokenRequiredParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        $ref: '#/components/schemas/Name'
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              $ref: '#/components/schemas/UserId'
+                            username:
+                              $ref: '#/components/schemas/Name'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
     put:
       tags:
         - Users
@@ -952,6 +982,13 @@ components:
       in: query
       description: Token to provide authorisation
       required: false
+      schema:
+        $ref: '#/components/schemas/Token'
+    UserTokenRequiredParam:
+      name: token
+      in: query
+      description: Token to provide authorisation
+      required: true
       schema:
         $ref: '#/components/schemas/Token'
   responses:
