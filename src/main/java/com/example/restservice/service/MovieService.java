@@ -159,6 +159,7 @@ public class MovieService {
                 movieReview.put("name", review.getUser().getName());
                 movieReview.put("review", review.getReviewString());
                 movieReview.put("rating", review.getRating());
+                movieReview.put("likes", review.getLikes());
                 JSONObject movieReviewJSON = new JSONObject(movieReview);
                 reviewArray.put(movieReviewJSON);
             }
