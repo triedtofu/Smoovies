@@ -507,6 +507,7 @@ paths:
       description: Returns the reviews of a specific user
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
@@ -534,6 +535,8 @@ paths:
                           $ref: '#/components/schemas/ReviewRating'
                         likes:
                           $ref: '#/components/schemas/Likes'
+                        liked:
+                          $ref: '#/components/schemas/Liked'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -885,6 +888,10 @@ components:
       type: integer
       description: The number of likes a review has
       example: 2
+    Liked:
+      type: boolean
+      description: Whether the user has liked the review
+      example: true
     Review:
       type: object
       properties:
@@ -898,6 +905,8 @@ components:
           $ref: '#/components/schemas/ReviewRating'
         likes:
           $ref: '#/components/schemas/Likes'
+        liked:
+          $ref: '#/components/schemas/Liked'
     TurnOn:
       type: boolean
       description: True if should add/enable, false if should remove/disable
