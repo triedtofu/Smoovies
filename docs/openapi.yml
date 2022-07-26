@@ -118,6 +118,7 @@ paths:
       description: Returns the details of a specific movie
       parameters:
         - $ref: '#/components/parameters/MovieIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
@@ -531,6 +532,8 @@ paths:
                           $ref: '#/components/schemas/ReviewString'
                         rating:
                           $ref: '#/components/schemas/ReviewRating'
+                        likes:
+                          $ref: '#/components/schemas/Likes'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -848,6 +851,10 @@ components:
       type: integer
       description: A rating of a movie
       example: 5
+    Likes:
+      type: integer
+      description: The number of likes a review has
+      example: 2
     Review:
       type: object
       properties:
@@ -859,6 +866,8 @@ components:
           $ref: '#/components/schemas/ReviewString'
         rating:
           $ref: '#/components/schemas/ReviewRating'
+        likes:
+          $ref: '#/components/schemas/Likes'
     TurnOn:
       type: boolean
       description: True if should add/enable, false if should remove/disable
@@ -938,6 +947,13 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/ContentRating'
+    UserTokenParam:
+      name: token
+      in: query
+      description: Token to provide authorisation
+      required: false
+      schema:
+        $ref: '#/components/schemas/Token'
   responses:
     InputError:
       description: Input error
