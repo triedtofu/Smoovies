@@ -12,9 +12,11 @@ import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteReviewRequest;
+import com.example.restservice.dataModels.requests.LikeReviewRequest;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
+import com.google.gson.JsonObject;
 
 @Service
 public class ReviewService {
@@ -86,6 +88,7 @@ public class ReviewService {
             userReview.put("poster", review.getMovie().getPoster());
             userReview.put("review", review.getReviewString());
             userReview.put("rating", review.getRating());
+            userReview.put("likes", review.getLikes());
             JSONObject userReviewJson = new JSONObject(userReview);
             reviewArray.put(userReviewJson);
         }
@@ -114,8 +117,7 @@ public class ReviewService {
 
         User dbRequestUser = userDAO.findUserById(token_user_id);
         if (token_user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
-        //Remove the review from the movie and user.
-        //deleteReviewFromDatabase(dbMovie, dbUser, dbreview);
+
         User dbReviewUser = userDAO.findUserById(deleteReviewRequest.getUserId());
         if (dbReviewUser.getIsBanned()) return ServiceErrors.userBannedError();
 
@@ -144,5 +146,56 @@ public class ReviewService {
         movieDAO.save(movie);
         userDAO.save(user);
         reviewDAO.delete(review);
+    }
+
+    public JSONObject likeReview(LikeReviewRequest request) {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        JSONObject errorMessage = reviewErrorChecks(request.getMovieId(), request.getToken(), request.getUserId());
+        if (errorMessage.length() != 0) return errorMessage;
+
+        User user = userDAO.findUserById(ServiceJWTHelper.getTokenId(request.getToken(), null));
+
+        Review review = reviewDAO.findReview(request.getMovieId(), request.getUserId());
+
+        JSONObject responseFromLike = new JSONObject();
+        if (request.getTurnOn()) {
+            responseFromLike = review.addLike(user);
+        } else {
+            responseFromLike = review.removeLike(user);
+        }
+        reviewDAO.save(review);
+        
+        if (responseFromLike.length() != 0) return responseFromLike;
+        return new JSONObject(returnMessage);
+    }
+    
+    /**
+     * Checks the movie on the review indentifier exists
+     * Checks the review exists from the given user and review
+     * Checks if the requestUser (Token bearer) exists
+     * Checks if the requestUser is banned
+     * 
+     * @param movieId The movie of the review
+     * @param token The token of the requester
+     * @param userId The userId of the review
+     * @return
+     */
+    private JSONObject reviewErrorChecks(Long movieId, String token, Long userId) {
+        Movie dbMovie = movieDAO.findMovieByID(movieId);
+        if (dbMovie == null) return ServiceErrors.movieNotFoundError();
+        
+        Long token_user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (token_user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
+        User dbRequestUser = userDAO.findUserById(token_user_id);
+        if (dbRequestUser == null) return ServiceErrors.userNotFound();
+        if (dbRequestUser.getIsBanned()) return ServiceErrors.userBannedError();
+        
+        Review dbreview = reviewDAO.findReview(movieId, userId);
+        if (dbreview == null) return ServiceErrors.reviewNotFound();
+
+        return new JSONObject();
+
+        
     }
 }

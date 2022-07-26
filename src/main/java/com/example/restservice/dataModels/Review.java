@@ -1,14 +1,24 @@
 package com.example.restservice.dataModels;
 
+import java.util.HashSet;
+import java.util.Set;
+
+//import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-//import javax.persistence.CascadeType;
-import javax.persistence.Column;
+
+import org.json.JSONObject;
+
+import com.example.restservice.service.ServiceErrors;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +43,15 @@ public class Review {
 
     @Column(name = "rating")
     private int rating;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "likedReviews",
+        joinColumns = @JoinColumn(name = "review_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> usersliked = new HashSet<>();
 
     public Review() {
         super();
@@ -68,6 +87,26 @@ public class Review {
 
     public User getUser() {
         return user;
+    }
+
+    public int getLikes() {
+        return usersliked.size();
+    }
+
+    public JSONObject addLike(User user) {
+        if (!usersliked.contains(user)) {
+            usersliked.add(user);
+            return new JSONObject();
+        }
+        return ServiceErrors.generateErrorMessage("User has already liked the review");
+    }
+
+    public JSONObject removeLike(User user) {
+        if (usersliked.contains(user)) {
+            usersliked.remove(user);
+            return new JSONObject();
+        }
+        return ServiceErrors.generateErrorMessage("User has not liked the review");
     }
 
 }
