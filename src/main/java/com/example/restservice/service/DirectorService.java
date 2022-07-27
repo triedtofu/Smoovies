@@ -11,13 +11,24 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.database.DirectorDataAccessService;
+import com.example.restservice.database.UserBlacklistDataAccessService;
 
 @Service
 public class DirectorService {
     @Autowired
     private DirectorDataAccessService directorDAO;
+    
+    @Autowired
+    private UserBlacklistDataAccessService userBlacklistDAO;
 
-    public JSONObject getDirector(Long id) {
+    public JSONObject getDirector(Long id, String token) {
+
+        // verify the users token
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
         if (!ServiceInputChecks.checkId(id)) return ServiceErrors.generateErrorMessage("Invalid Director ID");
         Director director = directorDAO.findDirectorById(id);
@@ -32,7 +43,7 @@ public class DirectorService {
             dbMovieDetails.put("poster", movie.getPoster());
             dbMovieDetails.put("description", movie.getDescription());
             dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
-            dbMovieDetails.put("averageRating", movie.getAverageRating());
+            dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, movie, token));
             JSONObject movieJsonObject = new JSONObject(dbMovieDetails);
             movieArray.put(movieJsonObject);
         }

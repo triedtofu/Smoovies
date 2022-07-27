@@ -22,8 +22,8 @@ public class DirectorController {
     }
 
     @GetMapping("/getDirector")
-    public ResponseEntity<Object> getDirector(@RequestParam(name = "id") Long id) {
-        JSONObject response = directorService.getDirector(id);
+    public ResponseEntity<Object> getDirector(@RequestParam(name = "id") Long id, @RequestParam(name = "token", required = false) String token) {
+        JSONObject response = directorService.getDirector(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
 }

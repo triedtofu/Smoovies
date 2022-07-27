@@ -70,8 +70,8 @@ public class UserController {
 
 
     @GetMapping("/wishlist")
-    public ResponseEntity<Object> getUserWishlist(@RequestParam(name = "userId") long id) {
-        JSONObject response = userService.getUserWishlist(id);
+    public ResponseEntity<Object> getUserWishlist(@RequestParam(name = "userId") long id, @RequestParam(name = "token", required = false) String token) {
+        JSONObject response = userService.getUserWishlist(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
 
