@@ -10,6 +10,10 @@ import MyLink from './MyLink';
 import ConfirmModal from './ConfirmModal';
 
 import { Review } from '../util/interface';
+import { motion } from 'framer-motion';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
+import { apilikeUnlikeReview } from '../util/api';
 
 interface ReviewCardProps {
   review: Review;
@@ -20,29 +24,71 @@ interface ReviewCardProps {
 const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
 
+  const [heartColour, setHeartColour] = React.useState('#a9a9a9');
+  const [reviewTextColour, setReviewTextColour] = React.useState('#bebebe');
+  const [reviewBGColour, setReviewBGColour] = React.useState('#ffffff');
+
+  const likeUnlikeClick = () => {
+    // TODO
+    if (heartColour === '#a9a9a9') {
+      setHeartColour('#ff0000');
+      setReviewTextColour('#000000');
+      setReviewBGColour('#ffa8b5');
+
+      // Do api
+    } else {
+      setHeartColour('#a9a9a9');
+      setReviewTextColour('#bebebe');
+      setReviewBGColour('#ffffff');
+    }
+  };
+
   return (
     <div className={styles.reviewOuter}>
       <div className={styles.reviewHeader}>
         <MyLink href={`/user/${review.user}`}>{review.name}</MyLink>
-        <Rating
-          name="text-feedback"
-          value={review.rating}
-          readOnly
-          emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
-        />
+        <div className={styles.likeAndReview}>
+          <Rating
+            name="text-feedback"
+            value={review.rating}
+            readOnly
+            emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
+          />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{
+              scale: 0.9,
+            }}
+          >
+            <Button
+              variant="outlined"
+              style={{
+                backgroundColor: reviewBGColour,
+                borderColor: reviewTextColour,
+              }}
+              onClick={() => likeUnlikeClick()}
+            >
+              <FavoriteIcon style={{ color: heartColour }} />
+              &nbsp; <span style={{ color: reviewTextColour }}>Like</span>
+            </Button>
+          </motion.div>
+        </div>
       </div>
       <div>{review.review}</div>
-      {onDelete && <div className={styles.buttonDiv}>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => setConfirmDelete(true)}
-        >
-          Delete
-        </Button>
-      </div>}
+      {onDelete && (
+        <div className={styles.buttonDiv}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setConfirmDelete(true)}
+          >
+            Delete
+          </Button>
+        </div>
+      )}
 
-      {onDelete && confirmDelete &&
+      {onDelete && confirmDelete && (
         <ConfirmModal
           title="Delete review"
           body="Are you sure you want to delete this review? This action can't be undone."
@@ -50,7 +96,7 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
           cancel={() => setConfirmDelete(false)}
           error={error ?? ''}
         />
-      }
+      )}
     </div>
   );
 };

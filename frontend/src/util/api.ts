@@ -54,7 +54,11 @@ export const apiMovieHomepage = () => {
   return apiFetch<MovieSummaries>('/movie/homepage');
 };
 
-export const apiMovieSearch = (name: string, genres?: string[], contentRating?: string[]) => {
+export const apiMovieSearch = (
+  name: string,
+  genres?: string[],
+  contentRating?: string[]
+) => {
   let searchStr = `name=${name}`;
 
   if (genres) searchStr += `&genres=${genres.join(',')}`;
@@ -118,6 +122,21 @@ export const apiAddReview = (
   });
 };
 
+//  REVIEWS
+
+export const apilikeUnlikeReview = (
+  token: string,
+  movieId: number,
+  userId: number,
+  turnon: boolean
+) => {
+  return apiFetch<Record<string, never>>('/movie/likeReview', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, movieId, userId, turnon }),
+  });
+};
+
 // TODO update once api is done
 export const apiUserWishlist = (id: number) => {
   return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`);
@@ -139,7 +158,11 @@ export const apiGetUserReviews = (userId: number) => {
   return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
 };
 
-export const apiDeleteReview = (token: string, movieId: number, userId: number) => {
+export const apiDeleteReview = (
+  token: string,
+  movieId: number,
+  userId: number
+) => {
   return apiFetch<Record<string, never>>('/user/deleteReview', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
