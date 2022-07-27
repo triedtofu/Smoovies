@@ -100,7 +100,27 @@ public class ServiceJWTHelper {
         
     }
 
+    /**
+     *  Checks that a users token is valid on GET request
+     * @param jwt
+     * @param signKey
+     * @return true if valid
+     */
+    public static Boolean verifyUserGetRequestToken(String jwt, String signKey) {
+        // case where no token (e.g not logged in)
+        if (jwt == null) {
+            return true;
+        }
+        // case where logged in
+        Claims claims = verifyJWT(jwt, signKey);
+        if (claims != null) {
+            return true;
+        }
+        return false;
+    }
+
     public static Long getTokenId(String jwt, String signKey) {
+
         Claims claims = verifyJWT(jwt, signKey);
         if (claims != null) {
             return Long.valueOf(claims.getId());

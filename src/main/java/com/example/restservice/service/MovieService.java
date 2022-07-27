@@ -2,7 +2,7 @@ package com.example.restservice.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 // import java.util.ArrayList;
@@ -33,6 +33,7 @@ import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.GenreDataAccessService;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
+import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 
 //import com.example.restservice.service.ServiceErrors;
@@ -58,6 +59,9 @@ public class MovieService {
     @Autowired
     private ReviewDataAccessService reviewDAO;
 
+    @Autowired
+    private UserBlacklistDataAccessService userBlacklistDAO;
+
     /**
      * Adds a movie to the database
      * @param movie
@@ -69,10 +73,6 @@ public class MovieService {
         String userToken = addMovieRequest.getToken();
         Movie movie = addMovieRequest.getMovie();
 
-        // TODO: check movie values for errors
-        if (!ServiceInputChecks.checkMovie(movie)) {
-            return ServiceErrors.invalidInputError();
-        }
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(userToken, null);
         if (user_id == null) {
@@ -129,7 +129,13 @@ public class MovieService {
      * @param id
      * @return complete details of movie, all variables in Movies.java
      */
-    public JSONObject getMovieDetails(long id) {
+    public JSONObject getMovieDetails(long id, String token) {
+
+        // verify the users token
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) {
+            return ServiceErrors.userTokenInvalidError();
+        }
 
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.movieIdInvalidError();
@@ -138,7 +144,6 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         Movie dbMovie = movieDAO.findMovieByID(id);
-
         if (dbMovie != null) {
             returnMessage.put("name", dbMovie.getName());
             returnMessage.put("year", dbMovie.getYear());
@@ -151,7 +156,7 @@ public class MovieService {
             returnMessage.put("runtime", dbMovie.getRuntime());
             returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
             JSONArray reviewArray = new JSONArray();
-            for (Review review : dbMovie.getMovieReviews()) {
+            for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
                 if (review.getUser().getIsBanned()) continue;
                 
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
@@ -164,7 +169,7 @@ public class MovieService {
                 reviewArray.put(movieReviewJSON);
             }
             returnMessage.put("reviews", reviewArray);
-            returnMessage.put("averageRating", dbMovie.getAverageRating());
+            returnMessage.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
         }
         // otherwise if movie not found, return error
         else {
@@ -175,7 +180,14 @@ public class MovieService {
         return responseJson;
 
     }
-    public JSONObject homepage() {
+    public JSONObject homepage(String token) {
+
+        // verify the users token
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         //Stores the movie's used for homepage.
         JSONArray homepageList = new JSONArray();
@@ -192,7 +204,7 @@ public class MovieService {
                 dbMovieDetails.put("poster", movie.getPoster());
                 dbMovieDetails.put("description", movie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", movie.getAverageRating());
+                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, movie, token));
 
                 //Make it into a JSONObject
                 JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
@@ -212,7 +224,13 @@ public class MovieService {
      * @param name
      * @return JSONObject containing  {"movies": JSONArray of movies}
      */
-    public JSONObject searchMovieByName(SearchRequest searchRequest) {
+    public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
+
+        // verify the users token
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) {
+            return ServiceErrors.userTokenInvalidError();
+        }
 
         if (!ServiceInputChecks.checkName(searchRequest.getName())) {
             return ServiceErrors.movieNameInvalidError();
@@ -255,7 +273,7 @@ public class MovieService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
+                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
                 dbMovieDetails.put("contentRating", dbMovie.getContentRating());
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);

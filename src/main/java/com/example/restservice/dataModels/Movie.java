@@ -19,8 +19,10 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 @Table(name = "movies")
@@ -275,6 +277,7 @@ public class Movie {
             this.average_rating = new BigDecimal(total/movieReviews.size());
         }
     }
+
 
     public double getAverageRating() {
         return average_rating.doubleValue();

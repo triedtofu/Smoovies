@@ -58,21 +58,21 @@ public class MovieController {
     }
     
     @GetMapping("/homepage")
-    public ResponseEntity<Object> homepage() {
-        JSONObject response = movieService.homepage();
+    public ResponseEntity<Object> homepage(@RequestParam(name = "token", required = false) String token) {
+        JSONObject response = movieService.homepage(token);
         return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/getMovie")
-    public ResponseEntity<Object> getMovie(@RequestParam(name = "id") long id) {
-        JSONObject response = movieService.getMovieDetails(id);
+    public ResponseEntity<Object> getMovie(@RequestParam(name = "id") long id, @RequestParam(name = "token", required = false) String token) {
+        JSONObject response = movieService.getMovieDetails(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name, @RequestParam(name = "contentRating", required = false) String contentRating, @RequestParam(name = "genres", required = false) String genres)  {
+    public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name, @RequestParam(name = "contentRating", required = false) String contentRating, @RequestParam(name = "genres", required = false) String genres, @RequestParam(name = "token", required = false) String token)  {
         SearchRequest searchRequest = new SearchRequest(name, genres, contentRating);
-        JSONObject response = movieService.searchMovieByName(searchRequest);
+        JSONObject response = movieService.searchMovieByName(searchRequest, token);
         return ControllerResponses.generateHttpResponse(response);
     }
 
