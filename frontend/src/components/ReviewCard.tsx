@@ -14,6 +14,7 @@ import { Review } from '../util/interface';
 import { motion } from 'framer-motion';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
+import { CookiesProvider, useCookies } from 'react-cookie';
 import { apilikeUnlikeReview } from '../util/api';
 
 interface ReviewCardProps {
@@ -24,13 +25,28 @@ interface ReviewCardProps {
 
 const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const [numLikes, setLikes] = React.useState(review.likes);
+  const [heartColour, setHeartColour] = React.useState('');
+  const [reviewTextColour, setReviewTextColour] = React.useState('');
+  const [reviewBGColour, setReviewBGColour] = React.useState('');
 
-  const [heartColour, setHeartColour] = React.useState('#a9a9a9');
-  const [reviewTextColour, setReviewTextColour] = React.useState('#bebebe');
-  const [reviewBGColour, setReviewBGColour] = React.useState('#ffffff');
-
+  const [cookies] = useCookies();
   const params = useParams();
 
+  React.useEffect(() => {
+    console.log(review.liked);
+    if (review.liked === true) {
+      setHeartColour('#ff0000');
+      setReviewTextColour('#000000');
+      setReviewBGColour('#ffa8b5');
+    }
+    else {
+      setHeartColour('#a9a9a9');
+      setReviewTextColour('#bebebe');
+      setReviewBGColour('#ffffff');
+    }
+  }, []);
+  
   const likeUnlikeClick = () => {
     // TODO
     if (heartColour === '#a9a9a9') {
@@ -38,14 +54,16 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
-      // apilikeUnlikeReview(token, parseInt(params.id ?? ''), userId, true)
+      setLikes(numLikes + 1);
+      apilikeUnlikeReview(cookies.token, parseInt(params.id ?? ''), review.user, true);
       // Do api
     } else {
       // Set to unlike status
       setHeartColour('#a9a9a9');
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');
-      // apilikeUnlikeReview(token, parseInt(params.id ?? ''), userId, false)
+      setLikes(numLikes - 1);
+      apilikeUnlikeReview(cookies.token, parseInt(params.id ?? ''), review.user, false);
     }
   };
 
@@ -61,7 +79,7 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
             emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
           />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <motion.div
+          {cookies.token && <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{
               scale: 0.9,
@@ -78,9 +96,9 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
               <FavoriteIcon style={{ color: heartColour }} />
               &nbsp; <span style={{ color: reviewTextColour }}>Like</span>
               &nbsp;
-              {/* <span style={{ color: reviewTextColour }}>{review.likes}</span> */}
+              <span style={{ color: reviewTextColour }}>{numLikes}</span>
             </Button>
-          </motion.div>
+          </motion.div>}
         </div>
       </div>
       <div>{review.review}</div>
