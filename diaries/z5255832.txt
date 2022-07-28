@@ -29,3 +29,10 @@ Week 6
 Week 7
 - Began working on sprint 2
 - Wrote api routes for user stores in sprint 2 and implemented some backend logic for routes
+
+Week 8
+- Completed backend tasks for sprint 2
+- Joined team with sprint 2 demo, retrospective B and sprint 3 preparation
+
+Week 9
+- Began working on sprint 3
