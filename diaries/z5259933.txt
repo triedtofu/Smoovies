@@ -68,3 +68,15 @@ Week 7
 
 Tasks completed
 - I wrote the Python script for inserting approx 450 movies and their details into the database
+
+Week 8
+
+Contracted covid - no progress made personally
+
+Week 9
+
+Tasks completed
+- I started and finished the Retrospective B report
+
+Sunday scrum
+- Retrospective B meeting
