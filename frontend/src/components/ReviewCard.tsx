@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useParams } from 'react-router-dom';
 
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
@@ -28,18 +29,23 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   const [reviewTextColour, setReviewTextColour] = React.useState('#bebebe');
   const [reviewBGColour, setReviewBGColour] = React.useState('#ffffff');
 
+  const params = useParams();
+
   const likeUnlikeClick = () => {
     // TODO
     if (heartColour === '#a9a9a9') {
+      // Set to like status
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
-
+      // apilikeUnlikeReview(token, parseInt(params.id ?? ''), userId, true)
       // Do api
     } else {
+      // Set to unlike status
       setHeartColour('#a9a9a9');
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');
+      // apilikeUnlikeReview(token, parseInt(params.id ?? ''), userId, false)
     }
   };
 
@@ -71,6 +77,8 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
             >
               <FavoriteIcon style={{ color: heartColour }} />
               &nbsp; <span style={{ color: reviewTextColour }}>Like</span>
+              &nbsp;
+              {/* <span style={{ color: reviewTextColour }}>{review.likes}</span> */}
             </Button>
           </motion.div>
         </div>
