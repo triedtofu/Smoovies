@@ -38,3 +38,9 @@ Week 7
 - Updated swagger documentation
 - Worked on add review, add/edit movie, reset password and search functionality
 - Met with team to discuss progress
+
+Week 8
+
+- Attended team meeting for Retrospective B
+- Completed dark mode and added a new navbar
+- Improved the UI for mobile devices
