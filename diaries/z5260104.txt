@@ -42,3 +42,7 @@ Week6:
   - implemented get director details and actor details
   - added api routes for the above
   - added ratings for movie based on reviews.
+  
+  Week 9:
+  -added liking reviews
+  -worked on API
