@@ -140,8 +140,14 @@ public class UserService {
      * @param id
      * @return wishlist of user
      */
-    public JSONObject getUserWishlist(long id) {
-        // TODO: check id for errors
+    public JSONObject getUserWishlist(long id, String token) {
+
+        // verify the users token
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) {
+            return ServiceErrors.userTokenInvalidError();
+        }
+
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.userIdInvalidError();
         }
@@ -170,7 +176,7 @@ public class UserService {
                 dbMovieDetails.put("poster", dbMovie.getPoster());
                 dbMovieDetails.put("description", dbMovie.getDescription());
                 dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", dbMovie.getAverageRating());
+                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
 
                 JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
                 moviesArray.put(dbMovieDetailsJson);

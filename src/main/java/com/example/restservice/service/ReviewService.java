@@ -16,7 +16,7 @@ import com.example.restservice.dataModels.requests.LikeReviewRequest;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
-import com.google.gson.JsonObject;
+//import com.google.gson.JsonObject;
 
 @Service
 public class ReviewService {

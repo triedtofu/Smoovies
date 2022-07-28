@@ -27,8 +27,8 @@ public class ActorController {
     }
 
     @GetMapping("/getActor")
-    public ResponseEntity<Object> getActor(@RequestParam(name = "id") Long id) {
-        JSONObject response = actorService.getActor(id);
+    public ResponseEntity<Object> getActor(@RequestParam(name = "id") Long id, @RequestParam(name = "token", required = false) String token) {
+        JSONObject response = actorService.getActor(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
     
