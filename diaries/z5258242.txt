@@ -34,3 +34,15 @@ Saturday
 Week 7
 Thursday
 - Discussed sprint 2 and was given task of UI improvements for most pages, Admin screens and functionality as well as editing profile page.
+
+Week 8
+Thursday
+- Demo day. Took a few days break towards the retro meeting.
+
+Sunday
+- Retro meeting. And discussed quite a lot about what went good and bad. ultimately it was overestimating how much we could do.
+- also allocated work for all group members to do
+
+Week 9
+Thursday
+- Worked on like/dislike reviews, a few extra apicalls needed as well as work for our extra feature higherorlower game.
