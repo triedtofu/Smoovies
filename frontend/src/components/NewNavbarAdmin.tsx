@@ -110,7 +110,7 @@ const Navbar = (props: NavbarAdminProps) => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static" color="default">
         <Toolbar>
           <Box sx={{ display: { md: 'none' } }}>

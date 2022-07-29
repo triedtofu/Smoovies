@@ -24,7 +24,7 @@ const LinkBehavior = React.forwardRef<
 const bodyOverride = {
   styleOverrides: {
     body: {
-      background: 'linear-gradient(45deg,#ffe5b4, #c7c7da)'
+      background: 'linear-gradient(45deg,#ffe5b4, #c7c7da)',
     }
   }
 }
@@ -32,7 +32,7 @@ const bodyOverride = {
 const appBarOverride = {
   styleOverrides: {
     root: {
-      background: 'linear-gradient(to right, #bff2f8, #c8a2c8);'
+      background: 'linear-gradient(to right, #bff2f8, #c8a2c8)',
     }
   }
 }

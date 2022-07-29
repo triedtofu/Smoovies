@@ -108,3 +108,10 @@ export interface SearchResponse {
   actors: ActorSearch[];
   directors: DirectorSearch[];
 }
+
+export interface HigherOrLowerData {
+  name: string;
+  year: number;
+  averageRating: number;
+  poster: string;
+}

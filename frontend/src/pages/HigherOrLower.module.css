@@ -1,0 +1,49 @@
+.flexDiv {
+  flex: 1;
+  display: flex;
+  /* height: 100%; */
+}
+
+.div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: 50%;
+  color: white;
+  background-color: rgba(0,0,0,.5);
+  background-blend-mode: darken;
+  text-align: center;
+}
+
+.movieTitle {
+  margin: 0;
+  font-size: 1.875rem;
+}
+
+.score {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.button {
+  width: 13rem;
+  margin-bottom: 1rem;
+}
+
+.centeredXY {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 1.875rem;
+}
+
+.div1 {
+
+}
+
+.div2 {
+
+}

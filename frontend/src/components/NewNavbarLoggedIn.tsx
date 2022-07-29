@@ -111,7 +111,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static" color="default">
         <Toolbar>
           <Box sx={{ display: { md: 'none' } }}>
@@ -137,7 +137,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
             {pages.map((page) => (
               <Button
                 key={page[0]}
-                onClick={() => navigate(`/${page[1]}`)}
+                onClick={() => navigate(page[1])}
                 sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'block' }}}
               >
                 {page[0]}
