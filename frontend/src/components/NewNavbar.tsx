@@ -18,6 +18,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
+import Logo from './Logo';
+
 import { Context, useContext } from '../context';
 import Search from './NewSearch';
 
@@ -44,13 +46,16 @@ const NewNavbar = () => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography
+      {/* <Typography
         variant="h6"
         sx={{
           my: 2,
         }}>
         <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Smoovies</a>
-      </Typography>
+      </Typography> */}
+      <div style={{ margin: '5px' }}>
+        <Logo/>
+      </div>
       <Divider />
       <List>
         {pages.map(item => (
@@ -79,19 +84,11 @@ const NewNavbar = () => {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              display: { xs: 'none', md: 'block' },
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Smoovies
-          </Typography>
+
+          <Box sx={{ display: { xs: 'none', md: 'block' }, height: '100%', width: '120px'}}>
+            <Logo />
+          </Box>
+
           <Box sx={{ flexGrow: 1 }}>
             <Search submitSearch={submitSearch} />
           </Box>

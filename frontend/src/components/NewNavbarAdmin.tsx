@@ -24,6 +24,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 
 import { Context, useContext } from '../context';
 import Search from './NewSearch';
+import Logo from './Logo';
 
 const pages = [
   ["Higher or Lower", "/higherorlower"]
@@ -66,13 +67,9 @@ const Navbar = (props: NavbarAdminProps) => {
 
   const drawer = (
     <Box sx={{ textAlign: 'center' }}>
-      <Typography
-        variant="h6"
-        sx={{
-          my: 2,
-        }}>
-        <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Smoovies</a>
-      </Typography>
+      <div style={{ margin: '5px' }}>
+        <Logo/>
+      </div>
       <Divider />
       <List>
         {pages.map(item => (
@@ -127,19 +124,11 @@ const Navbar = (props: NavbarAdminProps) => {
               <MenuIcon />
             </IconButton>
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              display: { xs: 'none', md: 'block' },
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Smoovies
-          </Typography>
+
+          <Box sx={{ display: { xs: 'none', md: 'block' }, height: '100%', width: '120px'}}>
+            <Logo />
+          </Box>
+
           <Box sx={{ flexGrow: 1 }}>
             <Search submitSearch={submitSearch} />
           </Box>
@@ -148,14 +137,14 @@ const Navbar = (props: NavbarAdminProps) => {
               <Button
                 key={page[0]}
                 onClick={() => navigate(page[1])}
-                sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'block' }}}
+                sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'block' }}}
               >
                 {page[0]}
               </Button>
             ))}
 
             <Button
-              sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'flex' }}}
+              sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'flex' }}}
               startIcon={<AccountCircle />}
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
