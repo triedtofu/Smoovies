@@ -95,9 +95,6 @@ const Navbar = (props: NavbarLoggedInProps) => {
         </ListItem>
 
         <List disablePadding>
-          {/* <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Starred" />
-          </ListItemButton> */}
           {profilePages.map(item => (
             <ListItem key={item[0]} disablePadding>
               <ListItemButton sx={{ pl: 4 }} onClick={() => navigate(item[1])}>
@@ -118,7 +115,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Toolbar>
           <Box sx={{ display: { md: 'none' } }}>
             <IconButton

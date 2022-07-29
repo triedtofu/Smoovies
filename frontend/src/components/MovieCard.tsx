@@ -32,12 +32,12 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
             {`${movie.name} (${movie.year})`}
           </Typography>
         </MyLink>
-        <div>
+        <div className={styles.genresDiv}>
           {movie.genres.map((genre, index) => (
-            <Chip key={index} label={genre} sx={{ margin: '5px' }} />
+            <Chip key={index} label={genre} />
           ))}
         </div>
-        <div>Rating: {movie.averageRating} / 5</div>
+        {/* <div>Rating: {movie.averageRating} / 5</div> */}
       </CardContent>
     </Card>
   );

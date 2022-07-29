@@ -6,7 +6,6 @@ import Navbar from './NewNavbar';
 import NavbarLoggedIn from './NewNavbarLoggedIn';
 import NavbarAdmin from './NewNavbarAdmin';
 
-
 import { parseJwt } from '../util/helper';
 
 const MakePage = (Component: React.ElementType) => {

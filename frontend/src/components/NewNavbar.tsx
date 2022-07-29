@@ -66,7 +66,7 @@ const NewNavbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Toolbar>
           <Box sx={{ display: { md: 'none' } }}>
             <IconButton
@@ -100,7 +100,7 @@ const NewNavbar = () => {
               <Button
                 key={page[0]}
                 onClick={() => navigate(page[1])}
-                sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'block' }}}
+                sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'block' }}}
               >
                 {page[0]}
               </Button>

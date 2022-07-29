@@ -21,6 +21,22 @@ const LinkBehavior = React.forwardRef<
   return <RouterLink ref={ref} to={href} {...other} />;
 });
 
+const bodyOverride = {
+  styleOverrides: {
+    body: {
+      background: 'linear-gradient(45deg,#ffe5b4, #c7c7da)'
+    }
+  }
+}
+
+const appBarOverride = {
+  styleOverrides: {
+    root: {
+      background: 'linear-gradient(to right, #bff2f8, #c8a2c8);'
+    }
+  }
+}
+
 const App = () => {
   const ColorModeContext = Context;
   const [cookies, setCookie] = useCookies();
@@ -61,6 +77,8 @@ const App = () => {
               LinkComponent: LinkBehavior,
             },
           },
+          MuiCssBaseline: (mode === "light") ? bodyOverride : {},
+          MuiAppBar: (mode === "light") ? appBarOverride : {},
         }
       }),
     [mode],
