@@ -6,8 +6,8 @@ registerUrl = 'http://localhost:8080/api/user/register'
 loginUrl = 'http://localhost:8080/api/user/login'
 addReviewUrl = 'http://localhost:8080/api/movie/addReview'
 
-reviewerRegister = {"name": "Reviewer Three", "email": "reviewer3@email.com", "password": "Password123"}
-#reviewerLogin = {"email": "reviewer2@email.com", "password": "Password123"}
+reviewerRegister = {"name": "Jared Mcdonald", "email": "reviewer21@email.com", "password": "Password123"}
+#reviewerLogin = {"email": "reviewer12@email.com", "password": "Password123"}
 reviewerInfo = requests.post(registerUrl, json = reviewerRegister)  
 #reviewerInfo = requests.post(loginUrl, json = reviewerLogin)
 print(reviewerInfo.json())
@@ -35,7 +35,7 @@ review20 = "My work here is done"
 
 reviewList = [review1, review2, review3, review4, review5, review6, review7, review8, review9, review10, 
               review11, review12, review13, review14, review15, review16, review17, review18, review19, review20]
-for x in range(1, 350):
+for x in range(1, 45):
     review = {"token" : [], "movieId" : [], "review" : [], "rating" : []}
     review["token"] = (reviewerInfo.json())["token"]
     review["movieId"] = x
