@@ -105,4 +105,9 @@ public class MovieController {
         JSONObject response = reviewService.likeReview(request);
         return ControllerResponses.generateHttpResponse(response);
     }
+    @GetMapping("/higherOrLower")
+    public ResponseEntity<Object> getNextMovie(@RequestParam(name = "token", required = false) String token) {
+        JSONObject response = movieService.getMovieDetails(id, token);
+        return ControllerResponses.generateHttpResponse(response);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.restservice.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -180,6 +181,13 @@ public class MovieService {
         return responseJson;
 
     }
+    public JSONObject higherOrLower() {
+        int max = 444;
+        int min = 1;
+        Random num = new Random();
+        int id = min + num.nextInt(max);
+        return getMovieDetails(id,null);
+    }
     public JSONObject homepage(String token) {
 
         // verify the users token
@@ -307,8 +315,8 @@ public class MovieService {
         return responseJson;
     }
     /**
-     * Determines what movie's are "trending"
-     * The homepage has 12 movie's on it.
+     * Determines what movies are "trending"
+     * The homepage has 12 movies on it.
      * @return
      */
     public List<Movie> trending() {
@@ -467,4 +475,6 @@ public class MovieService {
             }
         }
     }
+
+
 }
