@@ -22,5 +22,29 @@
     "poster": "https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
     "director": "Jon Watts",
     "cast": "Tom Holland, Zendaya, Benedict Cumberbatch"
+  },
+  {
+    "name": "The Matrix 2",
+    "year": 1999,
+    "averageRating": 3.2,
+    "poster": "https://image.tmdb.org/t/p/original/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    "director": "Lana Wachowski, Lilly Wachowski",
+    "cast": "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss"
+  },
+  {
+    "name": "Game of Thrones 2",
+    "year": 2011,
+    "averageRating": 3.1,
+    "poster": "https://image.tmdb.org/t/p/original/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg",
+    "director": "Steven Spielberg",
+    "cast": "Emilia Clarke, Peter Dinklage, Kit Harington"
+  },
+  {
+    "name": "Spider-Man: No Way Home 2",
+    "year": 2021,
+    "averageRating": 3.5,
+    "poster": "https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+    "director": "Jon Watts",
+    "cast": "Tom Holland, Zendaya, Benedict Cumberbatch"
   }
 ]
