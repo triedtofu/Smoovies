@@ -26,9 +26,7 @@ import { Context, useContext } from '../context';
 import Search from './NewSearch';
 import Logo from './Logo';
 
-const pages = [
-  ["Higher or Lower", "/higherorlower"]
-];
+const pages = [['Higher or Lower', '/higherorlower']];
 
 interface NavbarLoggedInProps {
   name: string;
@@ -54,7 +52,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
 
   const submitSearch = (movieSearch: string) => {
     navigate(`/search?name=${movieSearch}`);
-  }
+  };
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -63,20 +61,20 @@ const Navbar = (props: NavbarLoggedInProps) => {
   };
 
   const profilePages = [
-    ["My Profile", `/user/${props.id}`],
-    ["Edit Profile", `/user/${props.id}/edit`],
-    ["My Wishlist", `/user/${props.id}/wishlist`],
-    ["My Banlist", ""]
+    ['My Profile', `/user/${props.id}`],
+    ['Edit Profile', `/user/${props.id}/edit`],
+    ['My Wishlist', `/user/${props.id}/wishlist`],
+    ['My Blacklist', `/user/${props.id}/blacklist`],
   ];
 
   const drawer = (
     <Box sx={{ textAlign: 'center' }}>
       <div style={{ margin: '5px' }}>
-        <Logo/>
+        <Logo />
       </div>
       <Divider />
       <List>
-        {pages.map(item => (
+        {pages.map((item) => (
           <ListItem key={item[0]} disablePadding>
             <ListItemButton onClick={() => navigate(item[1])}>
               <ListItemText primary={item[0]} />
@@ -92,7 +90,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
         </ListItem>
 
         <List disablePadding>
-          {profilePages.map(item => (
+          {profilePages.map((item) => (
             <ListItem key={item[0]} disablePadding>
               <ListItemButton sx={{ pl: 4 }} onClick={() => navigate(item[1])}>
                 <ListItemText primary={item[0]} />
@@ -126,26 +124,40 @@ const Navbar = (props: NavbarLoggedInProps) => {
             </IconButton>
           </Box>
 
-          <Box sx={{ display: { xs: 'none', md: 'block' }, height: '100%', width: '120px'}}>
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'block' },
+              height: '100%',
+              width: '120px',
+            }}
+          >
             <Logo />
           </Box>
 
           <Box sx={{ flexGrow: 1 }}>
             <Search submitSearch={submitSearch} />
           </Box>
-          <Box sx={{ display: 'flex' , alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {pages.map((page) => (
               <Button
                 key={page[0]}
                 onClick={() => navigate(page[1])}
-                sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'block' }}}
+                sx={{
+                  my: 2,
+                  color: 'inherit',
+                  display: { xs: 'none', md: 'block' },
+                }}
               >
                 {page[0]}
               </Button>
             ))}
 
             <Button
-              sx={{ my: 2, color: 'inherit', display: { xs: 'none', md: 'flex' }}}
+              sx={{
+                my: 2,
+                color: 'inherit',
+                display: { xs: 'none', md: 'flex' },
+              }}
               startIcon={<AccountCircle />}
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
@@ -165,7 +177,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
                 'aria-labelledby': 'basic-button',
               }}
             >
-              {profilePages.map(page => (
+              {profilePages.map((page) => (
                 <MenuItem key={page[0]} onClick={() => navigate(page[1])}>
                   {page[0]}
                 </MenuItem>
@@ -176,11 +188,12 @@ const Navbar = (props: NavbarLoggedInProps) => {
               <MenuItem onClick={props.logout}>Logout</MenuItem>
             </Menu>
 
-            <IconButton
-              onClick={colorMode.toggleColorMode}
-              color="inherit"
-            >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            <IconButton onClick={colorMode.toggleColorMode} color="inherit">
+              {theme.palette.mode === 'dark' ? (
+                <Brightness7Icon />
+              ) : (
+                <Brightness4Icon />
+              )}
             </IconButton>
           </Box>
         </Toolbar>
@@ -204,6 +217,6 @@ const Navbar = (props: NavbarLoggedInProps) => {
       </Box>
     </Box>
   );
-}
+};
 
 export default Navbar;

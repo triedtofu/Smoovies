@@ -11,12 +11,16 @@ import MakePage from '../components/MakePage';
 import ReviewResultCard from '../components/ReviewResultCard';
 import ConfirmModal from '../components/ConfirmModal';
 
-import { apiBanUser, apiGetUserReviews, apiDeleteReview } from '../util/api';
+import {
+  apiBanUser,
+  apiGetUserReviews,
+  apiDeleteReview,
+  apiBlacklistUser,
+} from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { UserReview } from '../util/interface';
 
 import styles from './Profile.module.css';
-
 
 const Profile = () => {
   const params = useParams();
@@ -25,10 +29,11 @@ const Profile = () => {
   const [reviews, setReviews] = React.useState<UserReview[]>([]);
   const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
-  
-  const[deletReviewErr, setDeleteReviewErr] = React.useState('');
-  const[confirmBanUser, setConfirmBanUser] = React.useState(false);
-  const[banUserErr, setBanUserErr] = React.useState('');
+
+  const [deletReviewErr, setDeleteReviewErr] = React.useState('');
+  const [confirmBanUser, setConfirmBanUser] = React.useState(false);
+  const [BLUser, setBLUser] = React.useState(false);
+  const [banUserErr, setBanUserErr] = React.useState('');
 
   const refreshPage = () => {
     setErrorStr('');
@@ -60,7 +65,7 @@ const Profile = () => {
   const removeReview = (movieId: number) => {
     apiDeleteReview(cookies.token, movieId, parseInt(params.id!))
       .then(() => refreshPage())
-      .catch(error => setDeleteReviewErr(getErrorMessage(error)));
+      .catch((error) => setDeleteReviewErr(getErrorMessage(error)));
   };
 
   // returns whether the remove from review button should be shown
@@ -72,21 +77,31 @@ const Profile = () => {
       return false;
     }
 
-    if (!cookies.token || (!cookies.admin && idStr !== parseJwt(cookies.token).jti)) return false;
+    if (
+      !cookies.token ||
+      (!cookies.admin && idStr !== parseJwt(cookies.token).jti)
+    )
+      return false;
 
     return true;
   };
 
   const banUser = () => {
     setErrorStr('');
-    
+
     const idStr = params.id ?? '';
     apiBanUser(cookies.token, parseInt(idStr))
       .then(() => {
         setConfirmBanUser(false);
         refreshPage();
       })
-      .catch(error => setBanUserErr(getErrorMessage(error)));
+      .catch((error) => setBanUserErr(getErrorMessage(error)));
+  };
+
+  const blacklistUser = () => {
+    // TODO
+    const idStr = params.id ?? '';
+    apiBlacklistUser(cookies.token, parseInt(idStr), BLUser);
   };
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
@@ -99,14 +114,27 @@ const Profile = () => {
             ? 'Your Reviews'
             : `${name}'s Reviews`}
         </Typography>
-        {cookies.token && cookies.admin && params.id !== parseJwt(cookies.token).jti && (
-          <Button variant="outlined" color="error" onClick={() => setConfirmBanUser(true)}>
-            Ban User &nbsp;<CancelIcon></CancelIcon>
-          </Button>
-        )}
+        {cookies.token &&
+          cookies.admin &&
+          params.id !== parseJwt(cookies.token).jti && (
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setConfirmBanUser(true)}
+            >
+              Ban User &nbsp;<CancelIcon></CancelIcon>
+            </Button>
+          )}
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => blacklistUser()}
+        >
+          Blacklist User
+        </Button>
       </div>
 
-      {confirmBanUser &&
+      {confirmBanUser && (
         <ConfirmModal
           title="Ban user"
           body={`Are you sure you want to ban ${name}? This action can't be undone.`}
@@ -114,7 +142,7 @@ const Profile = () => {
           cancel={() => setConfirmBanUser(false)}
           error={banUserErr}
         />
-      }
+      )}
 
       {reviews.map((review) => (
         <ReviewResultCard
