@@ -194,6 +194,18 @@ export const apiBanUser = (token: string, userId: number) => {
   });
 };
 
+export const apiBlacklistUser = (
+  token: string,
+  userId: number,
+  turnon: boolean
+) => {
+  return apiFetch<Record<string, never>>('/user/blacklist', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, userId, turnon }),
+  });
+};
+
 // Actors
 
 export const apiGetActor = (id: number) => {

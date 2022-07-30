@@ -39,14 +39,13 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
-    }
-    else {
+    } else {
       setHeartColour('#a9a9a9');
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');
     }
   }, []);
-  
+
   const likeUnlikeClick = () => {
     // TODO
     if (heartColour === '#a9a9a9') {
@@ -55,7 +54,12 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
       setLikes(numLikes + 1);
-      apilikeUnlikeReview(cookies.token, parseInt(params.id ?? ''), review.user, true);
+      apilikeUnlikeReview(
+        cookies.token,
+        parseInt(params.id ?? ''),
+        review.user,
+        true
+      );
       // Do api
     } else {
       // Set to unlike status
@@ -63,7 +67,12 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');
       setLikes(numLikes - 1);
-      apilikeUnlikeReview(cookies.token, parseInt(params.id ?? ''), review.user, false);
+      apilikeUnlikeReview(
+        cookies.token,
+        parseInt(params.id ?? ''),
+        review.user,
+        false
+      );
     }
   };
 
@@ -79,26 +88,27 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
             emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
           />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          {cookies.token && <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{
-              scale: 0.9,
-            }}
-          >
-            <Button
-              variant="outlined"
-              style={{
-                backgroundColor: reviewBGColour,
-                borderColor: reviewTextColour,
+          {cookies.token && (
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{
+                scale: 0.9,
               }}
-              onClick={() => likeUnlikeClick()}
             >
-              <FavoriteIcon style={{ color: heartColour }} />
-              &nbsp; <span style={{ color: reviewTextColour }}>Like</span>
-              &nbsp;
-              <span style={{ color: reviewTextColour }}>{numLikes}</span>
-            </Button>
-          </motion.div>}
+              <Button
+                variant="outlined"
+                style={{
+                  backgroundColor: reviewBGColour,
+                  borderColor: reviewTextColour,
+                }}
+                onClick={() => likeUnlikeClick()}
+              >
+                <FavoriteIcon style={{ color: heartColour }} />
+                &nbsp;
+                <span style={{ color: reviewTextColour }}>{numLikes}</span>
+              </Button>
+            </motion.div>
+          )}
         </div>
       </div>
       <div>{review.review}</div>
