@@ -1,6 +1,8 @@
 import React from 'react';
 
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSpring, animated, config } from 'react-spring'
 
 import MakePage from '../components/MakePage';
 
@@ -9,6 +11,8 @@ import styles from './HigherOrLower.module.css';
 import Button from '@mui/material/Button';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 import stubData from './HigherOrLower.json';
 import { HigherOrLowerData } from '../util/interface';
@@ -16,39 +20,130 @@ import { HigherOrLowerData } from '../util/interface';
 const transition = {
   x: { type: "tween", duration: 1},
   layout: { type: "tween", duration: 1},
+  // onTransitionEnd: () => {console.log("Done!")},
 }
 
+let timeout: undefined | NodeJS.Timeout = undefined;
+let selectedHigher = false;
+
 const HigherOrLower = () => {
+  const navigate = useNavigate();
+
+  const [gameStatus, setGameStatus] = React.useState<"init" | "playing" | "animating" | "next" | "ending" | "end" | "win">("playing");
   const [data, setData] = React.useState<HigherOrLowerData[]>([]);
+  const [score, setScore] = React.useState(0);
+  const [highscore, setHighscore] = React.useState(0);
 
   const [index0, setIndex0] = React.useState(-1);
   const [index1, setIndex1] = React.useState(-1);
   const [index2, setIndex2] = React.useState(-1);
   const [index3, setIndex3] = React.useState(-1);
 
-  React.useEffect(() => {
-    setData(stubData);
+  const newGame = () => {
+    setScore(0);
 
     setIndex0(0);
     setIndex1(1);
     setIndex2(2);
     setIndex3(3);
-  }, []);
+
+    setGameStatus('playing');
+  }
 
   React.useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    setData(stubData);
 
-    return () => { document.body.style.overflow = ''; }
+    newGame();
+
+    () => clearTimeout(timeout);
   }, []);
 
-  const handleClick = () => {
+  // React.useEffect(() => {
+  //   console.log(gameStatus);
+  // }, [gameStatus]);
+
+  const handleClick = (higher : boolean) => {
+    selectedHigher = higher;
+    setGameStatus('animating');
+  }
+
+  const changeMovie = () => {
     setIndex0(index1);
     setIndex1((index1 + 1) % data.length);
     setIndex2((index2 + 1) % data.length);
     setIndex3((index3 + 1) % data.length);
   }
 
+  const checkCorrect = () => {
+    if (selectedHigher && data[index1].averageRating <= data[index2].averageRating) {
+      setScore(score + 1);
+    } else if (!selectedHigher && data[index1].averageRating >= data[index2].averageRating) {
+      setScore(score + 1);
+    } else {
+      setGameStatus('ending');
+      timeout = setTimeout(() => {
+        setGameStatus('end');
+        if (score > highscore) setHighscore(score);
+      }, 1500);
+      return;
+    }
+
+    setGameStatus('next');
+    changeMovie();
+  }
+
+  const AnimatedNumber = ({ value }: { value: number }) => {
+    const animatedValue = useSpring<{ val: number }>({
+      from: { val: 0 },
+      val: value,
+      config: config.molasses,
+      delay: 200,
+      onRest: () => {
+        if (gameStatus === 'animating') checkCorrect();
+      }
+    });
+
+    if (gameStatus === 'animating') {
+      return (
+        <animated.span className={styles.rating}>
+          {animatedValue.val.to((val: number) => val.toFixed(1))}
+        </animated.span>
+      );
+    } else if (gameStatus === 'ending') {
+      return <div className={styles.rating}>{value}</div>
+    }
+
+    return <></>;
+  }
+
   if (index1 < 0 || index2 < 0) return <></>;
+
+  if (gameStatus === 'end') return (
+    <div className={styles.endScreen}>
+
+      <div>You scored: </div>
+
+      <div className={styles.endScore}>{score}</div>
+
+      <Button
+        variant="contained"
+        color="error"
+        className={styles.button}
+        onClick={() => newGame()}
+      >
+        Play again
+      </Button>
+
+      <Button
+        variant="text"
+        className={styles.endHomeButton}
+        sx={{ color: 'white' }}
+        onClick={() => navigate('/')}
+      >
+        Home
+      </Button>
+    </div>
+  );
 
   return (
     <div
@@ -69,12 +164,6 @@ const HigherOrLower = () => {
           <p className={styles.rating}>{data[index0].averageRating}</p>
 
           <p>Average Rating</p>
-
-          <div className={styles.highscore}>
-            <p>0</p>
-
-            <p>High score</p>
-          </div>
         </motion.div>
 
         <motion.div
@@ -83,6 +172,7 @@ const HigherOrLower = () => {
           style={{ backgroundImage: `url(${data[index1].poster})` }}
           layoutId={`${data[index1].name} (${data[index1].year})`}
           transition={transition}
+          onLayoutAnimationComplete={() => setGameStatus('playing')}
         >
           <h2 className={styles.movieTitle}>{data[index1].name} ({data[index1].year})</h2>
 
@@ -91,12 +181,6 @@ const HigherOrLower = () => {
           <p className={styles.rating}>{data[index1].averageRating}</p>
 
           <p>Average Rating</p>
-
-          <div className={styles.highscore}>
-            <p>0</p>
-
-            <p>High score</p>
-          </div>
         </motion.div>
         <motion.div
           key={`${data[index2].name} (${data[index2].year})`}
@@ -109,12 +193,12 @@ const HigherOrLower = () => {
 
           <p>has a</p>
 
-          <Button
+          {(gameStatus === 'playing' || gameStatus === 'next') && <><Button
             className={styles.button}
             variant="contained"
             color="success"
             startIcon={<ArrowUpwardIcon />}
-            onClick={handleClick}
+            onClick={() => handleClick(true)}
           >
             Higher
           </Button>
@@ -124,18 +208,14 @@ const HigherOrLower = () => {
             variant="contained"
             color="error"
             startIcon={<ArrowDownwardIcon />}
-            onClick={handleClick}
+            onClick={() => handleClick(false)}
           >
             Lower
-          </Button>
+          </Button></>}
+
+          <AnimatedNumber value={data[index2].averageRating} />
 
           <p>Average Rating</p>
-
-          <div className={styles.score}>
-            <p>0</p>
-
-            <p>Score</p>
-          </div>
         </motion.div>
 
         <motion.div
@@ -168,18 +248,39 @@ const HigherOrLower = () => {
           </Button>
 
           <p>Average Rating</p>
-
-          <div className={styles.score}>
-            <p>0</p>
-
-            <p>Score</p>
-          </div>
         </motion.div>
       </AnimatePresence>
 
-      <p className={styles.vs}>VS</p>
+      <div className={styles.highscore}>
+        <p>{highscore}</p>
+
+        <p>High score</p>
+      </div>
+
+      <div className={styles.score}>
+        <p>{score}</p>
+
+        <p>Score</p>
+      </div>
+
+      <Button
+        variant="text"
+        className={styles.homeButton}
+        sx={{ color: 'white' }}
+        onClick={() => navigate('/')}
+      >
+        Home
+      </Button>
+
+      {(gameStatus === 'playing' || gameStatus === 'animating') && <div className={styles.center}>VS</div>}
+
+      {gameStatus === 'next' &&
+      <div className={`${styles.center} ${styles.circle}`} id={styles.correct}><CheckIcon sx={{ width: '3rem', height: '3rem' }} /></div>}
+
+      {gameStatus === 'ending' &&
+      <div className={`${styles.center} ${styles.circle}`} id={styles.incorrect}><CloseIcon sx={{ width: '3rem', height: '3rem' }} /></div>}
     </div>
   );
 };
 
-export default MakePage(HigherOrLower);
+export default HigherOrLower;
