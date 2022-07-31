@@ -38,9 +38,6 @@ const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const params = useParams();
-  const animation = useAnimation();
-  const animation2 = useAnimation();
-  const animation3 = useAnimation();
 
   const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
     undefined
@@ -50,22 +47,6 @@ const Movie = () => {
   const [deleteMovieConfirm, setDeleteMovieConfirm] = React.useState(false);
   const [deleteMovieErr, setDeleteMovieErr] = React.useState('');
   const [deleteReviewErr, setDeleteReviewErr] = React.useState('');
-
-
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
-
-  const [ref2, inView2] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
-
-  const [ref3, inView3] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
 
   const updateMovie = (id: number) => {
     apiGetMovie(id)
@@ -108,51 +89,6 @@ const Movie = () => {
       console.log(error);
     }
   }, [movie]);
-
-  React.useEffect(() => {
-    if (inView) {
-      animation.start({
-        x: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.7,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation.start({ x: '-100vw' });
-    }
-  }, [inView]);
-
-  React.useEffect(() => {
-    if (inView2) {
-      animation2.start({
-        y: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.5,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation2.start({ y: '100vh' });
-    }
-  }, [inView2]);
-
-  React.useEffect(() => {
-    if (inView3) {
-      animation3.start({
-        y: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.5,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation3.start({ y: '50vh' });
-    }
-  }, [inView3]);
 
   const WishlistButton = ({ state }: buttonProps) => {
     if (state === 1)
@@ -298,90 +234,72 @@ const Movie = () => {
 
       <br />
 
-      <div ref={ref}>
-        <motion.div
-          className={styles.movieSummary}
-          initial={{ x: '-100vw' }}
-          animate={animation}
-          transition={{ type: 'spring', duration: 0.7, bounce: 0.3 }}
-        >
-          <img src={movie.poster} style={{ width: '200px' }} />
+      <div className={styles.movieSummary}>
+        <img src={movie.poster} style={{ width: '200px' }} />
 
-          <div style={{ width: '100%', textAlign: 'center' }}>
-            <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
-              <Typography gutterBottom variant="h5" component="h2">{movie.name}</Typography>
+        <div style={{ width: '100%' }}>
+          <div>
+            <Typography gutterBottom variant="h5" component="h2">{movie.name}</Typography>
 
-              <p>
-                Genre: {movie.genres.join(', ')}
-                <br />
-                Director: {movie.director
-                  .split(',')
-                  .map((s) => s.trim())
-                  .join(', ')}
-                <br />
-                Cast:{' '}
-                {movie.cast
-                  .split(',')
-                  .map((s) => s.trim())
-                  .join(', ')}
-                <br />
-                Content Rating: {movie.contentRating}
-                <br />
-                Average Rating: {movie.averageRating} / 5
-                <br />
-                Runtime: {movie.runtime} minutes
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      <div ref={ref3}>
-        <motion.div
-          initial={{ y: '50vh' }}
-          animate={animation3}
-          transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
-        >
-          <Typography variant="h6" component="h3">Movie Info</Typography>
-
-          <p>{movie.description}</p>
-        </motion.div>
-      </div>
-
-      <div ref={ref2}>
-        <div>
-          <Typography gutterBottom variant="h5" component="h2">Reviews</Typography>
-          <div className={styles.reviewsDiv}>
-            {movie.reviews.map((review) => (
-              <ReviewCard
-                key={review.user}
-                onDelete={deleteButtonFunc(review.user)}
-                review={review}
-                error={deleteReviewErr}
-              />
-            ))}
+            <p>
+              Genre: {movie.genres.join(', ')}
+              <br />
+              Director: {movie.director
+                .split(',')
+                .map((s) => s.trim())
+                .join(', ')}
+              <br />
+              Cast:{' '}
+              {movie.cast
+                .split(',')
+                .map((s) => s.trim())
+                .join(', ')}
+              <br />
+              Content Rating: {movie.contentRating}
+              <br />
+              Average Rating: {movie.averageRating} / 5
+              <br />
+              Runtime: {movie.runtime} minutes
+            </p>
           </div>
         </div>
-
-        {!cookies.token && (
-          <p>
-            <MyLink href="/login">Login</MyLink>/
-            <MyLink href="/register">Register</MyLink> to write a review!
-          </p>
-        )}
-
-        <br />
-
-        {cookies.token &&
-          !movie.reviews.find(
-            (review) =>
-              review.user === parseInt(parseJwt(cookies.token).jti)
-          ) &&
-          <motion.div animate={animation2}>
-            <ReviewInput submitReview={submitReview} />
-          </motion.div>
-        }
       </div>
+
+      <div>
+        <Typography variant="h6" component="h3">Movie Info</Typography>
+
+        <p>{movie.description}</p>
+      </div>
+      <div>
+        <Typography gutterBottom variant="h5" component="h2">Reviews</Typography>
+        <div className={styles.reviewsDiv}>
+          {movie.reviews.map((review) => (
+            <ReviewCard
+              key={review.user}
+              onDelete={deleteButtonFunc(review.user)}
+              review={review}
+              error={deleteReviewErr}
+            />
+          ))}
+        </div>
+      </div>
+
+      {!cookies.token && (
+        <p>
+          <MyLink href="/login">Login</MyLink>/
+          <MyLink href="/register">Register</MyLink> to write a review!
+        </p>
+      )}
+
+      <br />
+
+      {cookies.token &&
+        !movie.reviews.find(
+          (review) =>
+            review.user === parseInt(parseJwt(cookies.token).jti)
+        ) &&
+          <ReviewInput submitReview={submitReview} />
+      }
     </Container>
   );
 };
