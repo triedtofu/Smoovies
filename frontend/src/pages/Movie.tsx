@@ -2,8 +2,6 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Helmet } from 'react-helmet-async';
-import { useInView } from 'react-intersection-observer';
-import { motion, useAnimation } from 'framer-motion';
 
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
@@ -242,7 +240,7 @@ const Movie = () => {
       <br />
 
       <div className={styles.movieSummary}>
-        <img src={movie.poster} style={{ width: '200px' }} />
+        <img src={movie.poster} style={{ height: '300px', width: '200px' }} />
 
         <div style={{ width: '100%' }}>
           <div>
