@@ -181,14 +181,35 @@ public class MovieService {
 
     }
 
-    public JSONObject higherOrLower() {
+    public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         List<Movie> allMovies = movieDAO.findAll();
         JSONArray movieDetailsArray = new JSONArray();
+        List<String> genreList = new ArrayList<>(Arrays.asList(genres.split(",[ ]*")));
+        List<String> contentRatingList = new ArrayList<>(Arrays.asList(contentRating.split(",[ ]*")));
         for (int i = 0; i < allMovies.size(); i++) {
+            Boolean movieHasGenre = false;
             Movie movie = allMovies.get(i);
             HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            // Checking that the current movie satisfies the user inputted filters. Skip iteration if not.
             if (movie.getAverageRating() == 0) continue;
+            if (movie.getYear() < startYear || movie.getYear() > endYear) continue;
+            if (genres != null && !genres.isEmpty()){
+                //System.out.print("Genres is not null");
+                List<String> movieGenres = movie.getGenreListStr();
+                //System.out.println(Arrays.toString(movieGenres.toArray()));
+                for (String genre : movieGenres) {           
+                    if (genreList.contains(genre)){
+                        movieHasGenre = true;
+                        break;
+                    };
+                }
+                if (!movieHasGenre) continue;           
+            }
+            if (contentRating != null && !contentRating.isEmpty() && !contentRatingList.contains(movie.getContentRating())){
+                continue;
+            }
+            // Putting all the details into Hashmap, making it a JSON object, and putting it in the movie Array
             movieDetails.put("name", movie.getName());
             movieDetails.put("year", movie.getYear());
             movieDetails.put("averageRating", movie.getAverageRating());
