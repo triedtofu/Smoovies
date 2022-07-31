@@ -11,4 +11,5 @@ import com.example.restservice.dataModels.Genre;
 public interface GenreDataAccessService extends JpaRepository<Genre, Long> {
     @Query(value = "SELECT * from genres g WHERE g.name = LOWER(:name)", nativeQuery = true)
     public Genre findGenreByName(@Param("name") String name);
+
 }
