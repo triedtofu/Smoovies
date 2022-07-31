@@ -286,4 +286,12 @@ public class Movie {
     public void removeMovieReview(Review r) {
         movieReviews.remove(r);
     }
+
+    public Set<Actor> getActorsInMovie() {
+        return this.actorsInMovie;
+    }
+
+    public Set<Director> getDirectorsInMovie() {
+        return this.directorsInMovie;
+    }
 }
