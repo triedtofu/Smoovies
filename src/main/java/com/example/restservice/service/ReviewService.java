@@ -69,10 +69,11 @@ public class ReviewService {
         return responseJson;
     }
 
-    public JSONObject getUserReviews(Long id) {
+    public JSONObject getUserReviews(Long id, String token) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
 
         User user = userDAO.findUserById(id);
+
         if (user == null) return ServiceErrors.userIdInvalidError();
         if (user.getIsBanned()) return ServiceErrors.userBannedError();
 
@@ -82,14 +83,7 @@ public class ReviewService {
         JSONArray reviewArray = new JSONArray();
 
         for (Review review : user.getUserReviews()) {
-            HashMap<String, Object> userReview = new HashMap<String,Object>();
-            userReview.put("movieId", review.getMovie().getId());
-            userReview.put("movieName", review.getMovie().getName());
-            userReview.put("poster", review.getMovie().getPoster());
-            userReview.put("review", review.getReviewString());
-            userReview.put("rating", review.getRating());
-            userReview.put("likes", review.getLikes());
-            JSONObject userReviewJson = new JSONObject(userReview);
+            
             reviewArray.put(userReviewJson);
         }
         returnMessage.put("reviews", reviewArray);
@@ -195,7 +189,23 @@ public class ReviewService {
         if (dbreview == null) return ServiceErrors.reviewNotFound();
 
         return new JSONObject();
-
-        
+    }
+    /**
+     * 
+     * @param review
+     * @param tokenIsThere
+     * @param user The Authorised user, to check if they have liked the review.
+     * @return
+     */
+    private JSONObject reviewJSON(Review review, Boolean tokenIsThere, User user) {
+        HashMap<String, Object> userReview = new HashMap<String,Object>();
+        userReview.put("movieId", review.getMovie().getId());
+        userReview.put("movieName", review.getMovie().getName());
+        userReview.put("poster", review.getMovie().getPoster());
+        userReview.put("review", review.getReviewString());
+        userReview.put("rating", review.getRating());
+        userReview.put("likes", review.getLikes());
+        if (tokenIsThere) userReview.put("liked",)
+        return new JSONObject(userReview);
     }
 }

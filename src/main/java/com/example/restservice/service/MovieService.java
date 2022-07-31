@@ -182,24 +182,12 @@ public class MovieService {
 
     }
     public JSONObject higherOrLower() {
-        int max = 444;
-        int min = 1;
-        Random num = new Random();
-        int id = min + num.nextInt(max);
-        Movie movie = movieDAO.findMovieByID(id);
-
+        
+        
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
-        returnMessage.put("name", movie.getName());
-        returnMessage.put("year", movie.getYear());
-        movie.recalculateAverageRating();
-        returnMessage.put("averageRating", movie.getAverageRating());
-        returnMessage.put("poster" , movie.getPoster());
-        returnMessage.put("director", movie.getDirectors());
-        returnMessage.put("cast", movie.getCast());
-
+        
         JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;        
+        return responseJson;
 
     }
     public JSONObject homepage(String token) {

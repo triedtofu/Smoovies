@@ -84,8 +84,8 @@ public class UserController {
 
 
     @GetMapping("/reviews") 
-    public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id) {
-        JSONObject response = reviewService.getUserReviews(id);
+    public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id, @RequestParam(name = "token", required = false) String token) {
+        JSONObject response = reviewService.getUserReviews(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
         
