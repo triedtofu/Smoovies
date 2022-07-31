@@ -1,16 +1,14 @@
 import React from 'react';
-import { HashRouter, Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import { HelmetProvider } from 'react-helmet-async';
-
-import { Context } from './context';
+import { HashRouter, Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
+import { LinkProps } from '@mui/material/Link';
 import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { LinkProps } from '@mui/material/Link';
-
 import Router from './Router';
+import { Context } from './context';
 
 const LinkBehavior = React.forwardRef<
   HTMLAnchorElement,
@@ -44,9 +42,13 @@ const App = () => {
   const [mode, setMode] = React.useState<'light' | 'dark'>('light');
 
   React.useEffect(() => {
+    // load inital mode from cookie
     if (cookies.mode) setMode(cookies.mode);
   }, []);
 
+  /**
+   * function to change colour mode
+   */
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
@@ -60,6 +62,9 @@ const App = () => {
     [],
   );
 
+  /**
+   * function that returns the theme
+   */
   const theme = React.useMemo(
     () =>
       createTheme({

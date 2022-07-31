@@ -13,13 +13,15 @@ import { MovieSummary } from '../util/interface';
 import Typography from '@mui/material/Typography';
 
 const Homepage = () => {
+  // store the movies
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
 
+  // fetch the movies when the page loads
   React.useEffect(() => {
     try {
       apiMovieHomepage().then((data) => setMovies(data.movies));
     } catch (err) {
-      console.log(err);
+      console.warn(err);
     }
   }, []);
 
@@ -30,16 +32,17 @@ const Homepage = () => {
       </Helmet>
 
       <Typography gutterBottom variant="h4" component="h1">Trending</Typography>
-      
-      {movies.length > 0 && <div className={styles.container}>
-        {movies.map(movie => (
-          <MovieCard
-            key={movie.id}
-            movie={movie}
-          />
-        ))
-        }
-      </div>}
+
+      {movies.length > 0 &&
+        <div className={styles.container}>
+          {movies.map(movie => (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+            />
+          ))}
+        </div>
+      }
     </Container>
   );
 };

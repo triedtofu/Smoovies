@@ -34,7 +34,6 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   const params = useParams();
 
   React.useEffect(() => {
-    console.log(review.liked);
     if (review.liked === true) {
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
