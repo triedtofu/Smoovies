@@ -130,7 +130,7 @@ public class MovieService {
      * @param id
      * @return complete details of movie, all variables in Movies.java
      */
-    public JSONObject getMovieDetails(long id, String token) {
+    public JSONObject  getMovieDetails(long id, String token) {
 
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
@@ -186,7 +186,21 @@ public class MovieService {
         int min = 1;
         Random num = new Random();
         int id = min + num.nextInt(max);
-        return getMovieDetails(id,null);
+        Movie movie = movieDAO.findMovieByID(id);
+
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+
+        returnMessage.put("name", movie.getName());
+        returnMessage.put("year", movie.getYear());
+        movie.recalculateAverageRating();
+        returnMessage.put("averageRating", movie.getAverageRating());
+        returnMessage.put("poster" , movie.getPoster());
+        returnMessage.put("director", movie.getDirectors());
+        returnMessage.put("cast", movie.getCast());
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;        
+
     }
     public JSONObject homepage(String token) {
 
