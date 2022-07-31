@@ -182,12 +182,24 @@ public class MovieService {
     }
 
     public JSONObject higherOrLower() {
-        
-        
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        List<Movie> allMovies = movieDAO.findAll();
+        JSONArray movieDetailsArray = new JSONArray();
+        for (int i = 0; i < allMovies.size(); i++) {
+            Movie movie = allMovies.get(i);
+            HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            movieDetails.put("name", movie.getName());
+            movieDetails.put("year", movie.getYear());
+            movieDetails.put("averageRating", movie.getAverageRating());
+            movieDetails.put("poster", movie.getPoster());
+            movieDetails.put("director", movie.getDirectors());
+            movieDetails.put("cast", movie.getCast());
+            JSONObject movieDetailsJSON = new JSONObject(movieDetails);
+            movieDetailsArray.put(movieDetailsJSON);
+        }
+        returnMessage.put("movies", movieDetailsArray);
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-
     }
     public JSONObject homepage(String token) {
 
