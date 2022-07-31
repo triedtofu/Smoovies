@@ -159,7 +159,6 @@ public class MovieService {
             JSONArray reviewArray = new JSONArray();
             for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
                 if (review.getUser().getIsBanned()) continue;
-                
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
                 movieReview.put("user", review.getUser().getId());
                 movieReview.put("name", review.getUser().getName());
@@ -181,6 +180,7 @@ public class MovieService {
         return responseJson;
 
     }
+
     public JSONObject higherOrLower() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         List<Movie> allMovies = movieDAO.findAll();
