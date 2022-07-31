@@ -181,11 +181,12 @@ public class MovieService {
         return responseJson;
 
     }
+
     public JSONObject higherOrLower() {
         
         
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-        
+        List<Movie> allMovies = movieDAO.findAll();
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
