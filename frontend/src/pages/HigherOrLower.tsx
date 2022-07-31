@@ -252,15 +252,15 @@ const HigherOrLower = () => {
       </AnimatePresence>
 
       <div className={styles.highscore}>
-        <p>{highscore}</p>
+        <p className={styles.scoreNum}>{highscore}</p>
 
-        <p>High score</p>
+        <p className={styles.scoreText}>High score</p>
       </div>
 
       <div className={styles.score}>
-        <p>{score}</p>
+        <p className={styles.scoreNum}>{score}</p>
 
-        <p>Score</p>
+        <p className={styles.scoreText}>Score</p>
       </div>
 
       <Button

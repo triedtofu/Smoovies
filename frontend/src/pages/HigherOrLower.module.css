@@ -63,6 +63,10 @@
   font-size: 1.875rem;
 }
 
+.scoreDiv {
+  margin-top: 5px;
+}
+
 .highscore {
   position: absolute;
   top: 0;
@@ -80,6 +84,15 @@
   width: fit-content;
   padding-left: 10px;
   text-align: left;
+}
+
+.scoreNum {
+  font-size: 1.25rem;
+  margin-bottom: 0;
+}
+
+.scoreText {
+  margin-top: 5px;
 }
 
 .circle {
@@ -113,4 +126,42 @@
 
 #incorrect {
   background-color: #C75555;
+}
+
+@media (max-width: 767px) {
+  .flexDiv {
+    flex-direction: column;
+    left: 0;
+    top: -50%;
+  }
+
+  .div {
+    min-height: 50%;
+  }
+
+  .center {
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+  }
+
+  .homeButton {
+    top: 50%;
+    left: 0;
+  }
+
+  .highscore {
+    top: 100%;
+    left: 0;
+    transform: translate(0, -100%);
+    text-align: left;
+    margin-left: 5px;
+  }
+  
+  .score {
+    top: 100%;
+    right: 0;
+    transform: translate(calc(-100% - 5px), -100%);
+    text-align: right;
+  }
 }
