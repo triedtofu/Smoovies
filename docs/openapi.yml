@@ -154,6 +154,19 @@ paths:
                     maxItems: 10
                     items:
                       $ref: '#/components/schemas/Review'
+                  similar:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/MovieId'
+                        name:
+                          $ref: '#/components/schemas/MovieName'
+                        year:
+                          $ref: '#/components/schemas/MovieYear'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
