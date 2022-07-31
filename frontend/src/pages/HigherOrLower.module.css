@@ -139,6 +139,11 @@
     min-height: 50%;
   }
 
+  .div > p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
   .center {
     left: 50%;
     top: 100%;

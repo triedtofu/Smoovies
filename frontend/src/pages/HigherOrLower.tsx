@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSpring, animated, config } from 'react-spring'
 
-import MakePage from '../components/MakePage';
-
 import styles from './HigherOrLower.module.css';
 
 import Button from '@mui/material/Button';
@@ -14,13 +12,13 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
-import stubData from './HigherOrLower.json';
+import { apiGetHigherOrLower } from '../util/api';
+import { randInt } from '../util/helper';
 import { HigherOrLowerData } from '../util/interface';
 
 const transition = {
   x: { type: "tween", duration: 1},
   layout: { type: "tween", duration: 1},
-  // onTransitionEnd: () => {console.log("Done!")},
 }
 
 let timeout: undefined | NodeJS.Timeout = undefined;
@@ -29,7 +27,7 @@ let selectedHigher = false;
 const HigherOrLower = () => {
   const navigate = useNavigate();
 
-  const [gameStatus, setGameStatus] = React.useState<"init" | "playing" | "animating" | "next" | "ending" | "end" | "win">("playing");
+  const [gameStatus, setGameStatus] = React.useState<"init" | "playing" | "animating" | "next" | "ending" | "end" | "win">("init");
   const [data, setData] = React.useState<HigherOrLowerData[]>([]);
   const [score, setScore] = React.useState(0);
   const [highscore, setHighscore] = React.useState(0);
@@ -39,28 +37,34 @@ const HigherOrLower = () => {
   const [index2, setIndex2] = React.useState(-1);
   const [index3, setIndex3] = React.useState(-1);
 
-  const newGame = () => {
+  const newGame = (len : number) => {
     setScore(0);
 
-    setIndex0(0);
-    setIndex1(1);
-    setIndex2(2);
-    setIndex3(3);
+    const indexes: number[] = [];
+
+    while (indexes.length !== 4) {
+      const rand = randInt(0, len - 1);
+      if (!indexes.includes(rand)) indexes.push(rand);
+    }
+
+    setIndex0(indexes[0]);
+    setIndex1(indexes[1]);
+    setIndex2(indexes[2]);
+    setIndex3(indexes[3]);
 
     setGameStatus('playing');
   }
 
   React.useEffect(() => {
-    setData(stubData);
+    apiGetHigherOrLower().then(res => {
+      // TODO handle if we don't have enough movies (< 10)
 
-    newGame();
+      setData(res.movies);
+      newGame(res.movies.length);
+    });
 
     () => clearTimeout(timeout);
   }, []);
-
-  // React.useEffect(() => {
-  //   console.log(gameStatus);
-  // }, [gameStatus]);
 
   const handleClick = (higher : boolean) => {
     selectedHigher = higher;
@@ -68,10 +72,16 @@ const HigherOrLower = () => {
   }
 
   const changeMovie = () => {
+    let rand = randInt(0, data.length - 1);
+
+    while ([index0, index1, index2, index3].includes(rand)) {
+      rand = randInt(0, data.length - 1);
+    }
+
     setIndex0(index1);
-    setIndex1((index1 + 1) % data.length);
-    setIndex2((index2 + 1) % data.length);
-    setIndex3((index3 + 1) % data.length);
+    setIndex1(index2);
+    setIndex2(index3);
+    setIndex3(rand);
   }
 
   const checkCorrect = () => {
@@ -129,7 +139,7 @@ const HigherOrLower = () => {
         variant="contained"
         color="error"
         className={styles.button}
-        onClick={() => newGame()}
+        onClick={() => newGame(data.length)}
       >
         Play again
       </Button>
@@ -182,6 +192,7 @@ const HigherOrLower = () => {
 
           <p>Average Rating</p>
         </motion.div>
+
         <motion.div
           key={`${data[index2].name} (${data[index2].year})`}
           className={styles.div}
