@@ -546,20 +546,15 @@ public class MovieService {
             for (Genre genre : movie.getGenreList()){
                 if(genre.movieInGenre(dbMovie)) genreMatches++;
             }
-
             double genreDistance = genreMatches/genreListSize;
-
             double actorListSize = movie.getActorsInMovie().size();
             double actorMatches = 0;
             for (Actor actor : movie.getActorsInMovie()) {
                 if (actor.actorInMovie(dbMovie)) actorMatches++;
             }
-
             double actorDistance = actorMatches/actorListSize;
-
             double directorListSize = movie.getDirectorsInMovie().size();
             double directorMatches = 0;
-
             for (Director director : movie.getDirectorsInMovie()) {
                 if (director.directorIsInMovie(dbMovie)) directorMatches++;
             }
@@ -572,8 +567,7 @@ public class MovieService {
             weightedSimilarities.put(dbMovie, simlarity);
         }
         
-        //List<Movie> similarMovies = new ArrayList<Movie>();
-
+        //Sort the movies in terms of similarity
         List<Map.Entry<Movie,Double>> list = new LinkedList<Map.Entry<Movie,Double>>(weightedSimilarities.entrySet());
 
         Collections.sort(list, new Comparator<Map.Entry<Movie, Double>>(){
@@ -581,16 +575,15 @@ public class MovieService {
                 return (o1.getValue().compareTo(o2.getValue()));
             }
         });
-
         Collections.reverse(list);
-
         HashMap<Movie, Double> temp = new LinkedHashMap<Movie, Double>();
+        int counter = 0;
         for (Map.Entry<Movie, Double> aa : list) {
             temp.put(aa.getKey(), aa.getValue());
+            counter++;
+            if (counter == 12) break;
         }
-        
         return temp;
-
     }
     
 
