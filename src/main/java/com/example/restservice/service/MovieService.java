@@ -2,6 +2,7 @@ package com.example.restservice.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +130,7 @@ public class MovieService {
      * @param id
      * @return complete details of movie, all variables in Movies.java
      */
-    public JSONObject getMovieDetails(long id, String token) {
+    public JSONObject  getMovieDetails(long id, String token) {
 
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
@@ -158,7 +159,6 @@ public class MovieService {
             JSONArray reviewArray = new JSONArray();
             for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
                 if (review.getUser().getIsBanned()) continue;
-                
                 HashMap<String, Object> movieReview = new HashMap<String,Object>();
                 movieReview.put("user", review.getUser().getId());
                 movieReview.put("name", review.getUser().getName());
@@ -179,6 +179,27 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
 
+    }
+
+    public JSONObject higherOrLower() {
+        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        List<Movie> allMovies = movieDAO.findAll();
+        JSONArray movieDetailsArray = new JSONArray();
+        for (int i = 0; i < allMovies.size(); i++) {
+            Movie movie = allMovies.get(i);
+            HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            movieDetails.put("name", movie.getName());
+            movieDetails.put("year", movie.getYear());
+            movieDetails.put("averageRating", movie.getAverageRating());
+            movieDetails.put("poster", movie.getPoster());
+            movieDetails.put("director", movie.getDirectors());
+            movieDetails.put("cast", movie.getCast());
+            JSONObject movieDetailsJSON = new JSONObject(movieDetails);
+            movieDetailsArray.put(movieDetailsJSON);
+        }
+        returnMessage.put("movies", movieDetailsArray);
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
     }
     public JSONObject homepage(String token) {
 
@@ -307,8 +328,8 @@ public class MovieService {
         return responseJson;
     }
     /**
-     * Determines what movie's are "trending"
-     * The homepage has 12 movie's on it.
+     * Determines what movies are "trending"
+     * The homepage has 12 movies on it.
      * @return
      */
     public List<Movie> trending() {
@@ -467,4 +488,6 @@ public class MovieService {
             }
         }
     }
+
+
 }
