@@ -52,4 +52,8 @@ public class Genre {
         if (moviesInGenre.contains(movie)) return true;
         return false;
     }
+
+    public Set<Movie> getMoviesInGenre() {
+        return this.moviesInGenre;
+    }
 }
