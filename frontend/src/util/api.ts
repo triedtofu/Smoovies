@@ -170,9 +170,11 @@ export const apiPutUserWishlist = (
 };
 
 export const apiGetUserReviews = (userId: number, token?: string) => {
-  return apiFetch<UserReviewResponse>(
-    `/user/reviews?userId=${userId}&token=${token}`
-  );
+  let path = `/user/reviews?userId=${userId}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<UserReviewResponse>(path);
 };
 
 export const apiDeleteReview = (
