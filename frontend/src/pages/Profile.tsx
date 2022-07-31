@@ -15,7 +15,7 @@ import {
   apiBanUser,
   apiGetUserReviews,
   apiDeleteReview,
-  apiBlacklistUser,
+  apiPutBlacklistUser,
 } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { UserReview } from '../util/interface';
@@ -32,7 +32,7 @@ const Profile = () => {
 
   const [deletReviewErr, setDeleteReviewErr] = React.useState('');
   const [confirmBanUser, setConfirmBanUser] = React.useState(false);
-  const [BLUser, setBLUser] = React.useState(false);
+  const [BLUser, setBLUser] = React.useState(true);
   const [banUserErr, setBanUserErr] = React.useState('');
 
   const refreshPage = () => {
@@ -45,7 +45,7 @@ const Profile = () => {
     }
 
     try {
-      apiGetUserReviews(parseInt(idStr))
+      apiGetUserReviews(parseInt(idStr), cookies.token)
         .then((data) => {
           setReviews(data.reviews);
           setName(data.username);
@@ -101,7 +101,8 @@ const Profile = () => {
   const blacklistUser = () => {
     // TODO
     const idStr = params.id ?? '';
-    apiBlacklistUser(cookies.token, parseInt(idStr), BLUser);
+    apiPutBlacklistUser(cookies.token, parseInt(idStr), BLUser);
+    setBLUser(false);
   };
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
@@ -125,13 +126,20 @@ const Profile = () => {
               Ban User &nbsp;<CancelIcon></CancelIcon>
             </Button>
           )}
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => blacklistUser()}
-        >
-          Blacklist User
-        </Button>
+        {BLUser && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => blacklistUser()}
+          >
+            Blacklist User
+          </Button>
+        )}
+        {!BLUser && (
+          <h2 style={{ color: 'red', font: 'Futura' }}>
+            You have blacklisted this user
+          </h2>
+        )}
       </div>
 
       {confirmBanUser && (

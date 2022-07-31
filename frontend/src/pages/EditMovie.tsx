@@ -21,7 +21,7 @@ const EditMovie = () => {
   );
 
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
-  
+
   const newMovie: SubmitMovie = (
     name,
     year,
@@ -34,36 +34,52 @@ const EditMovie = () => {
     cast,
     runtime
   ) => {
-    const newMovie = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
-    apiEditMovie(cookies.token, movie!.id, newMovie)
-      .then(res => navigate(`/movie/${movie!.id}`))
-      // .catch(error => setNewMovieErr(getErrorMessage(error)));
+    const newMovie = {
+      name,
+      year,
+      poster,
+      trailer,
+      description,
+      genres,
+      contentRating,
+      cast,
+      director,
+      runtime,
+    };
+    apiEditMovie(cookies.token, movie!.id, newMovie).then((res) =>
+      navigate(`/movie/${movie!.id}`)
+    );
+    // .catch(error => setNewMovieErr(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
     try {
-      apiGetMovie(parseInt(params.id ?? ''))
-        .then((data) => setMovie(data));
+      apiGetMovie(parseInt(params.id ?? ''), cookies.token).then((data) =>
+        setMovie(data)
+      );
     } catch {
       // TODO handle errors
     }
   }, [params]);
 
   React.useEffect(() => {
-    apiGetGenres().then(data => setAllGenres(data.genres));
+    apiGetGenres().then((data) => setAllGenres(data.genres));
   }, []);
 
-  if (!cookies.token || !cookies.admin) return  (
-    <Container maxWidth="md">
-      <h2>Access denied. Only admins can access this page.</h2>
-    </Container>
-  );
+  if (!cookies.token || !cookies.admin)
+    return (
+      <Container maxWidth="md">
+        <h2>Access denied. Only admins can access this page.</h2>
+      </Container>
+    );
 
   if (!movie) return <></>;
 
   return (
     <Container maxWidth="sm">
-      <Typography gutterBottom variant="h4" component="h1">Movie - Edit Details</Typography>
+      <Typography gutterBottom variant="h4" component="h1">
+        Movie - Edit Details
+      </Typography>
 
       <NewMovieForm
         submit={newMovie}

@@ -15,6 +15,8 @@ import {
   ActorResponse,
   DirectorResponse,
   SearchResponse,
+  BlacklistSummary,
+  BlacklistResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) => {
@@ -68,13 +70,13 @@ export const apiMovieSearch = (
 };
 
 // TODO update once api is done
-export const apiGetMovie = (id: number) => {
-  return apiFetch<SpecificMovieResponse>(`/movie/getMovie?id=${id}`).then(
-    (data) => {
-      data.id = id;
-      return data;
-    }
-  );
+export const apiGetMovie = (id: number, token?: string) => {
+  return apiFetch<SpecificMovieResponse>(
+    `/movie/getMovie?id=${id}&token=${token}`
+  ).then((data) => {
+    data.id = id;
+    return data;
+  });
 };
 
 export const apiGetGenres = () => {
@@ -154,8 +156,10 @@ export const apiPutUserWishlist = (
   });
 };
 
-export const apiGetUserReviews = (userId: number) => {
-  return apiFetch<UserReviewResponse>(`/user/reviews?userId=${userId}`);
+export const apiGetUserReviews = (userId: number, token?: string) => {
+  return apiFetch<UserReviewResponse>(
+    `/user/reviews?userId=${userId}&token=${token}`
+  );
 };
 
 export const apiDeleteReview = (
@@ -194,7 +198,11 @@ export const apiBanUser = (token: string, userId: number) => {
   });
 };
 
-export const apiBlacklistUser = (
+export const apiBlacklistUser = (token: string) => {
+  return apiFetch<BlacklistResponse>(`/user/blacklist?token=${token}`);
+};
+
+export const apiPutBlacklistUser = (
   token: string,
   userId: number,
   turnon: boolean

@@ -5,61 +5,61 @@ import { useCookies } from 'react-cookie';
 import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 
-import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
+import { apiBlacklistUser } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 
 import Typography from '@mui/material/Typography';
+import { BlacklistResponse, BlacklistSummary } from '../util/interface';
+import BlacklistPersonResultCard from '../components/BlacklistPersonResultCard';
 
-const Wishlist = () => {
+const Blacklist = () => {
   const params = useParams();
   const [cookies] = useCookies();
+  const [blacklistUsers, setBlacklistUsers] = React.useState<
+    BlacklistSummary[]
+  >([]);
+  const [username, setUsername] = React.useState('');
 
-  // React.useEffect(() => {
-  //   setMovies([]);
-  //   setName('');
-  //   setErrorStr('');
-  //   const idStr = params.id ?? '';
+  React.useEffect(() => {
+    setBlacklistUsers([]);
+    setUsername('');
+    const idStr = params.id ?? '';
 
-  //   if (idStr === '') {
-  //     // TODO handle error
-  //     return;
-  //   }
+    if (idStr === '') {
+      // TODO handle error
+      return;
+    }
 
-  //   try {
-  //     apiUserWishlist(parseInt(idStr))
-  //       .then((data) => {
-  //         setMovies(data.movies);
-  //         setName(data.username);
-  //       })
-  //       .catch((error) => setErrorStr(getErrorMessage(error)));
-  //   } catch (error) {
-  //     setErrorStr(getErrorMessage(error));
-  //   }
-  // }, [params]);
+    apiBlacklistUser(cookies.token).then((data) => {
+      setBlacklistUsers(data.users);
+      setUsername(data.username);
+      console.log(data.users);
+    });
+  }, [params]);
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1">
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Blacklist'
-          : `${name}'s Blacklist`}
+          : `${username}'s Blacklist`}
       </Typography>
-      {/* 
-      {movies.length === 0 && <p>No users in blacklist.</p>} */}
+
+      {blacklistUsers.length === 0 && <p>No users in blacklist.</p>}
       <div>
-        {/* {fetched && actors.length === 0 && <p>No actors found.</p>}
-        {actors.length > 0 &&
-          actors.map((actor) => (
-            <PersonResultCard
-              key={actor.id}
-              name={actor.name}
-              link={`/actor/${actor.id}`}
+        {blacklistUsers.length > 0 &&
+          blacklistUsers.map((user) => (
+            <BlacklistPersonResultCard
+              key={user.userId}
+              userId={user.userId}
+              name={user.username}
+              link={`/actor/${user.userId}`}
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
-          ))} */}
+          ))}
       </div>
     </Container>
   );
 };
 
-export default MakePage(Wishlist);
+export default MakePage(Blacklist);

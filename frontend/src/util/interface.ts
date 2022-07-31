@@ -62,6 +62,16 @@ export interface MovieSummary {
   averageRating: number;
 }
 
+export interface BlacklistSummary {
+  userId: number;
+  username: string;
+}
+
+export interface BlacklistResponse {
+  username: string;
+  users: BlacklistSummary[];
+}
+
 export interface SpecificMovieResponse extends MovieDetails {
   id: number;
   averageRating: number;
