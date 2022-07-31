@@ -72,9 +72,11 @@ export const apiMovieSearch = (
 
 // TODO update once api is done
 export const apiGetMovie = (id: number, token?: string) => {
-  return apiFetch<SpecificMovieResponse>(
-    `/movie/getMovie?id=${id}&token=${token}`
-  ).then((data) => {
+  let path = `/movie/getMovie?id=${id}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<SpecificMovieResponse>(path).then((data) => {
     data.id = id;
     return data;
   });
