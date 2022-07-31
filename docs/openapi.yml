@@ -428,6 +428,11 @@ paths:
         - Movies
       summary: Get higher or lower data
       description: Returns the higher or lower data
+      parameters:
+        - $ref: '#/components/parameters/StartYearParam'
+        - $ref: '#/components/parameters/EndYearParam'
+        - $ref: '#/components/parameters/MovieGenresParam'
+        - $ref: '#/components/parameters/ContentRatingParam'
       responses:
         '200':
           description: OK
@@ -1001,7 +1006,8 @@ components:
       description: Content rating
       required: false
       schema:
-        $ref: '#/components/schemas/ContentRating'
+        type: string
+        example: G,PG
     UserTokenParam:
       name: token
       in: query
@@ -1016,6 +1022,22 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Token'
+    StartYearParam:
+      name: startYear
+      in: query
+      description: Start year
+      required: true
+      schema:
+        type: number
+        example: 2000
+    EndYearParam:
+      name: endYear
+      in: query
+      description: End year
+      required: true
+      schema:
+        type: number
+        example: 2020
   responses:
     InputError:
       description: Input error
