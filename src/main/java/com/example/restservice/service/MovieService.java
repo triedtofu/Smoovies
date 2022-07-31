@@ -188,6 +188,7 @@ public class MovieService {
         for (int i = 0; i < allMovies.size(); i++) {
             Movie movie = allMovies.get(i);
             HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            if (movie.getAverageRating() == 0) continue;
             movieDetails.put("name", movie.getName());
             movieDetails.put("year", movie.getYear());
             movieDetails.put("averageRating", movie.getAverageRating());
