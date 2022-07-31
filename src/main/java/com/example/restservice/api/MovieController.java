@@ -105,4 +105,9 @@ public class MovieController {
         JSONObject response = reviewService.likeReview(request);
         return ControllerResponses.generateHttpResponse(response);
     }
+    @GetMapping("/higherOrLower")
+    public ResponseEntity<Object> getNextMovie() {
+        JSONObject response = movieService.higherOrLower();
+        return ControllerResponses.generateHttpResponse(response);
+    }
 }

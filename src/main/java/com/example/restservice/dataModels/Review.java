@@ -109,4 +109,9 @@ public class Review {
         return ServiceErrors.generateErrorMessage("User has not liked the review");
     }
 
+    public boolean checkUserLikedReview(User user) {
+        if(usersliked.contains(user)) return true;
+        return false;
+    }
+
 }

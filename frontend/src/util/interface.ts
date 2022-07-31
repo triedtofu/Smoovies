@@ -125,3 +125,7 @@ export interface HigherOrLowerData {
   averageRating: number;
   poster: string;
 }
+
+export interface HigherOrLowerResponse {
+  movies: HigherOrLowerData[];
+}

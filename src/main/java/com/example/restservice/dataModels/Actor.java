@@ -50,5 +50,9 @@ public class Actor {
     public Set<Movie> getMovieActorsIn() {
         return actorIsIn;
     }
+
+    public boolean actorInMovie(Movie movie) {
+        return actorIsIn.contains(movie);
+    }
  
 }

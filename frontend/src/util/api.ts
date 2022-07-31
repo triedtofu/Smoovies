@@ -17,6 +17,7 @@ import {
   SearchResponse,
   BlacklistSummary,
   BlacklistResponse,
+  HigherOrLowerResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) => {
@@ -111,6 +112,8 @@ export const apiDeleteMovie = (token: string, movieId: number) => {
   });
 };
 
+//  Reviews
+
 export const apiAddReview = (
   token: string,
   movieId: number,
@@ -124,8 +127,6 @@ export const apiAddReview = (
   });
 };
 
-//  REVIEWS
-
 export const apilikeUnlikeReview = (
   token: string,
   movieId: number,
@@ -137,6 +138,16 @@ export const apilikeUnlikeReview = (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, movieId, userId, turnon }),
   });
+};
+
+export const apiGetHigherOrLower = (
+  // startYear: number,
+  // endYear: number,
+  genres?: string,
+  contentRating?: string
+) => {
+  // let path = `/movie/higherOrLower?startYear&=`
+  return apiFetch<HigherOrLowerResponse>('/movie/higherOrLower');
 };
 
 // TODO update once api is done

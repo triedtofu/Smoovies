@@ -47,4 +47,9 @@ public class Genre {
         for (Genre genre : genres) genreList.add(genre.getName());
         return genreList;
     }
+
+    public boolean movieInGenre(Movie movie) {
+        if (moviesInGenre.contains(movie)) return true;
+        return false;
+    }
 }
