@@ -2,16 +2,21 @@ package com.example.restservice.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.Collections;
+import java.util.Comparator;
 //import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 // import java.util.ArrayList;
 // import java.util.Set;
 // import java.util.Optional;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.text.similarity.JaroWinklerDistance;
 // import org.apache.tomcat.jni.Address;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,6 +68,10 @@ public class MovieService {
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
 
+    private static final double DIRECTORWEIGHT = 0.15;
+    private static final double ACTORWEIGHT = 0.15;
+    private static final double NAMEWEIGHT = 0.45;
+    private static final double GENREWEIGHT = 0.25;
     /**
      * Adds a movie to the database
      * @param movie
@@ -170,6 +179,28 @@ public class MovieService {
             }
             returnMessage.put("reviews", reviewArray);
             returnMessage.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
+            HashMap<Movie, Double> similarMovies = similarMovies(dbMovie);
+            JSONArray similarMoviesArray = new JSONArray();
+            for (Map.Entry<Movie,Double> entry : similarMovies.entrySet()) {
+                HashMap<String,Object> similarMovieObject = new HashMap<String,Object>();
+                Movie similarMovie = entry.getKey();
+                similarMovieObject.put("name", similarMovie.getName());
+                similarMovieObject.put("id", similarMovie.getId());
+                similarMovieObject.put("year", similarMovie.getYear());
+                similarMovieObject.put("poster", similarMovie.getPoster());
+                similarMovieObject.put("similarityRating", entry.getValue());
+                similarMoviesArray.put(new JSONObject(similarMovieObject));
+            }
+            /* 
+            for (Movie similarMovie : similarMovies) {
+                HashMap<String,Object> similarMovieObject = new HashMap<String,Object>();
+                similarMovieObject.put("name", similarMovie.getName());
+                similarMovieObject.put("id", similarMovie.getId());
+                similarMovieObject.put("year", similarMovie.getYear());
+                similarMovieObject.put("poster", similarMovie.getPoster());
+                similarMoviesArray.put(new JSONObject(similarMovieObject));
+            }*/
+            returnMessage.put("similar", similarMoviesArray);
         }
         // otherwise if movie not found, return error
         else {
@@ -188,6 +219,7 @@ public class MovieService {
         for (int i = 0; i < allMovies.size(); i++) {
             Movie movie = allMovies.get(i);
             HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            if (movie.getAverageRating() == 0) continue;
             movieDetails.put("name", movie.getName());
             movieDetails.put("year", movie.getYear());
             movieDetails.put("averageRating", movie.getAverageRating());
@@ -488,6 +520,73 @@ public class MovieService {
             }
         }
     }
+    /**
+     * Given a movie returns a list of 4 Similar movies.
+     * Algorithm will be weighted with the following parameters.
+     * Weighted - 
+     * 55% similarity in the name
+     * 25% similarity in genre - calculated % of genres it matches.
+     * 10% simlarity in director - how many points per director it has.
+     * 10% simlarity in actors - how many simlar actors does it have.
+     * @param movie
+     * @return
+     */
+    private HashMap<Movie, Double> similarMovies(Movie movie) {
+        List<Movie> allMovies = movieDAO.findAll();
+        allMovies.remove(movie);
+        HashMap<Movie, Double> weightedSimilarities = new HashMap<Movie, Double>();
+        //Put all the movies in the hashmap
+        for (Movie dbMovie : allMovies) {
+            //StringUtils.getJaroWinklerDistance()
+            JaroWinklerDistance distance = new JaroWinklerDistance();
+            double editDistance = distance.apply(dbMovie.getName(), movie.getName());
+            
+            double genreListSize = movie.getGenreList().size();
+            double genreMatches = 0;
+            for (Genre genre : movie.getGenreList()){
+                if(genre.movieInGenre(dbMovie)) genreMatches++;
+            }
+            double genreDistance = genreMatches/genreListSize;
+            double actorListSize = movie.getActorsInMovie().size();
+            double actorMatches = 0;
+            for (Actor actor : movie.getActorsInMovie()) {
+                if (actor.actorInMovie(dbMovie)) actorMatches++;
+            }
+            double actorDistance = actorMatches/actorListSize;
+            double directorListSize = movie.getDirectorsInMovie().size();
+            double directorMatches = 0;
+            for (Director director : movie.getDirectorsInMovie()) {
+                if (director.directorIsInMovie(dbMovie)) directorMatches++;
+            }
+
+            double directorDistance = directorMatches/directorListSize;
+
+            //Calculate the similarity between dbmovie and given movie based on.
+            double simlarity = directorDistance * DIRECTORWEIGHT + actorDistance * ACTORWEIGHT + editDistance * NAMEWEIGHT + genreDistance * GENREWEIGHT;
+
+            weightedSimilarities.put(dbMovie, simlarity);
+        }
+        
+        //Sort the movies in terms of similarity
+        List<Map.Entry<Movie,Double>> list = new LinkedList<Map.Entry<Movie,Double>>(weightedSimilarities.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<Movie, Double>>(){
+            public int compare (Map.Entry<Movie, Double> o1, Map.Entry<Movie, Double> o2) {
+                return (o1.getValue().compareTo(o2.getValue()));
+            }
+        });
+        Collections.reverse(list);
+        HashMap<Movie, Double> temp = new LinkedHashMap<Movie, Double>();
+        int counter = 0;
+        for (Map.Entry<Movie, Double> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+            counter++;
+            if (counter == 12) break;
+        }
+        return temp;
+    }
+    
+
 
 
 }

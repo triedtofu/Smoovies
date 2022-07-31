@@ -50,4 +50,9 @@ public class Director {
     public Long getId() {
         return id;
     }
+
+    public boolean directorIsInMovie(Movie movie) {
+        return directorIsIn.contains(movie);
+    }
+
 }
