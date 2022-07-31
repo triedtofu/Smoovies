@@ -1025,7 +1025,7 @@ components:
     StartYearParam:
       name: startYear
       in: query
-      description: Start year
+      description: Start year (inclusive)
       required: true
       schema:
         type: number
@@ -1033,7 +1033,7 @@ components:
     EndYearParam:
       name: endYear
       in: query
-      description: End year
+      description: End year (inclusive)
       required: true
       schema:
         type: number
