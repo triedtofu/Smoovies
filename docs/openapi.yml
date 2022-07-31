@@ -421,22 +421,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      $ref: '#/components/schemas/MovieName'
-                    year:
-                      $ref: '#/components/schemas/MovieYear'
-                    averageRating:
-                      $ref: '#/components/schemas/AverageRating'
-                    poster:
-                      $ref: '#/components/schemas/MoviePoster'
-                    director:
-                      $ref: '#/components/schemas/Director'
-                    cast:
-                      $ref: '#/components/schemas/Cast'
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/MovieName'
+                        year:
+                          $ref: '#/components/schemas/MovieYear'
+                        averageRating:
+                          $ref: '#/components/schemas/AverageRating'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
+                        director:
+                          $ref: '#/components/schemas/Director'
+                        cast:
+                          $ref: '#/components/schemas/Cast'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
