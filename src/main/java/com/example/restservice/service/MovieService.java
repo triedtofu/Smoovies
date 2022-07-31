@@ -202,7 +202,14 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Returns a list of movies that satisfy the given parameters
+     * @param startYear
+     * @param endYear
+     * @param genres
+     * @param contentRating
+     * @return
+     */
     public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         List<Movie> allMovies = movieDAO.findAll();
