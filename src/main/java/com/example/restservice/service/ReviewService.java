@@ -1,9 +1,10 @@
 package com.example.restservice.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,15 +83,17 @@ public class ReviewService {
         //if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
         //The user_id of the authorisation
         returnMessage.put("username", user.getName());
+        Set<Review> userReviews = user.getUserReviews();
+        //List<Review> listUserReviews = new ArrayList<>(userReviews);
         if (token == null || token.isEmpty()) {
-            returnMessage.put("reviews", reviewJSONArray(false, user));
+            returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
         }
         if (token != null && !token.isEmpty()) {
             Long user_id = ServiceJWTHelper.getTokenId(token, null);
             if (user_id.equals(id)) {
-                returnMessage.put("reviews", reviewJSONArray(true, user));
+                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(true, user, userReviews));
             } else {
-                returnMessage.put("reviews", reviewJSONArray(false, user));
+                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
             }
         }
         
@@ -200,32 +203,5 @@ public class ReviewService {
 
         return new JSONObject();
     }
-    /**
-     * Returns the JSONArray for a users reviews containing all fields
-     * @param needLiked the reviews need the liked field, when the token matches the id given
-     * @param user The Authorised user, to check if they have liked the review.
-     * @return
-     */
-    private JSONArray reviewJSONArray(Boolean needLiked, User user) {
-        Set<Review> usersReviews = user.getUserReviews();
-        JSONArray reviewJSONArray = new JSONArray();
-        for (Review review : usersReviews) {
-            HashMap<String, Object> userReview = new HashMap<String,Object>();
-            userReview.put("movieId", review.getMovie().getId());
-            userReview.put("movieName", review.getMovie().getName());
-            userReview.put("poster", review.getMovie().getPoster());
-            userReview.put("review", review.getReviewString());
-            userReview.put("rating", review.getRating());
-            userReview.put("likes", review.getLikes());
-            if (needLiked) {
-                if (review.checkUserLikedReview(user)) {
-                    userReview.put("liked", true);
-                } else {
-                    userReview.put("liked", false);
-                }
-            }
-            reviewJSONArray.put(new JSONObject(userReview));
-        }
-        return reviewJSONArray;
-    }
+    
 }
