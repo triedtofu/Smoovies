@@ -250,14 +250,17 @@ const Movie = () => {
             </Typography>
 
             <p>
-              Genre: {movie.genres.join(', ')}
+              Genre:{' '}
+              {movie.genres
+                .map(s => (s[0].toUpperCase() + s.slice(1)))
+                .join(', ')}
               <br />
-              Director:{' '}
+              {movie.director.length > 0 && <>Director:{' '}
               {movie.director
                 .split(',')
                 .map((s) => s.trim())
                 .join(', ')}
-              <br />
+              <br /></>}
               Cast:{' '}
               {movie.cast
                 .split(',')

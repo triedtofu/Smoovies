@@ -1,6 +1,6 @@
 .reviewOuter {
   padding: 10px 30px;
-  border: 1px solid black;
+  border: 1px solid;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
