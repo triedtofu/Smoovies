@@ -1,18 +1,20 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 
-import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
+import Container from '../components/MyContainer';
 import MovieResultCard from '../components/MovieResultCard';
 import PersonResultCard from '../components/PersonResultCard';
 
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
 
 import styles from './Search.module.css';
 
@@ -52,6 +54,8 @@ const a11yProps = (index: number) => {
   };
 };
 
+const PAGE_SIZE = 10;
+
 const Search = () => {
   const [searchParams] = useSearchParams();
 
@@ -65,6 +69,8 @@ const Search = () => {
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
   const [contentRatings, setContentRatings] = React.useState<string[]>([]);
+
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
 
   const resetResults = () => {
     setMovies([]);
@@ -168,13 +174,22 @@ const Search = () => {
 
         {fetched && movies.length === 0 && <p>No movies found.</p>}
         {movies.length > 0 &&
-          movies.map(movie => (
+          movies.slice(0, numMoviesShown).map(movie => (
             <MovieResultCard
               key={movie.id}
               movie={movie}
               buttonClick={null}
             />
-          ))}
+          ))
+        }
+
+        {numMoviesShown < movies.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
       <TabPanel value={value} index={1}>
         {fetched && actors.length === 0 && <p>No actors found.</p>}

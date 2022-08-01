@@ -1,51 +1,44 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { useParams } from 'react-router-dom';
 
-import Container from '../components/MyContainer';
+import Typography from '@mui/material/Typography';
+
 import MakePage from '../components/MakePage';
+import Container from '../components/MyContainer';
+import BlacklistPersonResultCard from '../components/BlacklistPersonResultCard';
 
 import { apiBlacklistUser } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
-
-import Typography from '@mui/material/Typography';
-import { BlacklistResponse, BlacklistSummary } from '../util/interface';
-import BlacklistPersonResultCard from '../components/BlacklistPersonResultCard';
+import { BlacklistSummary } from '../util/interface';
 
 const Blacklist = () => {
   const params = useParams();
   const [cookies] = useCookies();
+
   const [blacklistUsers, setBlacklistUsers] = React.useState<
-    BlacklistSummary[]
-  >([]);
-  const [username, setUsername] = React.useState('');
+    BlacklistSummary[] | undefined
+  >(undefined);
 
   React.useEffect(() => {
-    setBlacklistUsers([]);
-    setUsername('');
-    const idStr = params.id ?? '';
+    setBlacklistUsers(undefined);
 
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
+    // get the blacklisted users
     apiBlacklistUser(cookies.token).then((data) => {
       setBlacklistUsers(data.users);
-      setUsername(data.username);
-      console.log(data.users);
     });
   }, [params]);
+
+  if (!blacklistUsers) return <></>;
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1">
-        {cookies.token && params.id === parseJwt(cookies.token).jti
-          ? 'Your Blacklist'
-          : `${username}'s Blacklist`}
+        Your Blacklist
       </Typography>
 
       {blacklistUsers.length === 0 && <p>No users in blacklist.</p>}
+
       <div>
         {blacklistUsers.length > 0 &&
           blacklistUsers.map((user) => (
@@ -53,7 +46,7 @@ const Blacklist = () => {
               key={user.userId}
               userId={user.userId}
               name={user.username}
-              link={`/actor/${user.userId}`}
+              link={`/user/${user.userId}`}
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
           ))}

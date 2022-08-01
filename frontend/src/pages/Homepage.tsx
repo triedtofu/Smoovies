@@ -28,10 +28,10 @@ const Homepage = () => {
   return (
     <Container maxWidth="lg">
       <Helmet>
-        <title>Trending - Smoovies</title>
+        <title>Recommended - Smoovies</title>
       </Helmet>
 
-      <Typography gutterBottom variant="h4" component="h1">Trending</Typography>
+      <Typography gutterBottom variant="h4" component="h1">Recommended</Typography>
 
       {movies.length > 0 &&
         <div className={styles.container}>
