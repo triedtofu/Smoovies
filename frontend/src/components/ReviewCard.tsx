@@ -108,6 +108,21 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
               </Button>
             </motion.div>
           )}
+          {!cookies.token && (
+            <Button
+              disabled
+              variant="outlined"
+              style={{
+                backgroundColor: reviewBGColour,
+                borderColor: reviewTextColour,
+              }}
+              onClick={() => likeUnlikeClick()}
+            >
+              <FavoriteIcon style={{ color: heartColour }} />
+              &nbsp;
+              <span style={{ color: reviewTextColour }}>{numLikes}</span>
+            </Button>
+          )}
         </div>
       </div>
       <div>{review.review}</div>

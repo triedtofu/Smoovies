@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import styles from './ReviewResultCard.module.css';
 import MyLink from './MyLink';
 import ConfirmModal from './ConfirmModal';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { UserReview } from '../util/interface';
 
@@ -51,7 +52,20 @@ const ReviewResultCard = ({
                   {review.rating} / 5
                 </Typography>
               </div>
-              {review.likes}
+              <div style={{ display: 'flex' }}>
+                <Button
+                  disabled
+                  variant="outlined"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderColor: '#bebebe',
+                  }}
+                >
+                  <FavoriteIcon style={{ color: '#a9a9a9' }} />
+                  &nbsp;
+                  <span style={{ color: '#bebebe' }}>{review.likes}</span>
+                </Button>
+              </div>
             </div>
             <Divider />
             <p>{review.review}</p>
