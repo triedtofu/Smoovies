@@ -472,6 +472,7 @@ paths:
       description: Returns the wishlist of a specific movie
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
