@@ -150,7 +150,7 @@ public class MovieService {
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.movieIdInvalidError();
         }
-        
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         Movie dbMovie = movieDAO.findMovieByID(id);
@@ -170,7 +170,7 @@ public class MovieService {
             Long user_id = ServiceJWTHelper.getTokenId(token, null);
             User user = userDAO.findUserById(user_id);
             reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
-        } 
+        }
         if (token == null) {
             for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
             if (review.getUser().getIsBanned()) continue;
@@ -211,31 +211,41 @@ public class MovieService {
      * @return
      */
     public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        HashMap<String, Object> returnMessage = new HashMap<>();
         List<Movie> allMovies = movieDAO.findAll();
         JSONArray movieDetailsArray = new JSONArray();
-        List<String> genreList = new ArrayList<>(Arrays.asList(genres.split(",[ ]*")));
-        List<String> contentRatingList = new ArrayList<>(Arrays.asList(contentRating.split(",[ ]*")));
-        for (int i = 0; i < allMovies.size(); i++) {
+
+        List<String> genreList = null;
+
+        if (genres != null) genreList = new ArrayList<>(Arrays.asList(genres.split(",[ ]*")));
+
+        List<String> contentRatingList = null;
+
+        if (contentRating != null) contentRatingList = new ArrayList<>(Arrays.asList(contentRating.split(",[ ]*")));
+
+        for (Movie movie : allMovies) {
             Boolean movieHasGenre = false;
-            Movie movie = allMovies.get(i);
-            HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            HashMap<String, Object> movieDetails = new HashMap<String, Object>();
             // Checking that the current movie satisfies the user inputted filters. Skip iteration if not.
             if (movie.getAverageRating() == 0) continue;
+
             if (movie.getYear() < startYear || movie.getYear() > endYear) continue;
-            if (genres != null && !genres.isEmpty()){
+
+            if (genreList != null && !genres.isEmpty()) {
                 //System.out.print("Genres is not null");
                 List<String> movieGenres = movie.getGenreListStr();
                 //System.out.println(Arrays.toString(movieGenres.toArray()));
-                for (String genre : movieGenres) {           
+                for (String genre : movieGenres) {
                     if (genreList.contains(genre)){
                         movieHasGenre = true;
                         break;
                     };
                 }
-                if (!movieHasGenre) continue;           
+
+                if (!movieHasGenre) continue;
             }
-            if (contentRating != null && !contentRating.isEmpty() && !contentRatingList.contains(movie.getContentRating())){
+
+            if (contentRatingList != null && !contentRating.isEmpty() && !contentRatingList.contains(movie.getContentRating())){
                 continue;
             }
             // Putting all the details into Hashmap, making it a JSON object, and putting it in the movie Array
@@ -252,6 +262,7 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
     public JSONObject homepage(String token) {
 
         // verify the users token
@@ -542,7 +553,7 @@ public class MovieService {
     /**
      * Given a movie returns a list of 4 Similar movies.
      * Algorithm will be weighted with the following parameters.
-     * Weighted - 
+     * Weighted -
      * 55% similarity in the name
      * 25% similarity in genre - calculated % of genres it matches.
      * 10% simlarity in director - how many points per director it has.
@@ -559,7 +570,7 @@ public class MovieService {
             //StringUtils.getJaroWinklerDistance()
             JaroWinklerDistance distance = new JaroWinklerDistance();
             double editDistance = distance.apply(dbMovie.getName(), movie.getName());
-            
+
             double genreListSize = movie.getGenreList().size();
             double genreMatches = 0;
             for (Genre genre : movie.getGenreList()){
@@ -587,7 +598,7 @@ public class MovieService {
 
             weightedSimilarities.put(dbMovie, simlarity);
         }
-        
+
         //Sort the movies in terms of similarity
         List<Map.Entry<Movie,Double>> list = new LinkedList<Map.Entry<Movie,Double>>(weightedSimilarities.entrySet());
 
@@ -606,7 +617,7 @@ public class MovieService {
         }
         return temp;
     }
-    
+
 
 
 
