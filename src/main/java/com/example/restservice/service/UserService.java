@@ -151,11 +151,12 @@ public class UserService {
             return ServiceErrors.userIdInvalidError();
         }
 
-        // check that user is not trying to view a blacklisted users wishlist
-        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
-        for (UserBlacklist blacklist: userBlacklist) {
-            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
-            
+        if (token != null) {
+            // check that user is not trying to view a blacklisted users wishlist
+            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+            for (UserBlacklist blacklist: userBlacklist) {
+                if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            }
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -163,7 +164,7 @@ public class UserService {
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
         if (user == null) return ServiceErrors.userIdInvalidError();
-        
+
         // check the user is not banned
         if (user.getIsBanned()) {
             return ServiceErrors.userBannedError();
@@ -375,7 +376,7 @@ public class UserService {
             } else {
                 return ServiceErrors.userAlreadyInBlacklist();
             }
-        } 
+        }
         // otherwise, remove from blacklist table
         else {
             UserBlacklist userBlacklist = userBlacklistDAO.findUserFromBlacklist(userId, blacklistedUserId);
