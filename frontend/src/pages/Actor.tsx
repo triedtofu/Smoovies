@@ -10,12 +10,17 @@ import { apiGetActor } from '../util/api';
 import { getErrorMessage } from '../util/helper';
 import { ActorResponse } from '../util/interface';
 
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
+const PAGE_SIZE = 20;
 
 const Actor = () => {
   const params = useParams();
 
   const [actorRes, setActorRes] = React.useState<ActorResponse | undefined>(undefined);
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+
   const [errorString, setErrorString] = React.useState('');
 
   React.useEffect(() => {
@@ -52,13 +57,21 @@ const Actor = () => {
 
       <Typography variant="h5" component="h2">Acted in:</Typography>
 
-      {actorRes.movies.map(movie => (
+      {actorRes.movies.slice(0, numMoviesShown).map(movie => (
         <MovieResultCard
           key={movie.id}
           movie={movie}
           buttonClick={null}
         />
       ))}
+
+      {numMoviesShown < actorRes.movies.length &&
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+            Show more
+          </Button>
+        </div>
+      }
     </Container>
   );
 };

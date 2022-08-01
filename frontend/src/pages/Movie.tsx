@@ -33,6 +33,8 @@ interface buttonProps {
 
 let addingReview = false;
 
+const PAGE_SIZE = 5;
+
 const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
@@ -41,6 +43,8 @@ const Movie = () => {
   const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
     undefined
   );
+  const [numReviewsShown, setNumReviewsShown] = React.useState(PAGE_SIZE);
+
   const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
   const [deleteMovieConfirm, setDeleteMovieConfirm] = React.useState(false);
@@ -255,12 +259,12 @@ const Movie = () => {
                 .map(s => (s[0].toUpperCase() + s.slice(1)))
                 .join(', ')}
               <br />
-              {movie.director.length > 0 && <>Director:{' '}
+              Director:{' '}
               {movie.director
                 .split(',')
                 .map((s) => s.trim())
                 .join(', ')}
-              <br /></>}
+              <br />
               Cast:{' '}
               {movie.cast
                 .split(',')
@@ -288,7 +292,7 @@ const Movie = () => {
         <h2>Movies similar to this one!</h2>
         <div className={styles.similarMoviesDiv}>
           {movie.similar.map((similarMovie) => (
-            <SimilarMovieCard movie={similarMovie} />
+            <SimilarMovieCard key={similarMovie.id} movie={similarMovie} />
           ))}
         </div>
       </div>
@@ -297,7 +301,7 @@ const Movie = () => {
           Reviews
         </Typography>
         <div className={styles.reviewsDiv}>
-          {movie.reviews.map((review) => (
+          {movie.reviews.slice(0, numReviewsShown).map((review) => (
             <ReviewCard
               key={review.user}
               onDelete={deleteButtonFunc(review.user)}
@@ -305,6 +309,14 @@ const Movie = () => {
               error={deleteReviewErr}
             />
           ))}
+
+          {numReviewsShown < movie.reviews.length &&
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button variant="contained" onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}>
+                Show more
+              </Button>
+            </div>
+          }
         </div>
       </div>
 

@@ -54,7 +54,7 @@ const a11yProps = (index: number) => {
   };
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 const Search = () => {
   const [searchParams] = useSearchParams();

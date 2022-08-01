@@ -12,10 +12,16 @@ import { apiGetDirector } from '../util/api';
 import { getErrorMessage } from '../util/helper';
 import { DirectorResponse } from '../util/interface';
 
+import Button from '@mui/material/Button';
+
+const PAGE_SIZE = 20;
+
 const Director = () => {
   const params = useParams();
 
   const [directorRes, setDirectorRes] = React.useState<DirectorResponse | undefined>(undefined);
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+
   const [errorString, setErrorString] = React.useState('');
 
   React.useEffect(() => {
@@ -52,13 +58,21 @@ const Director = () => {
 
       <h2>Directed:</h2>
 
-      {directorRes.movies.map(movie => (
+      {directorRes.movies.slice(0, numMoviesShown).map(movie => (
         <MovieResultCard
           key={movie.id}
           movie={movie}
           buttonClick={null}
         />
       ))}
+
+      {numMoviesShown < directorRes.movies.length &&
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+            Show more
+          </Button>
+        </div>
+      }
     </Container>
   )
 }

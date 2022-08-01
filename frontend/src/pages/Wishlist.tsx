@@ -10,15 +10,20 @@ import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { MovieSummary } from '../util/interface';
 
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
+const PAGE_SIZE = 20;
 
 const Wishlist = () => {
   const params = useParams();
   const [cookies] = useCookies();
 
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
-  const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+
+  const [errorStr, setErrorStr] = React.useState('');
 
   const removeMovie = (movieId: number) => {
     try {
@@ -72,6 +77,8 @@ const Wishlist = () => {
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
 
+  console.log(movies);
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1">
@@ -82,13 +89,21 @@ const Wishlist = () => {
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
-      {movies.map((movie) => (
+      {movies.slice(0, numMoviesShown).map((movie) => (
         <MovieResultCard
           key={movie.id}
           movie={movie}
           buttonClick={showButton() ? () => removeMovie(movie.id) : null}
         />
       ))}
+
+      {numMoviesShown < movies.length &&
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+            Show more
+          </Button>
+        </div>
+      }
     </Container>
   );
 };
