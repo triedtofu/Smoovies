@@ -13,6 +13,11 @@
   gap: 10px;
 }
 
+.similarMoviesDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .adminButtonsDiv {
   display: flex;
   gap: 5px;

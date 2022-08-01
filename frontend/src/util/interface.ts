@@ -20,12 +20,20 @@ export interface Review {
   liked: boolean;
 }
 
+export interface SimilarMovie {
+  id: number;
+  name: string;
+  year: number;
+  poster: string;
+}
+
 export interface UserReview {
   movieId: number;
   movieName: string;
   poster: string;
   review: string;
   rating: number;
+  likes: number;
 }
 
 export interface UserReviewResponse {
@@ -50,6 +58,7 @@ export interface SpecificMovieResponse extends MovieDetails {
   id: number;
   averageRating: number;
   reviews: Review[];
+  similar: SimilarMovie[];
 }
 
 export interface MovieSummary {
