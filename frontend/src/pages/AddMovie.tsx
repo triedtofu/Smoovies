@@ -18,6 +18,9 @@ const AddMovie = () => {
   const [newMovieErr, setNewMovieErr] = React.useState('');
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
+  /**
+   * Calls the api to add a new movie
+   */
   const newMovie: SubmitMovie = (
     name,
     year,
@@ -37,9 +40,11 @@ const AddMovie = () => {
   };
 
   React.useEffect(() => {
+    // get the list of possible genres
     apiGetGenres().then(data => setAllGenres(data.genres));
   }, []);
 
+  // check whether the user is an admin
   if (!cookies.token || !cookies.admin) return  (
     <h2>Access denied. Only admins can access this page.</h2>
   );

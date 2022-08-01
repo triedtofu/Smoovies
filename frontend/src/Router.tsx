@@ -19,6 +19,8 @@ import EditMovie from './pages/EditMovie';
 import Actor from './pages/Actor';
 import Director from './pages/Director';
 
+// Manages the routes
+
 const Router = () => {
   return (
     <Routes>

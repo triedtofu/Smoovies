@@ -72,9 +72,11 @@ export const apiMovieSearch = (
 
 // TODO update once api is done
 export const apiGetMovie = (id: number, token?: string) => {
-  return apiFetch<SpecificMovieResponse>(
-    `/movie/getMovie?id=${id}&token=${token}`
-  ).then((data) => {
+  let path = `/movie/getMovie?id=${id}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<SpecificMovieResponse>(path).then((data) => {
     data.id = id;
     return data;
   });
@@ -168,9 +170,11 @@ export const apiPutUserWishlist = (
 };
 
 export const apiGetUserReviews = (userId: number, token?: string) => {
-  return apiFetch<UserReviewResponse>(
-    `/user/reviews?userId=${userId}&token=${token}`
-  );
+  let path = `/user/reviews?userId=${userId}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<UserReviewResponse>(path);
 };
 
 export const apiDeleteReview = (

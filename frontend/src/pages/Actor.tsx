@@ -1,13 +1,14 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useParams } from 'react-router-dom';
 
-import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
+import Container from '../components/MyContainer';
 
-import { ActorResponse } from '../util/interface';
 import { apiGetActor } from '../util/api';
+import { getErrorMessage } from '../util/helper';
+import { ActorResponse } from '../util/interface';
 
 import Typography from '@mui/material/Typography';
 
@@ -15,17 +16,29 @@ const Actor = () => {
   const params = useParams();
 
   const [actorRes, setActorRes] = React.useState<ActorResponse | undefined>(undefined);
+  const [errorString, setErrorString] = React.useState('');
 
   React.useEffect(() => {
-    const idStr = params.id ?? '';
+    setErrorString('');
 
-    if (idStr === '') {
-      // TODO handle error
+    const actorId = parseInt(params.id ?? '');
+
+    if (Number.isNaN(actorId)) {
+      setErrorString(`Error: '${params.id}' is not an integer`);
       return;
     }
 
-    apiGetActor(parseInt(idStr)).then(data => setActorRes(data));
+    apiGetActor(actorId)
+      .then(data => setActorRes(data))
+      .catch(error => setErrorString(getErrorMessage(error)));
   }, [params]);
+
+  // show error message if there is
+  if (errorString) return (
+    <Container maxWidth="lg">
+      {errorString}
+    </Container>
+  );
 
   if (!actorRes) return <></>;
 
@@ -47,7 +60,7 @@ const Actor = () => {
         />
       ))}
     </Container>
-  )
-}
+  );
+};
 
 export default MakePage(Actor);

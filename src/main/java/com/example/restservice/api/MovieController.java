@@ -106,8 +106,9 @@ public class MovieController {
         return ControllerResponses.generateHttpResponse(response);
     }
     @GetMapping("/higherOrLower")
-    public ResponseEntity<Object> getNextMovie() {
-        JSONObject response = movieService.higherOrLower();
+    public ResponseEntity<Object> getNextMovie(@RequestParam(name = "startYear") int startYear, @RequestParam(name = "endYear") int endYear, 
+                                               @RequestParam(name = "genres", required = false) String genres, @RequestParam(name = "contentRating", required = false) String contentRating) {
+        JSONObject response = movieService.higherOrLower(startYear, endYear, genres, contentRating);
         return ControllerResponses.generateHttpResponse(response);
     }
 }
