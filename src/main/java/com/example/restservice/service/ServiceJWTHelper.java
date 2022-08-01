@@ -20,22 +20,24 @@ public class ServiceJWTHelper {
     //Sample method to construct a JWT
     public static String generateJWT(String id, String subject, String signKey) {
         
-        long ttlMillis = tokenTimeInMilliSeconds();
-
+        
         //The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-
+        
         //We will sign our JWT with our ApiKey secret
         byte[] apiKeySecretBytes;
+        long ttlMillis;
         if (signKey != null) {
             // if sign key isnt long enough, pad it 
             signKey = padSignKey(signKey);
             apiKeySecretBytes = DatatypeConverter.parseBase64Binary(signKey);
+            ttlMillis = resetTokenTimeInMilliSeconds();
         } else {
             apiKeySecretBytes = DatatypeConverter.parseBase64Binary(defaultSignKey);
+            ttlMillis = loginTokenTimeInMilliSeconds();
         }
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
     
@@ -81,13 +83,22 @@ public class ServiceJWTHelper {
         }
     }
 
-    private static long tokenTimeInMilliSeconds() {
+    private static long loginTokenTimeInMilliSeconds() {
         // currently 1 month
         return 30 * 24 * 60 * 60 * 1000; 
     }
 
-    public static long tokenTimeInHours() {
-        return tokenTimeInMilliSeconds()/60/60/1000; 
+    public static long loginTokenTimeInHours() {
+        return loginTokenTimeInMilliSeconds()/60/60/1000; 
+    }
+
+    private static long resetTokenTimeInMilliSeconds() {
+            // currently 1 hour
+            return 60 * 60 * 1000; 
+    }
+
+    public static long resetTokenTimeInHours() {
+        return resetTokenTimeInMilliSeconds()/60/60/1000; 
     }
 
     public static String getTokenSubject(String jwt, String signKey) {

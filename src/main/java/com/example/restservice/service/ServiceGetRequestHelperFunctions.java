@@ -1,6 +1,8 @@
 package com.example.restservice.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +38,9 @@ public class ServiceGetRequestHelperFunctions {
             
             averageRating = new BigDecimal(total/reviewsToCalculate.size());
         }
-        return averageRating.doubleValue();
+        
+        // round to 1dp
+        return (double)Math.round(averageRating.doubleValue() * 10d) / 10d;
     }
 
     public static Set<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {

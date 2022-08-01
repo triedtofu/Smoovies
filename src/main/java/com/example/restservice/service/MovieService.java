@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.List;
 // import java.util.Set;
 // import java.util.Optional;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
 
@@ -29,6 +31,7 @@ import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.UserGenrePreferenceScore;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 // import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
@@ -41,6 +44,7 @@ import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
+import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
 
 //import com.example.restservice.service.ServiceErrors;
 @Service
@@ -67,6 +71,9 @@ public class MovieService {
 
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
+
+    @Autowired
+    private UserGenrePreferenceScoreDataAccessService userGenrePreferenceScoreDataAccessService;
 
     private static final double DIRECTORWEIGHT = 0.15;
     private static final double ACTORWEIGHT = 0.15;
@@ -276,10 +283,13 @@ public class MovieService {
         JSONArray homepageList = new JSONArray();
         //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
         List<Movie> movies = this.trending();
+        // case where no token, return top rated (i.e user not logged in)
         if (token == null) {
             movies = movieDAO.topRated();
         } else {
-            //Add in the recommendations.
+            //Add in the recommendations for specific user
+            long user_id = ServiceJWTHelper.getTokenId(token, null);
+            movies = findRecommendedMovies(user_id);
         }
         if (movies.size() > 0) {
             for (int i=0; i < movies.size(); i++) {
@@ -574,7 +584,12 @@ public class MovieService {
         for (Movie dbMovie : allMovies) {
             //StringUtils.getJaroWinklerDistance()
             JaroWinklerDistance distance = new JaroWinklerDistance();
-            double editDistance = distance.apply(dbMovie.getName(), movie.getName());
+            double editDistance;
+            if (movie.getName() != null){
+                editDistance = distance.apply(dbMovie.getName(), movie.getName());
+            } else {
+                editDistance = 0;
+            }
 
             double genreListSize = movie.getGenreList().size();
             double genreMatches = 0;
@@ -623,7 +638,55 @@ public class MovieService {
         return temp;
     }
 
+    /**
+     * Find recommended movies based on the genres of movies that the user has placed reviews on
+     * @param user_id
+     * @return
+     */
+    private List<Movie> findRecommendedMovies(Long user_id) {
+        List<Movie> recommendedMoviesList = new ArrayList<>();
 
-
-
+        // get all genres
+        List<Genre> genresList = genreDAO.findAll();
+        // get the users score on all genres
+        HashMap<String, Long> usersGenreScores = new HashMap<String, Long>();
+        for (Genre genre: genresList) {
+            UserGenrePreferenceScore userGenrePreferenceScore = userGenrePreferenceScoreDataAccessService.findUserPreferenceScoreByGenreId(user_id, genre.getId());
+            if (userGenrePreferenceScore != null) {
+                usersGenreScores.put(genre.getName(), userGenrePreferenceScore.getScore());
+            } else {
+                usersGenreScores.put(genre.getName(), Long.valueOf(0));
+            }
+        }
+        // find the users top 5 genres
+        List<String> topUsersGenreScoresKeys = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Long maxScore = Collections.max(usersGenreScores.values());
+            for (Entry<String, Long> entry : usersGenreScores.entrySet()) {
+                if (Long.valueOf(entry.getValue()).equals(maxScore)) {
+                    topUsersGenreScoresKeys.add(entry.getKey());
+                    usersGenreScores.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        // make a buffer movie to find "similar movies"
+        Movie bufferMovie = new Movie();
+        for (String genreName : topUsersGenreScoresKeys) {
+            bufferMovie.addGenreToDB(genreDAO.findGenreByName(genreName));;
+        }
+        // get top 12 recommended movies
+        HashMap<Movie, Double> recommendedMovies = similarMovies(bufferMovie);
+        for (int i = 0; i < 12; i++) {
+            Double maxSimilarity = Collections.max(recommendedMovies.values());
+            for (Entry<Movie, Double> entry : recommendedMovies.entrySet()) {
+                if (entry.getValue() == maxSimilarity) {
+                    recommendedMoviesList.add(entry.getKey());
+                    recommendedMovies.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        return recommendedMoviesList;
+    }
 }

@@ -165,6 +165,15 @@ public class ServiceErrors {
         return generateErrorMessage("User is banned.");
     }
 
+    /**
+     * Returns JSONObject with error message, case where user tries to view info (reviews/wishlist etc) of a user
+     * they have blacklisted
+     * @return {"error": "You have blacklisted this user, you can not view their info."}
+     */
+    public static JSONObject cannotViewBlacklistedUser() {
+        return generateErrorMessage("You have blacklisted this user, you can not view their info");
+    }
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //
