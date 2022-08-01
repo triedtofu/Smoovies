@@ -20,5 +20,7 @@ public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
     public List<Movie> searchMovieByName(@Param("name") String name);
     @Query(value = "DELETE FROM movies m WHERE m.id = :id", nativeQuery = true)
     public void deleteMovie(@Param("id") long id);
+    @Query(value = "SELECT * FROM movies m ORDER BY m.average_rating DESC LIMIT 12", nativeQuery = true)
+    public List<Movie> topRated();
     
 }

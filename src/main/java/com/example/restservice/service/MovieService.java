@@ -265,6 +265,11 @@ public class MovieService {
         JSONArray homepageList = new JSONArray();
         //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
         List<Movie> movies = this.trending();
+        if (token == null) {
+            movies = movieDAO.topRated();
+        } else {
+            //Add in the recommendations.
+        }
         if (movies.size() > 0) {
             for (int i=0; i < movies.size(); i++) {
                 Movie movie = movies.get(i);
