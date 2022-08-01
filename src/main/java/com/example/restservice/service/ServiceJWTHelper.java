@@ -82,12 +82,11 @@ public class ServiceJWTHelper {
     }
 
     private static long tokenTimeInMilliSeconds() {
-        // currently 1 hr
-        return 60 * 60 * 1000; 
+        // currently 1 month
+        return 30 * 24 * 60 * 60 * 1000; 
     }
 
     public static long tokenTimeInHours() {
-        // currently 1 hr
         return tokenTimeInMilliSeconds()/60/60/1000; 
     }
 
