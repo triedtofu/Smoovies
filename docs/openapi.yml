@@ -98,6 +98,8 @@ paths:
         - Movies
       summary: Get the list of movies for the home page
       description: Returns the list of movies for the home page
+      parameters:
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
