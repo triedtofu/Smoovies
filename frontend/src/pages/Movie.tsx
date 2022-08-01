@@ -16,6 +16,7 @@ import Container from '../components/MyContainer';
 
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import SimilarMovieCard from '../components/SimilarMovieCard';
 
 import {
   apiGetMovie,
@@ -281,6 +282,14 @@ const Movie = () => {
         </Typography>
 
         <p>{movie.description}</p>
+      </div>
+      <div>
+        <h2>Movies similar to this one!</h2>
+        <div className={styles.similarMoviesDiv}>
+          {movie.similar.map((similarMovie) => (
+            <SimilarMovieCard movie={similarMovie} />
+          ))}
+        </div>
       </div>
       <div>
         <Typography gutterBottom variant="h5" component="h2">

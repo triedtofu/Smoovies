@@ -15,14 +15,17 @@ import ConfirmModal from './ConfirmModal';
 
 import { UserReview } from '../util/interface';
 
-
 interface ReviewResultCardProps {
   buttonClick: (() => void) | null;
   review: UserReview;
   error?: string;
 }
 
-const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps) => {
+const ReviewResultCard = ({
+  buttonClick,
+  review,
+  error,
+}: ReviewResultCardProps) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
 
   return (
@@ -38,12 +41,17 @@ const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps)
           <div className={styles.reviewDiv}>
             <div className={styles.reviewHead}>
               <Typography variant="h5" component="h2">
-                <MyLink href={`/movie/${review.movieId}`}>{review.movieName}</MyLink>
+                <MyLink href={`/movie/${review.movieId}`}>
+                  {review.movieName}
+                </MyLink>
               </Typography>
               <div className={styles.ratingDiv}>
                 <Rating name="read-only" value={review.rating} readOnly />
-                <Typography variant="h5" component="h2">{review.rating} / 5</Typography>
+                <Typography variant="h5" component="h2">
+                  {review.rating} / 5
+                </Typography>
               </div>
+              {review.likes}
             </div>
             <Divider />
             <p>{review.review}</p>
@@ -62,7 +70,7 @@ const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps)
           )}
         </CardContent>
       </Card>
-      {buttonClick && confirmDelete &&
+      {buttonClick && confirmDelete && (
         <ConfirmModal
           title="Delete review"
           body="Are you sure you want to delete this review? This action can't be undone."
@@ -70,7 +78,7 @@ const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps)
           cancel={() => setConfirmDelete(false)}
           error={error ?? ''}
         />
-      }
+      )}
     </>
   );
 };
