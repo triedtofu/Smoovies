@@ -53,11 +53,11 @@ const LoginForm = (props: LoginProps) => {
 
       <div className={styles.box}>
         Don&apos;t have an account?{' '}
-        <MyLink className={styles.boxLink} to="/register">
+        <MyLink className={styles.boxLink} href="/register">
           Register
         </MyLink>
         |
-        <MyLink className={styles.boxLink} to="/forgotpassword">
+        <MyLink className={styles.boxLink} href="/forgotpassword">
           Forgot Password?
         </MyLink>
       </div>

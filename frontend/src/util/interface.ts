@@ -16,6 +16,15 @@ export interface Review {
   name: string;
   review: string;
   rating: number;
+  likes: number;
+  liked: boolean;
+}
+
+export interface SimilarMovie {
+  id: number;
+  name: string;
+  year: number;
+  poster: string;
 }
 
 export interface UserReview {
@@ -24,6 +33,7 @@ export interface UserReview {
   poster: string;
   review: string;
   rating: number;
+  likes: number;
 }
 
 export interface UserReviewResponse {
@@ -48,6 +58,7 @@ export interface SpecificMovieResponse extends MovieDetails {
   id: number;
   averageRating: number;
   reviews: Review[];
+  similar: SimilarMovie[];
 }
 
 export interface MovieSummary {
@@ -58,6 +69,16 @@ export interface MovieSummary {
   description: string;
   genres: string[];
   averageRating: number;
+}
+
+export interface BlacklistSummary {
+  userId: number;
+  username: string;
+}
+
+export interface BlacklistResponse {
+  username: string;
+  users: BlacklistSummary[];
 }
 
 export interface SpecificMovieResponse extends MovieDetails {
@@ -105,4 +126,15 @@ export interface SearchResponse {
   movies: MovieSummary[];
   actors: ActorSearch[];
   directors: DirectorSearch[];
+}
+
+export interface HigherOrLowerData {
+  name: string;
+  year: number;
+  averageRating: number;
+  poster: string;
+}
+
+export interface HigherOrLowerResponse {
+  movies: HigherOrLowerData[];
 }

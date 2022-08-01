@@ -24,7 +24,7 @@ const PersonResultCard = (props: PersonResultCardProps) => {
         className={styles.card_media}
       />
       <CardContent className={styles.card_content}>
-        <MyLink to={props.link}>
+        <MyLink href={props.link}>
           <Typography gutterBottom variant="h5" component="div">
             {props.name}
           </Typography>

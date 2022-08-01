@@ -1,15 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import RegisterForm from '../components/RegisterForm';
 
 import { apiAuthRegister } from '../util/api';
 import { getErrorMessage } from '../util/helper';
+
+import Typography from '@mui/material/Typography';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Register = () => {
         <title>Register - Smoovies</title>
       </Helmet>
 
-      <h1>Register</h1>
+      <Typography variant="h4" component="h1">Register</Typography>
 
       <RegisterForm submit={register} error={registerErr} />
     </Container>

@@ -34,16 +34,16 @@ const Navbar = () => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <MyLink to="/higherorlower" className={styles.linkWithLogo}>
+        <MyLink href="/higherorlower" className={styles.linkWithLogo}>
           <SwapVertIcon className={styles.higherorlower}></SwapVertIcon>
           Higher Or Lower
         </MyLink>
         <div>|</div>
-        <MyLink to="/login">
+        <MyLink href="/login">
           Login
         </MyLink>
         <div>|</div>
-        <MyLink to="/register">
+        <MyLink href="/register">
           Register
         </MyLink>
       </div>

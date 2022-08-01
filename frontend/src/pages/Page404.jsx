@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 
 const Page404 = () => {

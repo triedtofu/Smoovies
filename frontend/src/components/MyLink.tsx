@@ -1,10 +1,14 @@
 import React from 'react';
-import { Link, LinkProps } from 'react-router-dom';
 
-import styles from './MyLink.module.css';
+import Link, { LinkTypeMap } from '@mui/material/Link';
+import { DefaultComponentProps } from '@mui/material/OverridableComponent';
 
-const MyLink = (props: LinkProps & React.RefAttributes<HTMLAnchorElement>) => {
-  return <Link {...props} className={`${props.className} ${styles.link}`}>{props.children}</Link>;
+const MyLink = (props: DefaultComponentProps<LinkTypeMap<unknown, "a">>) => {
+  return (
+    <Link underline="hover" {...props}>
+      {props.children}
+    </Link>
+  )
 };
 
 export default MyLink;

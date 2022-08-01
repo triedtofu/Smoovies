@@ -2,8 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
 import MovieResultCard from '../components/MovieResultCard';
 
@@ -11,13 +10,20 @@ import { apiUserWishlist, apiPutUserWishlist } from '../util/api';
 import { parseJwt, getErrorMessage } from '../util/helper';
 import { MovieSummary } from '../util/interface';
 
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+const PAGE_SIZE = 20;
+
 const Wishlist = () => {
   const params = useParams();
   const [cookies] = useCookies();
 
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
-  const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+
+  const [errorStr, setErrorStr] = React.useState('');
 
   const removeMovie = (movieId: number) => {
     try {
@@ -71,23 +77,33 @@ const Wishlist = () => {
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
 
+  console.log(movies);
+
   return (
     <Container maxWidth="lg">
-      <h1>
+      <Typography variant="h4" component="h1">
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Wishlist'
           : `${name}'s Wishlist`}
-      </h1>
+      </Typography>
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
-      {movies.map((movie) => (
+      {movies.slice(0, numMoviesShown).map((movie) => (
         <MovieResultCard
           key={movie.id}
           movie={movie}
           buttonClick={showButton() ? () => removeMovie(movie.id) : null}
         />
       ))}
+
+      {numMoviesShown < movies.length &&
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+            Show more
+          </Button>
+        </div>
+      }
     </Container>
   );
 };

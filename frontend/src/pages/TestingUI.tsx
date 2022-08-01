@@ -5,12 +5,12 @@ import { useCookies } from 'react-cookie';
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
 import Youtube from '../components/Youtube';
+import Container from '../components/MyContainer';
 
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import ReviewCard from '../components/ReviewCard';
-import Container from '@mui/material/Container';
 
 import {
   apiGetMovie,
@@ -66,7 +66,7 @@ const TestingUI = () => {
 
     try {
       const id = parseInt(idStr);
-      apiGetMovie(id)
+      apiGetMovie(id, cookies.token)
         .then((data) => setMovie({ ...data, id }))
         .catch((error) => setErrorStr(getErrorMessage(error)));
     } catch (error) {
@@ -250,7 +250,11 @@ const TestingUI = () => {
         <h2>Reviews</h2>
         <div style={{ display: 'flex' }}>
           {movie.reviews.map((review) => (
-            <ReviewCard key={review.user} onDelete={undefined} review={review} />
+            <ReviewCard
+              key={review.user}
+              onDelete={undefined}
+              review={review}
+            />
           ))}
         </div>
       </div>
