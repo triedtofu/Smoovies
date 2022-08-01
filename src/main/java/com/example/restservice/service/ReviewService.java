@@ -1,8 +1,10 @@
 package com.example.restservice.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,30 +71,35 @@ public class ReviewService {
         return responseJson;
     }
 
-    public JSONObject getUserReviews(Long id) {
+    public JSONObject getUserReviews(Long id, String token) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
 
         User user = userDAO.findUserById(id);
+
         if (user == null) return ServiceErrors.userIdInvalidError();
         if (user.getIsBanned()) return ServiceErrors.userBannedError();
 
+        //Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        //if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
+        //The user_id of the authorisation
         returnMessage.put("username", user.getName());
-
-        //Loop through their reviews.
-        JSONArray reviewArray = new JSONArray();
-
-        for (Review review : user.getUserReviews()) {
-            HashMap<String, Object> userReview = new HashMap<String,Object>();
-            userReview.put("movieId", review.getMovie().getId());
-            userReview.put("movieName", review.getMovie().getName());
-            userReview.put("poster", review.getMovie().getPoster());
-            userReview.put("review", review.getReviewString());
-            userReview.put("rating", review.getRating());
-            userReview.put("likes", review.getLikes());
-            JSONObject userReviewJson = new JSONObject(userReview);
-            reviewArray.put(userReviewJson);
+        Set<Review> userReviews = user.getUserReviews();
+        //List<Review> listUserReviews = new ArrayList<>(userReviews);
+        if (token == null || token.isEmpty()) {
+            returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
         }
-        returnMessage.put("reviews", reviewArray);
+        if (token != null && !token.isEmpty()) {
+            Long user_id = ServiceJWTHelper.getTokenId(token, null);
+            if (user_id.equals(id)) {
+                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(true, user, userReviews));
+            } else {
+                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
+            }
+        }
+        
+        //If there is no token or the user_id does not match the id from the token
+        
+        
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -195,7 +202,6 @@ public class ReviewService {
         if (dbreview == null) return ServiceErrors.reviewNotFound();
 
         return new JSONObject();
-
-        
     }
+    
 }
