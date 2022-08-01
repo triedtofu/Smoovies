@@ -71,6 +71,8 @@ const Search = () => {
   const [contentRatings, setContentRatings] = React.useState<string[]>([]);
 
   const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+  const [numActorsShown, setNumActorsShown] = React.useState(PAGE_SIZE);
+  const [numDirectorsShown, setNumDirectorsShown] = React.useState(PAGE_SIZE);
 
   const resetResults = () => {
     setMovies([]);
@@ -194,7 +196,7 @@ const Search = () => {
       <TabPanel value={value} index={1}>
         {fetched && actors.length === 0 && <p>No actors found.</p>}
         {actors.length > 0 &&
-          actors.map(actor => (
+          actors.slice(0, numActorsShown).map(actor => (
             <PersonResultCard
               key={actor.id}
               name={actor.name}
@@ -202,11 +204,19 @@ const Search = () => {
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
           ))}
+
+        {numActorsShown < actors.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumActorsShown(numActorsShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
       <TabPanel value={value} index={2}>
         {fetched && directors.length === 0 && <p>No directors found.</p>}
         {directors.length > 0 &&
-          directors.map(director => (
+          directors.slice(0, numDirectorsShown).map(director => (
             <PersonResultCard
               key={director.id}
               name={director.name}
@@ -214,6 +224,14 @@ const Search = () => {
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
           ))}
+
+        {numDirectorsShown < directors.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumDirectorsShown(numDirectorsShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
     </Container>
   );

@@ -22,6 +22,8 @@ import { UserReview } from '../util/interface';
 
 import styles from './Profile.module.css';
 
+const PAGE_SIZE = 10;
+
 const Profile = () => {
   const params = useParams();
   const [cookies] = useCookies();
@@ -29,6 +31,8 @@ const Profile = () => {
   const [reviews, setReviews] = React.useState<UserReview[]>([]);
   const [errorStr, setErrorStr] = React.useState('');
   const [name, setName] = React.useState('');
+
+  const [numReviewsShown, setNumReviewsShown] = React.useState(PAGE_SIZE);
 
   const [deletReviewErr, setDeleteReviewErr] = React.useState('');
   const [confirmBanUser, setConfirmBanUser] = React.useState(false);
@@ -117,7 +121,8 @@ const Profile = () => {
         </Typography>
         {cookies.token &&
           cookies.admin &&
-          params.id !== parseJwt(cookies.token).jti && (
+          params.id !== parseJwt(cookies.token).jti &&
+          (
             <Button
               variant="outlined"
               color="error"
@@ -125,7 +130,8 @@ const Profile = () => {
             >
               Ban User &nbsp;<CancelIcon></CancelIcon>
             </Button>
-          )}
+          )
+        }
         {BLUser && (
           <Button
             variant="outlined"
@@ -152,7 +158,7 @@ const Profile = () => {
         />
       )}
 
-      {reviews.map((review) => (
+      {reviews.slice(0, numReviewsShown).map(review => (
         <ReviewResultCard
           key={review.movieId}
           review={review}
@@ -160,6 +166,15 @@ const Profile = () => {
           error={deletReviewErr}
         />
       ))}
+
+      {numReviewsShown < reviews.length &&
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="contained" onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}>
+            Show more
+          </Button>
+        </div>
+      }
+
       {reviews.length === 0 && <p>No reviews.</p>}
     </Container>
   );
