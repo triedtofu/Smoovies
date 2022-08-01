@@ -6,13 +6,16 @@ import { useSpring, animated, config } from '@react-spring/web';
 
 import styles from './HigherOrLower.module.css';
 
-import Button from '@mui/material/Button';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import Autocomplete from '@mui/material/Autocomplete';
+import Button from '@mui/material/Button';
+import FormLabel from '@mui/material/FormLabel';
+import TextField from '@mui/material/TextField';
 
-import { apiGetHigherOrLower } from '../util/api';
+import { apiGetHigherOrLower, apiGetGenres } from '../util/api';
 import { randInt } from '../util/helper';
 import { HigherOrLowerData } from '../util/interface';
 
@@ -28,6 +31,14 @@ const HigherOrLower = () => {
   const navigate = useNavigate();
 
   const [gameStatus, setGameStatus] = React.useState<"init" | "playing" | "animating" | "next" | "ending" | "end" | "win">("init");
+
+  const [startYear, setStartYear] = React.useState('1888');
+  const [endYear, setEndYear] = React.useState(new Date().getFullYear().toString());
+  const [genres, setGenres] = React.useState<string[]>([]);
+  const [contentRatings, setContentRatings] = React.useState<string[]>([]);
+
+  const [allGenres, setAllGenres] = React.useState<string[]>([]);
+
   const [data, setData] = React.useState<HigherOrLowerData[]>([]);
   const [score, setScore] = React.useState(0);
   const [highscore, setHighscore] = React.useState(0);
@@ -36,6 +47,8 @@ const HigherOrLower = () => {
   const [index1, setIndex1] = React.useState(-1);
   const [index2, setIndex2] = React.useState(-1);
   const [index3, setIndex3] = React.useState(-1);
+
+  const [errorStr, setErrorStr] = React.useState('');
 
   const newGame = (len : number) => {
     setScore(0);
@@ -56,12 +69,8 @@ const HigherOrLower = () => {
   }
 
   React.useEffect(() => {
-    apiGetHigherOrLower().then(res => {
-      // TODO handle if we don't have enough movies (< 10)
-
-      setData(res.movies);
-      newGame(res.movies.length);
-    });
+    // get list of genres
+    apiGetGenres().then(res => setAllGenres(res.genres));
 
     () => clearTimeout(timeout);
   }, []);
@@ -126,6 +135,116 @@ const HigherOrLower = () => {
     return <></>;
   }
 
+  const handleSubmit = () => {
+    setErrorStr('');
+
+    const startYearInt = parseInt(startYear);
+    const endYearInt = parseInt(endYear);
+
+    if (startYearInt > endYearInt) {
+      setErrorStr("Start year cannot be greater than End year");
+      return;
+    }
+
+    apiGetHigherOrLower(startYearInt, endYearInt, genres, contentRatings).then(res => {
+      if (res.movies.length < 10) {
+        setErrorStr("Sorry, there aren't enough movies that match the criteria");
+        return;
+      }
+
+      setData(res.movies);
+      newGame(res.movies.length);
+    });
+  }
+
+  if (gameStatus === 'init') return (
+    <div className={styles.endScreen}>
+
+      <h2>Higher or Lower Menu</h2>
+
+      <form onSubmit={handleSubmit} style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {errorStr && <FormLabel error>{errorStr}</FormLabel>}
+        <div style={{ display: 'flex', gap: '10px' }}>
+
+          <TextField
+            id="outlined-number"
+            label="Start year"
+            type="number"
+            size="small"
+            sx={{ flex: '1' }}
+            value={startYear}
+            onChange={e => setStartYear(e.target.value)}
+            helperText="Start year (inclusive)"
+            required
+          />
+
+          <TextField
+            id="outlined-number"
+            label="End year"
+            type="number"
+            size="small"
+            sx={{ flex: '1' }}
+            value={endYear}
+            onChange={e => setEndYear(e.target.value)}
+            helperText="End year (inclusive)"
+            required
+          />
+        </div>
+
+        <Autocomplete
+          // className={styles.flexContents1}
+          multiple
+          id="tags-standard"
+          options={['NR', 'G', 'PG', 'PG-13', 'M', 'MA 15+', 'R', 'TV-PG', 'TV-14']}
+          autoHighlight
+          size="small"
+          value={contentRatings}
+          onChange={(_, value) => setContentRatings(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Content Rating"
+              helperText="Optional: Filter the movies based on their content rating"
+            />
+          )}
+        />
+
+        <Autocomplete
+          className={styles.flexContents2}
+          multiple
+          id="tags-standard"
+          options={allGenres}
+          autoHighlight
+          size="small"
+          loading
+          loadingText="Loading..."
+          value={genres}
+          onChange={(_, value) => setGenres(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Genres"
+              helperText="Optional: Genres which the movies must have at least one of"
+            />
+          )}
+        />
+
+        <Button variant="contained" type="submit">
+          Start game
+        </Button>
+      </form>
+
+      <Button
+        variant="text"
+        className={styles.endHomeButton}
+        // sx={{ color: 'white' }}
+        onClick={() => navigate('/')}
+      >
+        Home
+      </Button>
+    </div>
+  );
+
   if (index1 < 0 || index2 < 0) return <></>;
 
   if (gameStatus === 'end') return (
@@ -145,9 +264,16 @@ const HigherOrLower = () => {
       </Button>
 
       <Button
+        variant="contained"
+        className={styles.button}
+        onClick={() => setGameStatus('init')}
+      >
+        Go to menu
+      </Button>
+
+      <Button
         variant="text"
         className={styles.endHomeButton}
-        sx={{ color: 'white' }}
         onClick={() => navigate('/')}
       >
         Home

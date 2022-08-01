@@ -143,13 +143,17 @@ export const apilikeUnlikeReview = (
 };
 
 export const apiGetHigherOrLower = (
-  // startYear: number,
-  // endYear: number,
-  genres?: string,
-  contentRating?: string
+  startYear: number,
+  endYear: number,
+  genres: string[],
+  contentRating: string[]
 ) => {
-  // let path = `/movie/higherOrLower?startYear&=`
-  return apiFetch<HigherOrLowerResponse>('/movie/higherOrLower');
+  let path = `/movie/higherOrLower?startYear=${startYear}&endYear=${endYear}`;
+
+  if (genres.length > 0) path += `&genres=${genres.join(',')}`
+  if (contentRating.length > 0) path += `&contentRating=${contentRating.join(',')}`
+
+  return apiFetch<HigherOrLowerResponse>(path);
 };
 
 // TODO update once api is done
