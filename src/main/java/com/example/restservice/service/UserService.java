@@ -152,6 +152,13 @@ public class UserService {
             return ServiceErrors.userIdInvalidError();
         }
 
+        // check that user is not trying to view a blacklisted users wishlist
+        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+        for (UserBlacklist blacklist: userBlacklist) {
+            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            
+        }
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
@@ -244,7 +251,7 @@ public class UserService {
         // use the users current password as the signKey, this will allow the password to be reset once
         String link = "https://comp3900-lawnchair-front.herokuapp.com/#/resetPassword?token=" + ServiceJWTHelper.generateJWT(user.getId().toString(), user.getPassword(), ServiceJWTHelper.getResetSignKey());
         String subject = "Smoovies - Reset Password Request";
-        String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.tokenTimeInHours() + " hour(s).";
+        String body = "To reset your password, please click " + link +". This link will expire in " + ServiceJWTHelper.resetTokenTimeInHours() + " hour(s).";
         emailSenderService.sendEmail(user.getEmail(), subject, body);
 
         JSONObject responseJson = new JSONObject(returnMessage);
