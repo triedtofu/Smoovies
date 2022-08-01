@@ -143,8 +143,7 @@ public class UserService {
     public JSONObject getUserWishlist(long id, String token) {
 
         // verify the users token
-        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
-        if (!tokenCheck) {
+        if (token != null && !ServiceJWTHelper.verifyUserGetRequestToken(token, null)) {
             return ServiceErrors.userTokenInvalidError();
         }
 
