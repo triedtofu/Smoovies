@@ -15,7 +15,6 @@ import {
   ActorResponse,
   DirectorResponse,
   SearchResponse,
-  BlacklistSummary,
   BlacklistResponse,
   HigherOrLowerResponse,
 } from './interface';
@@ -53,8 +52,12 @@ export const apiAuthLogin = (email: string, password: string) => {
 
 // Movies
 
-export const apiMovieHomepage = () => {
-  return apiFetch<MovieSummaries>('/movie/homepage');
+export const apiMovieHomepage = (token?: string) => {
+  let path = '/movie/homepage';
+
+  if (token) path += `?token=${token}`;
+
+  return apiFetch<MovieSummaries>(path);
 };
 
 export const apiMovieSearch = (
@@ -157,8 +160,12 @@ export const apiGetHigherOrLower = (
 };
 
 // TODO update once api is done
-export const apiUserWishlist = (id: number) => {
-  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`);
+export const apiUserWishlist = (id: number, token?: string) => {
+  let path = `/user/wishlist?userId=${id}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<WishlistResponse>(path);
 };
 
 export const apiPutUserWishlist = (

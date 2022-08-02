@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCookies } from 'react-cookie';
 import { Helmet } from 'react-helmet-async';
 
 import styles from './Homepage.module.css';
@@ -13,13 +14,15 @@ import { MovieSummary } from '../util/interface';
 import Typography from '@mui/material/Typography';
 
 const Homepage = () => {
+  const [cookies] = useCookies();
+
   // store the movies
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
 
   // fetch the movies when the page loads
   React.useEffect(() => {
     try {
-      apiMovieHomepage().then((data) => setMovies(data.movies));
+      apiMovieHomepage(cookies.token).then((data) => setMovies(data.movies));
     } catch (err) {
       console.warn(err);
     }

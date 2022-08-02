@@ -50,7 +50,7 @@ const Wishlist = () => {
     }
 
     try {
-      apiUserWishlist(parseInt(idStr))
+      apiUserWishlist(parseInt(idStr), cookies.token)
         .then((data) => {
           setMovies(data.movies);
           setName(data.username);
@@ -76,8 +76,6 @@ const Wishlist = () => {
   };
 
   if (errorStr || name === '') return <h2>{errorStr}</h2>;
-
-  console.log(movies);
 
   return (
     <Container maxWidth="lg">
