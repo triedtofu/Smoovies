@@ -189,7 +189,7 @@ public class ServiceErrors {
     }
 
     public static JSONObject userNotFound() {
-        return generateErrorMessage("User is not found");
+        return generateErrorMessage("User not found");
     }
 
     public static JSONObject reviewNotFound() {
