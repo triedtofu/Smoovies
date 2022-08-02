@@ -95,9 +95,11 @@ const Wishlist = () => {
           : `${name}'s Wishlist`}
       </Typography>
 
-      <Button variant="outlined" onClick={() => navigate(`/user/${params.id}/`)}>
-        Their Reviews
-      </Button>
+      {!(cookies.token && params.id === parseJwt(cookies.token).jti) &&
+        <Button variant="outlined" onClick={() => navigate(`/user/${params.id}/`)}>
+          Their Reviews
+        </Button>
+      }
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 

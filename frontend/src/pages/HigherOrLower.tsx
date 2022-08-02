@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSpring, animated, config } from '@react-spring/web';
@@ -14,6 +14,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import { apiGetHigherOrLower, apiGetGenres } from '../util/api';
 import { randInt } from '../util/helper';
@@ -159,8 +160,11 @@ const HigherOrLower = () => {
 
   if (gameStatus === 'init') return (
     <div className={styles.endScreen}>
+      <Helmet>
+        <title>Higher or Lower - Smoovies</title>
+      </Helmet>
 
-      <h2>Higher or Lower Menu</h2>
+      <Typography gutterBottom variant="h4" component="h1">Higher or Lower Menu</Typography>
 
       <form onSubmit={handleSubmit} style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {errorStr && <FormLabel error>{errorStr}</FormLabel>}

@@ -158,9 +158,11 @@ const Profile = () => {
         )}
       </div>
 
-      <Button variant="outlined" onClick={() => navigate('wishlist')}>
-        Their Wishlist
-      </Button>
+      {!(cookies.token && params.id === parseJwt(cookies.token).jti) &&
+        <Button variant="outlined" onClick={() => navigate('wishlist')}>
+          Their Wishlist
+        </Button>
+      }
 
       {confirmBanUser && (
         <ConfirmModal
