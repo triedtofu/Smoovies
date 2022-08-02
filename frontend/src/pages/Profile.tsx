@@ -1,6 +1,7 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -25,6 +26,7 @@ import styles from './Profile.module.css';
 const PAGE_SIZE = 10;
 
 const Profile = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const [cookies] = useCookies();
 
@@ -113,6 +115,14 @@ const Profile = () => {
 
   return (
     <Container maxWidth="lg">
+      <Helmet>
+        <title>
+          {cookies.token && params.id === parseJwt(cookies.token).jti
+            ? 'Your Reviews'
+            : `${name}'s Reviews`} - Smoovies
+        </title>
+      </Helmet>
+
       <div className={styles.headerDiv}>
         <Typography gutterBottom variant="h4" component="h1">
           {cookies.token && params.id === parseJwt(cookies.token).jti
@@ -148,6 +158,10 @@ const Profile = () => {
         )}
       </div>
 
+      <Button variant="outlined" onClick={() => navigate('wishlist')}>
+        Their Wishlist
+      </Button>
+
       {confirmBanUser && (
         <ConfirmModal
           title="Ban user"
@@ -157,6 +171,8 @@ const Profile = () => {
           error={banUserErr}
         />
       )}
+
+      {reviews.length === 0 && <p>No reviews.</p>}
 
       {reviews.slice(0, numReviewsShown).map(review => (
         <ReviewResultCard
@@ -174,8 +190,6 @@ const Profile = () => {
           </Button>
         </div>
       }
-
-      {reviews.length === 0 && <p>No reviews.</p>}
     </Container>
   );
 };

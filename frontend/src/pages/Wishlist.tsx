@@ -1,6 +1,7 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Container from '../components/MyContainer';
 import MakePage from '../components/MakePage';
@@ -16,6 +17,7 @@ import Typography from '@mui/material/Typography';
 const PAGE_SIZE = 20;
 
 const Wishlist = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const [cookies] = useCookies();
 
@@ -79,11 +81,23 @@ const Wishlist = () => {
 
   return (
     <Container maxWidth="lg">
+      <Helmet>
+        <title>
+          {cookies.token && params.id === parseJwt(cookies.token).jti
+            ? 'Your Wishlist'
+            : `${name}'s Wishlist`} - Smoovies
+        </title>
+      </Helmet>
+
       <Typography variant="h4" component="h1">
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Wishlist'
           : `${name}'s Wishlist`}
       </Typography>
+
+      <Button variant="outlined" onClick={() => navigate(`/user/${params.id}/`)}>
+        Their Reviews
+      </Button>
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
