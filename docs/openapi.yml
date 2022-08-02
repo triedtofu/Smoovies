@@ -739,6 +739,60 @@ paths:
           $ref: '#/components/responses/AccessError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /api/user/details:
+    get:
+      tags:
+        - Users
+      summary: Get the authorised user's details
+      parameters:
+        - $ref: '#/components/parameters/UserTokenRequiredParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Name'
+                  email:
+                    $ref: '#/components/schemas/Email'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+    put:
+      tags:
+        - Users
+      summary: Updated the authorised user's details
+      description: Updates the user's email, password, name with the given details. It will only update defined fields provided. Any fields given that are undefined will remain unchanged.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                name:
+                    $ref: '#/components/schemas/Name'
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
   /api/actor/getActor:
     get:
       tags:
