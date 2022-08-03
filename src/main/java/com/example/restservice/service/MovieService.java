@@ -600,13 +600,25 @@ public class MovieService {
             for (Genre genre : movie.getGenreList()){
                 if(genre.movieInGenre(dbMovie)) genreMatches++;
             }
-            double genreDistance = genreMatches/genreListSize;
+            double genreDistance;
+            if (genreListSize != 0) {
+                genreDistance = genreMatches/genreListSize;
+            } else {
+                genreDistance = 0;
+            }
+
             double actorListSize = movie.getActorsInMovie().size();
             double actorMatches = 0;
             for (Actor actor : movie.getActorsInMovie()) {
                 if (actor.actorInMovie(dbMovie)) actorMatches++;
             }
-            double actorDistance = actorMatches/actorListSize;
+            double actorDistance;
+            if (actorListSize != 0) {
+                actorDistance = actorMatches/actorListSize;
+            } else {
+                actorDistance = 0;
+            }
+
             double directorListSize = movie.getDirectorsInMovie().size();
             double directorMatches = 0;
             for (Director director : movie.getDirectorsInMovie()) {
@@ -615,8 +627,9 @@ public class MovieService {
             double directorDistance;
             if (directorListSize != 0) {
                 directorDistance = directorMatches/directorListSize;
+            } else {
+                directorDistance = 0;
             }
-            directorDistance = 0;
             //Calculate the similarity between dbmovie and given movie based on.
             double simlarity = directorDistance * DIRECTORWEIGHT + actorDistance * ACTORWEIGHT + editDistance * NAMEWEIGHT + genreDistance * GENREWEIGHT;
 
