@@ -307,9 +307,10 @@ const Movie = () => {
           ))}
         </div>
       </div>
+      <br />
       <div>
         <Typography gutterBottom variant="h5" component="h2">
-          Reviews
+          <h4>Reviews</h4>
         </Typography>
         <div className={styles.reviewsDiv}>
           {movie.reviews.slice(0, numReviewsShown).map((review) => (
