@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
 import ToggleablePassword from '../components/ToggleablePassword';
 import MyFormControl from '../components/MyFormControl';
 import Container from '../components/MyContainer';
+import MyLink from '../components/MyLink';
 
 import { apiResetPassword } from '../util/api';
 import { getErrorMessage } from '../util/helper';
@@ -40,13 +41,15 @@ const ResetPassword= () => {
 
   if (searchParams.get('token') === null) return (
     <Container maxWidth="md">
-      <h2>Invalid link</h2>
+      <Typography variant="h5" component="h2">Invalid link</Typography>
     </Container>
   );
 
   if (success) return (
     <Container maxWidth="md">
-      <h2>Your password has been reset. Click <Link to="/login">here to login.</Link></h2>
+      <Typography variant="h5" component="h2">
+        Your password has been reset. Click <MyLink href="/login">here to login.</MyLink>
+      </Typography>
     </Container>
   );
 
