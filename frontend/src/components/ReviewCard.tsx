@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useParams } from 'react-router-dom';
 
 import Rating from '@mui/material/Rating';
-import StarIcon from '@mui/icons-material/Star';
 import Button from '@mui/material/Button';
+import StarIcon from '@mui/icons-material/Star';
 
 import styles from './ReviewCard.module.css';
 
@@ -80,12 +80,13 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       <div className={styles.reviewHeader}>
         <MyLink href={`/user/${review.user}`}>{review.name}</MyLink>
         <div className={styles.likeAndReview}>
-          <Rating
+          {/* <Rating
             name="text-feedback"
             value={review.rating}
             readOnly
             emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
-          />
+          /> */}
+          <StarIcon className={styles.starRating}></StarIcon> &nbsp;2/5
           &nbsp;&nbsp;&nbsp;&nbsp;
           {cookies.token && (
             <motion.div

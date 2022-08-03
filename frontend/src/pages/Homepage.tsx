@@ -34,14 +34,27 @@ const Homepage = () => {
         <title>Recommended - Smoovies</title>
       </Helmet>
 
-      <Typography
-        gutterBottom
-        variant="h4"
-        component="h1"
-        fontFamily={'Verdana'}
-      >
-        Recommended
-      </Typography>
+      {cookies.token && (
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
+          Recommended
+        </Typography>
+      )}
+
+      {!cookies.token && (
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
+          Top Rated
+        </Typography>
+      )}
 
       {movies.length > 0 && (
         <div className={styles.container}>
