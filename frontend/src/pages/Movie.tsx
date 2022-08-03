@@ -258,9 +258,9 @@ const Movie = () => {
               gutterBottom
               variant="h5"
               component="h2"
-              fontFamily={'Calisto MT'}
+              fontFamily={'Verdana'}
             >
-              <b>{movie.name}</b>
+              {movie.name}
             </Typography>
 
             <p style={{ display: 'flex' }}>
@@ -292,15 +292,18 @@ const Movie = () => {
       </div>
       <br />
       <div>
-        <Typography variant="h6" component="h3">
-          <h3>Movie Info</h3>
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
+          Movie Info
         </Typography>
 
         <p>{movie.description}</p>
       </div>
       <br />
       <div>
-        <h2>Movies similar to this one!</h2>
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
+          Movies similar to this one!
+        </Typography>
+        <br />
         <div className={styles.similarMoviesDiv}>
           {movie.similar.map((similarMovie) => (
             <SimilarMovieCard key={similarMovie.id} movie={similarMovie} />
@@ -309,8 +312,13 @@ const Movie = () => {
       </div>
       <br />
       <div>
-        <Typography gutterBottom variant="h5" component="h2">
-          <h4>Reviews</h4>
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="h2"
+          fontFamily={'Verdana'}
+        >
+          Reviews
         </Typography>
         <div className={styles.reviewsDiv}>
           {movie.reviews.slice(0, numReviewsShown).map((review) => (
