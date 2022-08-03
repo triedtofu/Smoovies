@@ -35,6 +35,8 @@ let addingReview = false;
 
 const PAGE_SIZE = 5;
 
+let oldId: undefined | number = undefined;
+
 const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
@@ -58,23 +60,21 @@ const Movie = () => {
   };
 
   React.useEffect(() => {
-    setErrorStr('');
-    setMovie(undefined);
+    const id = parseInt(params.id ?? '');
 
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      setErrorStr('Error');
+    if (Number.isNaN(id)) {
+      setErrorStr('Invalid movie id');
       return;
     }
 
-    try {
-      const id = parseInt(idStr);
-      updateMovie(id);
-    } catch (error) {
-      setErrorStr(getErrorMessage(error));
-    }
+    if (oldId === id) return;
+
+    setErrorStr('');
+    setMovie(undefined);
+
+    oldId = id;
+
+    updateMovie(id);
   }, [params]);
 
   React.useEffect(() => {
@@ -144,7 +144,11 @@ const Movie = () => {
     );
   };
 
-  if (errorStr) return <p>{errorStr}</p>;
+  if (errorStr) return (
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h2">{errorStr}</Typography>
+    </Container>
+  );
 
   if (movie && Object.keys(movie).length === 0) return <></>;
 
