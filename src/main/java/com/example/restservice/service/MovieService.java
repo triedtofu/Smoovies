@@ -207,11 +207,12 @@ public class MovieService {
     }
 
     /**
-     * Grabs a list of movies that satisfy the search condition by name
-     * @param name
-     * @return JSONObject containing  {"movies": JSONArray of movies}
+     * Searches the database based on the query provided.
+     * Returns based on name and then description.
+     * @param searchRequest
+     * @return
      */
-    public JSONObject searchMovieByName(SearchRequest searchRequest) {
+    public JSONObject search(SearchRequest searchRequest) {
 
         if (!ServiceInputChecks.checkName(searchRequest.getName())) {
             return ServiceErrors.movieNameInvalidError();
@@ -220,7 +221,16 @@ public class MovieService {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray moviesArray = new JSONArray();
 
-        List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
+        
+        List<Movie> dbMovies = new ArrayList<Movie>();
+        for (Movie m : nameMovies) {
+            dbMovies.add(m);
+        }
+        for (Movie m : descMovies) {
+            if (!dbMovies.contains(m)) dbMovies.add(m);
+        }
         //Filter
         List<Movie> filteredMovies = dbMovies;
 
