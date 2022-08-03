@@ -89,7 +89,7 @@ const RegisterForm = (props: RegisterProps) => {
 
       <div className={styles.box}>
         Already have an account?{' '}
-        <MyLink className={styles.boxLink} to="/login">
+        <MyLink className={styles.boxLink} href="/login">
           Login
         </MyLink>
       </div>

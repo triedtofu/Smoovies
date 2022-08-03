@@ -53,7 +53,7 @@ const NavbarAdmin = (props: NavbarAdminProps) => {
         </Box>
       </div>
       <div className={styles.nav_right}>
-        <MyLink to="/higherorlower">Higher or Lower</MyLink>
+        <MyLink href="/higherorlower">Higher or Lower</MyLink>
         <div>|</div>
         <div className={styles.dashboard}>
           <Button

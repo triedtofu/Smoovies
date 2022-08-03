@@ -1,22 +1,20 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 import MakePage from '../components/MakePage';
+import Container from '../components/MyContainer';
 import MovieResultCard from '../components/MovieResultCard';
 import PersonResultCard from '../components/PersonResultCard';
 
-import Container from '@mui/material/Container';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
 
 import styles from './Search.module.css';
 
@@ -56,6 +54,8 @@ const a11yProps = (index: number) => {
   };
 };
 
+const PAGE_SIZE = 20;
+
 const Search = () => {
   const [searchParams] = useSearchParams();
 
@@ -69,6 +69,10 @@ const Search = () => {
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
   const [contentRatings, setContentRatings] = React.useState<string[]>([]);
+
+  const [numMoviesShown, setNumMoviesShown] = React.useState(PAGE_SIZE);
+  const [numActorsShown, setNumActorsShown] = React.useState(PAGE_SIZE);
+  const [numDirectorsShown, setNumDirectorsShown] = React.useState(PAGE_SIZE);
 
   const resetResults = () => {
     setMovies([]);
@@ -123,9 +127,9 @@ const Search = () => {
         <title>Search Results - Smoovies</title>
       </Helmet>
 
-      <h1>Results: {searchParams.get('name')}</h1>
+      <Typography gutterBottom variant="h4" component="h1">Results: {searchParams.get('name')}</Typography>
 
-      {!fetched && <h2>Searching...</h2>}
+      {!fetched && <Typography gutterBottom variant="h5" component="h2">Searching...</Typography>}
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} centered>
@@ -172,18 +176,27 @@ const Search = () => {
 
         {fetched && movies.length === 0 && <p>No movies found.</p>}
         {movies.length > 0 &&
-          movies.map(movie => (
+          movies.slice(0, numMoviesShown).map(movie => (
             <MovieResultCard
               key={movie.id}
               movie={movie}
               buttonClick={null}
             />
-          ))}
+          ))
+        }
+
+        {numMoviesShown < movies.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
       <TabPanel value={value} index={1}>
         {fetched && actors.length === 0 && <p>No actors found.</p>}
         {actors.length > 0 &&
-          actors.map(actor => (
+          actors.slice(0, numActorsShown).map(actor => (
             <PersonResultCard
               key={actor.id}
               name={actor.name}
@@ -191,11 +204,19 @@ const Search = () => {
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
           ))}
+
+        {numActorsShown < actors.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumActorsShown(numActorsShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
       <TabPanel value={value} index={2}>
         {fetched && directors.length === 0 && <p>No directors found.</p>}
         {directors.length > 0 &&
-          directors.map(director => (
+          directors.slice(0, numDirectorsShown).map(director => (
             <PersonResultCard
               key={director.id}
               name={director.name}
@@ -203,6 +224,14 @@ const Search = () => {
               image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
             />
           ))}
+
+        {numDirectorsShown < directors.length &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="contained" onClick={() => setNumDirectorsShown(numDirectorsShown + PAGE_SIZE)}>
+              Show more
+            </Button>
+          </div>
+        }
       </TabPanel>
     </Container>
   );

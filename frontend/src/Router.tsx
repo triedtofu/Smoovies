@@ -5,6 +5,7 @@ import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
+import Blacklist from './pages/Blacklist';
 import Movie from './pages/Movie';
 import Search from './pages/Search';
 import HigherOrLower from './pages/HigherOrLower';
@@ -18,6 +19,8 @@ import EditMovie from './pages/EditMovie';
 import Actor from './pages/Actor';
 import Director from './pages/Director';
 
+// Manages the routes
+
 const Router = () => {
   return (
     <Routes>
@@ -27,6 +30,7 @@ const Router = () => {
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/resetpassword" element={<ResetPassword />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
+      <Route path="/user/:id/blacklist" element={<Blacklist />} />
       <Route path="/movie/:id" element={<Movie />} />
       <Route path="/movie/:id/edit" element={<EditMovie />} />
       <Route path="/search" element={<Search />} />

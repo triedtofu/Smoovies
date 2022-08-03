@@ -5,6 +5,7 @@ import styles from './ReviewInput.module.css';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 interface ReviewInputProps {
   submitReview: (rating: number, review: string) => void;
@@ -22,7 +23,7 @@ const ReviewInput = (props: ReviewInputProps) => {
   return (
     <div className={styles.reviewDiv}>
       <div className={styles.reviewHeader}>
-        <h2>Write a Review</h2>
+        <Typography gutterBottom variant="h5" component="h2">Write a Review</Typography>
         <Rating
           name="half-rating"
           value={rating}

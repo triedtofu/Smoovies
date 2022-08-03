@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,8 @@ import java.util.List;
 // import java.util.Set;
 // import java.util.Optional;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -29,6 +32,7 @@ import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.UserGenrePreferenceScore;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 // import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
@@ -41,6 +45,7 @@ import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
+import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
 
 //import com.example.restservice.service.ServiceErrors;
 @Service
@@ -68,10 +73,13 @@ public class MovieService {
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
 
+    @Autowired
+    private UserGenrePreferenceScoreDataAccessService userGenrePreferenceScoreDataAccessService;
+
     private static final double DIRECTORWEIGHT = 0.15;
     private static final double ACTORWEIGHT = 0.15;
-    private static final double NAMEWEIGHT = 0.45;
-    private static final double GENREWEIGHT = 0.25;
+    private static final double NAMEWEIGHT = 0.20;
+    private static final double GENREWEIGHT = 0.50;
     /**
      * Adds a movie to the database
      * @param movie
@@ -150,7 +158,7 @@ public class MovieService {
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.movieIdInvalidError();
         }
-        
+
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         Movie dbMovie = movieDAO.findMovieByID(id);
@@ -170,9 +178,11 @@ public class MovieService {
             Long user_id = ServiceJWTHelper.getTokenId(token, null);
             User user = userDAO.findUserById(user_id);
             reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
-        } 
+        }
         if (token == null) {
-            for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
+        List<Review> reviews = ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token);
+        
+        for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
             if (review.getUser().getIsBanned()) continue;
             HashMap<String, Object> movieReview = new HashMap<String,Object>();
             movieReview.put("user", review.getUser().getId());
@@ -211,31 +221,41 @@ public class MovieService {
      * @return
      */
     public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        HashMap<String, Object> returnMessage = new HashMap<>();
         List<Movie> allMovies = movieDAO.findAll();
         JSONArray movieDetailsArray = new JSONArray();
-        List<String> genreList = new ArrayList<>(Arrays.asList(genres.split(",[ ]*")));
-        List<String> contentRatingList = new ArrayList<>(Arrays.asList(contentRating.split(",[ ]*")));
-        for (int i = 0; i < allMovies.size(); i++) {
+
+        List<String> genreList = null;
+
+        if (genres != null) genreList = new ArrayList<>(Arrays.asList(genres.split(",[ ]*")));
+
+        List<String> contentRatingList = null;
+
+        if (contentRating != null) contentRatingList = new ArrayList<>(Arrays.asList(contentRating.split(",[ ]*")));
+
+        for (Movie movie : allMovies) {
             Boolean movieHasGenre = false;
-            Movie movie = allMovies.get(i);
-            HashMap<String, Object> movieDetails = new HashMap<String,Object>();
+            HashMap<String, Object> movieDetails = new HashMap<String, Object>();
             // Checking that the current movie satisfies the user inputted filters. Skip iteration if not.
             if (movie.getAverageRating() == 0) continue;
+
             if (movie.getYear() < startYear || movie.getYear() > endYear) continue;
-            if (genres != null && !genres.isEmpty()){
+
+            if (genreList != null && !genres.isEmpty()) {
                 //System.out.print("Genres is not null");
                 List<String> movieGenres = movie.getGenreListStr();
                 //System.out.println(Arrays.toString(movieGenres.toArray()));
-                for (String genre : movieGenres) {           
+                for (String genre : movieGenres) {
                     if (genreList.contains(genre)){
                         movieHasGenre = true;
                         break;
                     };
                 }
-                if (!movieHasGenre) continue;           
+
+                if (!movieHasGenre) continue;
             }
-            if (contentRating != null && !contentRating.isEmpty() && !contentRatingList.contains(movie.getContentRating())){
+
+            if (contentRatingList != null && !contentRating.isEmpty() && !contentRatingList.contains(movie.getContentRating())){
                 continue;
             }
             // Putting all the details into Hashmap, making it a JSON object, and putting it in the movie Array
@@ -252,6 +272,7 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
     public JSONObject homepage(String token) {
 
         // verify the users token
@@ -264,7 +285,15 @@ public class MovieService {
         //Stores the movie's used for homepage.
         JSONArray homepageList = new JSONArray();
         //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
-        List<Movie> movies = this.trending();
+        List<Movie> movies = new ArrayList<Movie>();
+        // case where no token, return top rated (i.e user not logged in)
+        if (token == null) {
+            movies = this.topRated();
+        } else {
+            //Add in the recommendations for specific user
+            long user_id = ServiceJWTHelper.getTokenId(token, null);
+            movies = findRecommendedMovies(user_id);
+        }
         if (movies.size() > 0) {
             for (int i=0; i < movies.size(); i++) {
                 Movie movie = movies.get(i);
@@ -292,9 +321,10 @@ public class MovieService {
     }
 
     /**
-     * Grabs a list of movies that satisfy the search condition by name
-     * @param name
-     * @return JSONObject containing  {"movies": JSONArray of movies}
+     * Searches the database based on a query, returns based on title and then description.
+     * @param searchRequest
+     * @param token
+     * @return
      */
     public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
 
@@ -310,8 +340,19 @@ public class MovieService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray moviesArray = new JSONArray();
+        List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
 
-        List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
+
+        List<Movie> dbMovies = new ArrayList<Movie>();
+        
+        for (Movie m: nameMovies) {
+            dbMovies.add(m);
+        }
+
+        for (Movie m : descMovies) {
+            if (!dbMovies.contains(m)) dbMovies.add(m);
+        }
         //Filter
         List<Movie> filteredMovies = dbMovies;
 
@@ -334,7 +375,6 @@ public class MovieService {
             filteredMovies.removeAll(removeValues);
         }
 
-        // TODO: if valid movies are found (list of movies is larger than size 0)
         if (filteredMovies.size() > 0) {
             for(int i = 0; i < filteredMovies.size(); i++) {
                 Movie dbMovie = filteredMovies.get(i);
@@ -377,16 +417,6 @@ public class MovieService {
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-    }
-    /**
-     * Determines what movies are "trending"
-     * The homepage has 12 movies on it.
-     * @return
-     */
-    public List<Movie> trending() {
-        //TODO: Write an algorithm which will find the trending movie's.
-        List<Movie> movieList = movieDAO.trending();
-        return movieList;
     }
 
     public JSONObject deleteMovie(DeleteMovieRequest request) {
@@ -542,7 +572,7 @@ public class MovieService {
     /**
      * Given a movie returns a list of 4 Similar movies.
      * Algorithm will be weighted with the following parameters.
-     * Weighted - 
+     * Weighted -
      * 55% similarity in the name
      * 25% similarity in genre - calculated % of genres it matches.
      * 10% simlarity in director - how many points per director it has.
@@ -558,20 +588,37 @@ public class MovieService {
         for (Movie dbMovie : allMovies) {
             //StringUtils.getJaroWinklerDistance()
             JaroWinklerDistance distance = new JaroWinklerDistance();
-            double editDistance = distance.apply(dbMovie.getName(), movie.getName());
-            
+            double editDistance;
+            if (movie.getName() != null){
+                editDistance = distance.apply(dbMovie.getName(), movie.getName());
+            } else {
+                editDistance = 0;
+            }
+
             double genreListSize = movie.getGenreList().size();
             double genreMatches = 0;
             for (Genre genre : movie.getGenreList()){
                 if(genre.movieInGenre(dbMovie)) genreMatches++;
             }
-            double genreDistance = genreMatches/genreListSize;
+            double genreDistance;
+            if (genreListSize != 0) {
+                genreDistance = genreMatches/genreListSize;
+            } else {
+                genreDistance = 0;
+            }
+
             double actorListSize = movie.getActorsInMovie().size();
             double actorMatches = 0;
             for (Actor actor : movie.getActorsInMovie()) {
                 if (actor.actorInMovie(dbMovie)) actorMatches++;
             }
-            double actorDistance = actorMatches/actorListSize;
+            double actorDistance;
+            if (actorListSize != 0) {
+                actorDistance = actorMatches/actorListSize;
+            } else {
+                actorDistance = 0;
+            }
+
             double directorListSize = movie.getDirectorsInMovie().size();
             double directorMatches = 0;
             for (Director director : movie.getDirectorsInMovie()) {
@@ -580,14 +627,15 @@ public class MovieService {
             double directorDistance;
             if (directorListSize != 0) {
                 directorDistance = directorMatches/directorListSize;
+            } else {
+                directorDistance = 0;
             }
-            directorDistance = 0;
             //Calculate the similarity between dbmovie and given movie based on.
             double simlarity = directorDistance * DIRECTORWEIGHT + actorDistance * ACTORWEIGHT + editDistance * NAMEWEIGHT + genreDistance * GENREWEIGHT;
 
             weightedSimilarities.put(dbMovie, simlarity);
         }
-        
+
         //Sort the movies in terms of similarity
         List<Map.Entry<Movie,Double>> list = new LinkedList<Map.Entry<Movie,Double>>(weightedSimilarities.entrySet());
 
@@ -606,8 +654,75 @@ public class MovieService {
         }
         return temp;
     }
-    
 
+    /**
+     * Find recommended movies based on the genres of movies that the user has placed reviews on
+     * @param user_id
+     * @return
+     */
+    private List<Movie> findRecommendedMovies(Long user_id) {
+        List<Movie> recommendedMoviesList = new ArrayList<>();
 
-
+        // get all genres
+        List<Genre> genresList = genreDAO.findAll();
+        // get the users score on all genres
+        HashMap<String, Long> usersGenreScores = new HashMap<String, Long>();
+        for (Genre genre: genresList) {
+            UserGenrePreferenceScore userGenrePreferenceScore = userGenrePreferenceScoreDataAccessService.findUserPreferenceScoreByGenreId(user_id, genre.getId());
+            if (userGenrePreferenceScore != null) {
+                usersGenreScores.put(genre.getName(), userGenrePreferenceScore.getScore());
+            } else {
+                usersGenreScores.put(genre.getName(), Long.valueOf(0));
+            }
+        }
+        // find the users top 5 genres
+        List<String> topUsersGenreScoresKeys = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Long maxScore = Collections.max(usersGenreScores.values());
+            for (Entry<String, Long> entry : usersGenreScores.entrySet()) {
+                if (Long.valueOf(entry.getValue()).equals(maxScore)) {
+                    topUsersGenreScoresKeys.add(entry.getKey());
+                    usersGenreScores.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        // make a buffer movie to find "similar movies"
+        Movie bufferMovie = new Movie();
+        for (String genreName : topUsersGenreScoresKeys) {
+            bufferMovie.addGenreToDB(genreDAO.findGenreByName(genreName));;
+        }
+        // get top 12 recommended movies
+        HashMap<Movie, Double> recommendedMovies = similarMovies(bufferMovie);
+        for (int i = 0; i < 12; i++) {
+            Double maxSimilarity = Collections.max(recommendedMovies.values());
+            for (Entry<Movie, Double> entry : recommendedMovies.entrySet()) {
+                if (entry.getValue() == maxSimilarity) {
+                    recommendedMoviesList.add(entry.getKey());
+                    recommendedMovies.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        return recommendedMoviesList;
+    }
+    /**
+     * Returns the 12 top rated movies that has more than 5 reviews.
+     * @return
+     */
+    private List<Movie> topRated() {
+        List<Movie> dbTopRated = movieDAO.topRated();
+        List<Movie> topRated = new ArrayList<Movie>();
+        int count = 0;
+        for (Movie m : dbTopRated) {
+            if (m.getMovieReviews().size() >= 5) {
+                topRated.add(m);
+                count++;
+            }
+            if (count == 12) {
+                break;
+            }
+        }
+        return topRated;
+    }
 }

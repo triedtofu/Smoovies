@@ -9,16 +9,21 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.dataModels.UserBlacklist;
+import com.example.restservice.dataModels.UserGenrePreferenceScore;
 import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteReviewRequest;
 import com.example.restservice.dataModels.requests.LikeReviewRequest;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.ReviewDataAccessService;
+import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 //import com.google.gson.JsonObject;
+import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
 
 @Service
 public class ReviewService {
@@ -30,6 +35,12 @@ public class ReviewService {
 
     @Autowired
     private ReviewDataAccessService reviewDAO;
+
+    @Autowired
+    private UserGenrePreferenceScoreDataAccessService userGenrePreferenceScoreDataAccessService;
+
+    @Autowired
+    private UserBlacklistDataAccessService userBlacklistDAO;
 
     public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
@@ -61,6 +72,9 @@ public class ReviewService {
         if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
 
         Review review = new Review(movie, user, addReviewRequest.getReview(), addReviewRequest.getRating());
+
+        updateUserReviewGenrePreference(movie, user_id, review, true);
+
         movie.addReviewToMovie(review);
         user.addReviewUser(review);
         movie.recalculateAverageRating();
@@ -78,6 +92,13 @@ public class ReviewService {
 
         if (user == null) return ServiceErrors.userIdInvalidError();
         if (user.getIsBanned()) return ServiceErrors.userBannedError();
+        
+        // check that user is not trying to view a blacklisted users reviews
+        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+        for (UserBlacklist blacklist: userBlacklist) {
+            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            
+        }
 
         //Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         //if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
@@ -136,6 +157,8 @@ public class ReviewService {
             if (dbRequestUser.getId() != dbReviewUser.getId()) return ServiceErrors.wrongOwnershipReviewError();
             deleteReviewFromDatabase(dbMovie, dbReviewUser, dbreview);
         }
+
+        updateUserReviewGenrePreference(dbMovie, token_user_id, dbreview, false);
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
@@ -203,5 +226,31 @@ public class ReviewService {
 
         return new JSONObject();
     }
-    
+
+    /**
+     * Updates the users genre preferences based on their review rating of a movie
+     * @param movie
+     * @param user_id
+     * @param review
+     * @param addRemove Boolean value, true for add, false for remove
+     */
+    private void updateUserReviewGenrePreference(Movie movie, long user_id, Review review, Boolean addRemove) {
+        int rating = review.getRating();
+        if (!addRemove) {
+            rating = -rating;
+        }
+
+        Set<Genre> movieGenres = movie.getGenreList();
+        for (Genre genre:movieGenres) {
+            UserGenrePreferenceScore userGenrePreferenceScore = userGenrePreferenceScoreDataAccessService.findUserPreferenceScoreByGenreId(user_id, genre.getId());
+            if (userGenrePreferenceScore != null) {
+                userGenrePreferenceScore.updateScore(rating);
+            } else {
+                userGenrePreferenceScore = new UserGenrePreferenceScore(user_id, genre.getId());
+                userGenrePreferenceScore.updateScore(rating);
+            }
+            userGenrePreferenceScoreDataAccessService.save(userGenrePreferenceScore);
+        }
+    }
+
 }

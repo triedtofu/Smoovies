@@ -4,13 +4,14 @@ import { Link, useSearchParams } from 'react-router-dom';
 import MakePage from '../components/MakePage';
 import ToggleablePassword from '../components/ToggleablePassword';
 import MyFormControl from '../components/MyFormControl';
+import Container from '../components/MyContainer';
 
 import { apiResetPassword } from '../util/api';
 import { getErrorMessage } from '../util/helper';
 
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
 import FormLabel from '@mui/material/FormLabel';
+import Typography from '@mui/material/Typography';
 
 const ResetPassword= () => {
   const [searchParams] = useSearchParams();
@@ -49,7 +50,7 @@ const ResetPassword= () => {
 
   return (
     <Container maxWidth="sm">
-      <h1>Reset Password</h1>
+      <Typography variant="h4" component="h1">Reset Password</Typography>
 
       <form onSubmit={resetSubmit}>
         <FormLabel error={!!errorStr}>{errorStr}</FormLabel>

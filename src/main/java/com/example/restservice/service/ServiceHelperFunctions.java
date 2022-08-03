@@ -40,7 +40,7 @@ public class ServiceHelperFunctions {
         return reviewJSONArray;
     }
 
-    public static JSONArray reviewJSONArrayMovies(Boolean needLiked, User user, Set<Review> reviews) {
+    public static JSONArray reviewJSONArrayMovies(Boolean needLiked, User user, List<Review> reviews) {
         JSONArray reviewJSONArray = new JSONArray();
         for (Review review : reviews) {
             if (review.getUser().getIsBanned()) continue;

@@ -56,4 +56,8 @@ public class Genre {
     public Set<Movie> getMoviesInGenre() {
         return this.moviesInGenre;
     }
+
+    public long getId() {
+        return id;
+    }
 }
