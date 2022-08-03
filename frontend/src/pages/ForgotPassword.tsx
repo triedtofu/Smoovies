@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 
 const ForgotPassword = () => {
   const [errorStr, setErrorStr] = React.useState('');
-  const [success, setSuccess] = React.useState(true);
+  const [success, setSuccess] = React.useState(false);
 
   const resetPassword = (email: string) => {
     try {
