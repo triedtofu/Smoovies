@@ -27,7 +27,7 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
             gutterBottom
             variant="h5"
             component="div"
-            color={'black'}
+            color={'#b77a37'}
             sx={{
               textAlign: 'center',
             }}
