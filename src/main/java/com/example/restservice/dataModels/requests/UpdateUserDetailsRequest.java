@@ -33,7 +33,7 @@ public class UpdateUserDetailsRequest {
         return email;
     }
 
-    public String oldPassword() {
+    public String getOldPassword() {
         return oldPassword;
     }
 
