@@ -15,6 +15,7 @@ import java.util.List;
 // import java.util.Optional;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -77,8 +78,8 @@ public class MovieService {
 
     private static final double DIRECTORWEIGHT = 0.15;
     private static final double ACTORWEIGHT = 0.15;
-    private static final double NAMEWEIGHT = 0.45;
-    private static final double GENREWEIGHT = 0.25;
+    private static final double NAMEWEIGHT = 0.20;
+    private static final double GENREWEIGHT = 0.50;
     /**
      * Adds a movie to the database
      * @param movie
@@ -179,7 +180,9 @@ public class MovieService {
             reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
         }
         if (token == null) {
-            for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
+        List<Review> reviews = ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token);
+        
+        for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
             if (review.getUser().getIsBanned()) continue;
             HashMap<String, Object> movieReview = new HashMap<String,Object>();
             movieReview.put("user", review.getUser().getId());
@@ -372,7 +375,6 @@ public class MovieService {
             filteredMovies.removeAll(removeValues);
         }
 
-        // TODO: if valid movies are found (list of movies is larger than size 0)
         if (filteredMovies.size() > 0) {
             for(int i = 0; i < filteredMovies.size(); i++) {
                 Movie dbMovie = filteredMovies.get(i);
