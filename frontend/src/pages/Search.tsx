@@ -15,7 +15,6 @@ import Tabs from '@mui/material/Tabs';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-
 import styles from './Search.module.css';
 
 import { apiMovieSearch, apiGetGenres } from '../util/api';
@@ -45,7 +44,7 @@ const TabPanel = (props: TabPanelProps) => {
       )}
     </div>
   );
-}
+};
 
 const a11yProps = (index: number) => {
   return {
@@ -84,7 +83,8 @@ const Search = () => {
     resetResults();
     setFetched(false);
 
-    const myContentRatings = contentRatings.length != 0 ? [...contentRatings] : undefined;
+    const myContentRatings =
+      contentRatings.length != 0 ? [...contentRatings] : undefined;
     const myGenres = genres.length != 0 ? [...genres] : undefined;
 
     const name = searchParams.get('name') ?? '';
@@ -110,11 +110,10 @@ const Search = () => {
       console.log(err);
       setMovies([]);
     }
-
   }, [searchParams, genres, contentRatings]);
 
   React.useEffect(() => {
-    apiGetGenres().then(data => setAllGenres(data.genres));
+    apiGetGenres().then((data) => setAllGenres(data.genres));
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -127,9 +126,15 @@ const Search = () => {
         <title>Search Results - Smoovies</title>
       </Helmet>
 
-      <Typography gutterBottom variant="h4" component="h1">Results: {searchParams.get('name')}</Typography>
+      <Typography gutterBottom variant="h4" component="h1">
+        Results: {searchParams.get('name')}
+      </Typography>
 
-      {!fetched && <Typography gutterBottom variant="h5" component="h2">Searching...</Typography>}
+      {!fetched && (
+        <Typography gutterBottom variant="h5" component="h2">
+          Searching...
+        </Typography>
+      )}
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} centered>
@@ -144,16 +149,23 @@ const Search = () => {
             className={styles.flexContents1}
             multiple
             id="tags-standard"
-            options={['NR', 'G', 'PG', 'PG-13', 'M', 'MA 15+', 'R', 'TV-PG', 'TV-14']}
+            options={[
+              'NR',
+              'G',
+              'PG',
+              'PG-13',
+              'M',
+              'MA 15+',
+              'R',
+              'TV-PG',
+              'TV-14',
+            ]}
             autoHighlight
             size="small"
             value={contentRatings}
             onChange={(_, value) => setContentRatings(value)}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Content Rating"
-              />
+              <TextField {...params} label="Content Rating" />
             )}
           />
           <Autocomplete
@@ -165,73 +177,84 @@ const Search = () => {
             size="small"
             value={genres}
             onChange={(_, value) => setGenres(value)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Genres"
-              />
-            )}
+            renderInput={(params) => <TextField {...params} label="Genres" />}
           />
         </form>
 
         {fetched && movies.length === 0 && <p>No movies found.</p>}
         {movies.length > 0 &&
-          movies.slice(0, numMoviesShown).map(movie => (
-            <MovieResultCard
-              key={movie.id}
-              movie={movie}
-              buttonClick={null}
-            />
-          ))
-        }
+          movies
+            .slice(0, numMoviesShown)
+            .map((movie) => (
+              <MovieResultCard
+                key={movie.id}
+                movie={movie}
+                buttonClick={null}
+              />
+            ))}
 
-        {numMoviesShown < movies.length &&
+        {numMoviesShown < movies.length && (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+            <Button
+              variant="contained"
+              onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}
+            >
               Show more
             </Button>
           </div>
-        }
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
         {fetched && actors.length === 0 && <p>No actors found.</p>}
         {actors.length > 0 &&
-          actors.slice(0, numActorsShown).map(actor => (
-            <PersonResultCard
-              key={actor.id}
-              name={actor.name}
-              link={`/actor/${actor.id}`}
-              image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-            />
-          ))}
+          actors
+            .slice(0, numActorsShown)
+            .map((actor) => (
+              <PersonResultCard
+                key={actor.id}
+                name={actor.name}
+                link={`/actor/${actor.id}`}
+                image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+              />
+            ))}
 
-        {numActorsShown < actors.length &&
+        {numActorsShown < actors.length && (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" onClick={() => setNumActorsShown(numActorsShown + PAGE_SIZE)}>
+            <Button
+              variant="contained"
+              onClick={() => setNumActorsShown(numActorsShown + PAGE_SIZE)}
+            >
               Show more
             </Button>
           </div>
-        }
+        )}
       </TabPanel>
       <TabPanel value={value} index={2}>
         {fetched && directors.length === 0 && <p>No directors found.</p>}
         {directors.length > 0 &&
-          directors.slice(0, numDirectorsShown).map(director => (
-            <PersonResultCard
-              key={director.id}
-              name={director.name}
-              link={`/director/${director.id}`}
-              image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-            />
-          ))}
+          directors
+            .slice(0, numDirectorsShown)
+            .map((director) => (
+              <PersonResultCard
+                key={director.id}
+                name={director.name}
+                link={`/director/${director.id}`}
+                image="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+              />
+            ))}
 
-        {numDirectorsShown < directors.length &&
+        {numDirectorsShown < directors.length && (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="contained" onClick={() => setNumDirectorsShown(numDirectorsShown + PAGE_SIZE)}>
+            <Button
+              variant="contained"
+              onClick={() =>
+                setNumDirectorsShown(numDirectorsShown + PAGE_SIZE)
+              }
+            >
               Show more
             </Button>
           </div>
-        }
+        )}
       </TabPanel>
     </Container>
   );
