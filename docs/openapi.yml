@@ -777,9 +777,11 @@ paths:
                 token:
                   $ref: '#/components/schemas/Token'
                 name:
-                    $ref: '#/components/schemas/Name'
+                  $ref: '#/components/schemas/Name'
                 email:
                   $ref: '#/components/schemas/Email'
+                confirmPassword:
+                  $ref: '#/components/schemas/Password'
                 password:
                   $ref: '#/components/schemas/Password'
       responses:
