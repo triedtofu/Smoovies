@@ -71,7 +71,7 @@ public class MovieController {
     @GetMapping("/search")
     public ResponseEntity<Object> searchMovieByName(@RequestParam(name = "name") String name, @RequestParam(name = "contentRating", required = false) String contentRating, @RequestParam(name = "genres", required = false) String genres)  {
         SearchRequest searchRequest = new SearchRequest(name, genres, contentRating);
-        JSONObject response = movieService.search(searchRequest);
+        JSONObject response = movieService.searchMovieByName(searchRequest);
         return ControllerResponses.generateHttpResponse(response);
     }
 

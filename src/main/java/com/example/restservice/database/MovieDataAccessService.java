@@ -16,10 +16,8 @@ public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
     public List<Movie> trending();
     @Query(value = "SELECT * FROM movies m WHERE m.id = :id", nativeQuery = true)
     public Movie findMovieByID(@Param("id") long id);
-    @Query(value = "SELECT * FROM movies m WHERE m.name iLIKE %:name% ORDER BY average_rating DESC, name", nativeQuery = true)
+    @Query(value = "SELECT * FROM movies m WHERE m.name iLIKE %:name% or m.description iLIKE %:name% ORDER BY average_rating DESC, name", nativeQuery = true)
     public List<Movie> searchMovieByName(@Param("name") String name);
     @Query(value = "DELETE FROM movies m WHERE m.id = :id", nativeQuery = true)
     public void deleteMovie(@Param("id") long id);
-    @Query(value = "SELECT * FROM movies m WHERE m.description iLIKE %:query% ORDER BY average_rating DESC, name", nativeQuery = true)
-    public List<Movie> searchMovieByDescription(@Param("description") String description);
 }
