@@ -1,22 +1,23 @@
 // const baseUrl = '';
-// const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://localhost:8080';
 // const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+// const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import {
+  ActorResponse,
+  AddMovieResponse,
+  BlacklistResponse,
+  DirectorResponse,
+  HigherOrLowerResponse,
   LoginResponse,
   MovieDetails,
   MovieSummaries,
   RegisterReponse,
-  SpecificMovieResponse,
-  WishlistResponse,
-  AddMovieResponse,
-  UserReviewResponse,
-  ActorResponse,
-  DirectorResponse,
   SearchResponse,
-  BlacklistResponse,
-  HigherOrLowerResponse,
+  SpecificMovieResponse,
+  UserDetails,
+  UserReviewResponse,
+  WishlistResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) => {
@@ -237,6 +238,26 @@ export const apiPutBlacklistUser = (
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, userId, turnon }),
+  });
+};
+
+export const apiGetUserDetails = (token: string) => {
+  return apiFetch<UserDetails>(`/user/details?token=${token}`);
+};
+
+export interface UpdateUserParams {
+  token: string;
+  name?: string;
+  email?: string;
+  oldPassword?: string;
+  password?: string;
+}
+
+export const apiUpdateUserDetails = (params: UpdateUserParams) => {
+  return apiFetch<Record<string, never>>('/user/details', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
   });
 };
 

@@ -138,3 +138,8 @@ export interface HigherOrLowerData {
 export interface HigherOrLowerResponse {
   movies: HigherOrLowerData[];
 }
+
+export interface UserDetails {
+  name: string;
+  email: string;
+}

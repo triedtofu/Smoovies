@@ -1,0 +1,12 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.buttonDiv {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
