@@ -47,12 +47,10 @@ const ReviewResultCard = ({
                 </MyLink>
               </Typography>
               <div className={styles.ratingDiv}>
-                <Rating name="read-only" value={review.rating} readOnly />
+                {/* <Rating name="read-only" value={review.rating} readOnly /> */}
                 <Typography variant="h5" component="h2">
                   {review.rating} / 5
                 </Typography>
-              </div>
-              <div style={{ display: 'flex' }}>
                 <Button
                   disabled
                   variant="outlined"

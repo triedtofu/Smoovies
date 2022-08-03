@@ -220,7 +220,12 @@ const Movie = () => {
         <title>{`${movie.name} - Smoovies`}</title>
       </Helmet>
       <div className={styles.titleDiv}>
-        <Typography gutterBottom variant="h4" component="h1">
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
           {movie.name} ({movie.year})
         </Typography>
 
@@ -247,16 +252,21 @@ const Movie = () => {
       <div className={styles.movieSummary}>
         <img src={movie.poster} style={{ height: '300px', width: '200px' }} />
 
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', display: 'flex ' }}>
           <div>
-            <Typography gutterBottom variant="h5" component="h2">
-              {movie.name}
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              fontFamily={'Calisto MT'}
+            >
+              <b>{movie.name}</b>
             </Typography>
 
-            <p>
+            <p style={{ display: 'flex' }}>
               Genre:{' '}
               {movie.genres
-                .map(s => (s[0].toUpperCase() + s.slice(1)))
+                .map((s) => s[0].toUpperCase() + s.slice(1))
                 .join(', ')}
               <br />
               Director:{' '}
@@ -280,14 +290,15 @@ const Movie = () => {
           </div>
         </div>
       </div>
-
+      <br />
       <div>
         <Typography variant="h6" component="h3">
-          Movie Info
+          <h3>Movie Info</h3>
         </Typography>
 
         <p>{movie.description}</p>
       </div>
+      <br />
       <div>
         <h2>Movies similar to this one!</h2>
         <div className={styles.similarMoviesDiv}>
@@ -310,13 +321,16 @@ const Movie = () => {
             />
           ))}
 
-          {numReviewsShown < movie.reviews.length &&
+          {numReviewsShown < movie.reviews.length && (
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button variant="contained" onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}>
+              <Button
+                variant="contained"
+                onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}
+              >
                 Show more
               </Button>
             </div>
-          }
+          )}
         </div>
       </div>
 

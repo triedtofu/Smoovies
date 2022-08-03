@@ -27,7 +27,11 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
             gutterBottom
             variant="h5"
             component="div"
-            sx={{ textAlign: 'center' }}
+            color={'black'}
+            sx={{
+              textAlign: 'center',
+            }}
+            className={styles.movieLink}
           >
             {`${movie.name} (${movie.year})`}
           </Typography>
