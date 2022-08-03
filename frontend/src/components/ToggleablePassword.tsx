@@ -22,7 +22,7 @@ const ToggleablePassword = (props: TextFieldProps): JSX.Element => {
               onClick={() => setShowPassword(!showPassword)}
               edge="end"
             >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
+              {showPassword ? <Visibility /> : <VisibilityOff /> }
             </IconButton>
           </InputAdornment>
         )
