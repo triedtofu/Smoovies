@@ -282,10 +282,10 @@ public class MovieService {
         //Stores the movie's used for homepage.
         JSONArray homepageList = new JSONArray();
         //Needs to query the movie database to find the trending logic, currently adds the first 12 movies in our database.
-        List<Movie> movies = this.trending();
+        List<Movie> movies = new ArrayList<Movie>();
         // case where no token, return top rated (i.e user not logged in)
         if (token == null) {
-            movies = movieDAO.topRated();
+            movies = this.topRated();
         } else {
             //Add in the recommendations for specific user
             long user_id = ServiceJWTHelper.getTokenId(token, null);
@@ -318,9 +318,10 @@ public class MovieService {
     }
 
     /**
-     * Grabs a list of movies that satisfy the search condition by name
-     * @param name
-     * @return JSONObject containing  {"movies": JSONArray of movies}
+     * Searches the database based on a query, returns based on title and then description.
+     * @param searchRequest
+     * @param token
+     * @return
      */
     public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
 
@@ -336,8 +337,19 @@ public class MovieService {
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray moviesArray = new JSONArray();
+        List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
+        List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
 
-        List<Movie> dbMovies = movieDAO.searchMovieByName(searchRequest.getName());
+
+        List<Movie> dbMovies = new ArrayList<Movie>();
+        
+        for (Movie m: nameMovies) {
+            dbMovies.add(m);
+        }
+
+        for (Movie m : descMovies) {
+            if (!dbMovies.contains(m)) dbMovies.add(m);
+        }
         //Filter
         List<Movie> filteredMovies = dbMovies;
 
@@ -403,16 +415,6 @@ public class MovieService {
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
-    }
-    /**
-     * Determines what movies are "trending"
-     * The homepage has 12 movies on it.
-     * @return
-     */
-    public List<Movie> trending() {
-        //TODO: Write an algorithm which will find the trending movie's.
-        List<Movie> movieList = movieDAO.trending();
-        return movieList;
     }
 
     public JSONObject deleteMovie(DeleteMovieRequest request) {
@@ -688,5 +690,24 @@ public class MovieService {
             }
         }
         return recommendedMoviesList;
+    }
+    /**
+     * Returns the 12 top rated movies that has more than 5 reviews.
+     * @return
+     */
+    private List<Movie> topRated() {
+        List<Movie> dbTopRated = movieDAO.topRated();
+        List<Movie> topRated = new ArrayList<Movie>();
+        int count = 0;
+        for (Movie m : dbTopRated) {
+            if (m.getMovieReviews().size() >= 5) {
+                topRated.add(m);
+                count++;
+            }
+            if (count == 12) {
+                break;
+            }
+        }
+        return topRated;
     }
 }
