@@ -15,6 +15,7 @@ import java.util.List;
 // import java.util.Optional;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -179,7 +180,9 @@ public class MovieService {
             reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
         }
         if (token == null) {
-            for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
+        List<Review> reviews = ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token);
+        
+        for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
             if (review.getUser().getIsBanned()) continue;
             HashMap<String, Object> movieReview = new HashMap<String,Object>();
             movieReview.put("user", review.getUser().getId());
