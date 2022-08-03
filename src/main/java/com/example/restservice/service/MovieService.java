@@ -78,8 +78,8 @@ public class MovieService {
 
     private static final double DIRECTORWEIGHT = 0.15;
     private static final double ACTORWEIGHT = 0.15;
-    private static final double NAMEWEIGHT = 0.45;
-    private static final double GENREWEIGHT = 0.25;
+    private static final double NAMEWEIGHT = 0.20;
+    private static final double GENREWEIGHT = 0.50;
     /**
      * Adds a movie to the database
      * @param movie
@@ -375,7 +375,6 @@ public class MovieService {
             filteredMovies.removeAll(removeValues);
         }
 
-        // TODO: if valid movies are found (list of movies is larger than size 0)
         if (filteredMovies.size() > 0) {
             for(int i = 0; i < filteredMovies.size(); i++) {
                 Movie dbMovie = filteredMovies.get(i);
