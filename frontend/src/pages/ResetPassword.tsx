@@ -20,6 +20,8 @@ const ResetPassword= () => {
   const [password2, setPassword2] = React.useState('');
   const [success, setSuccess] = React.useState(false);
 
+  const [showPasswords, setShowPasswords] = React.useState(false);
+  const toggleProps = { value: showPasswords, toggle: () => setShowPasswords(!showPasswords) };
 
   const [passwordErr, setPasswordErr] = React.useState('');
   const [errorStr, setErrorStr] = React.useState('');
@@ -61,6 +63,7 @@ const ResetPassword= () => {
             value={password1}
             onChange={e => setPassword1(e.target.value)}
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <MyFormControl>
@@ -70,6 +73,7 @@ const ResetPassword= () => {
             value={password2}
             onChange={e => setPassword2(e.target.value)}
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <FormLabel error={!!passwordErr}>{passwordErr}</FormLabel>

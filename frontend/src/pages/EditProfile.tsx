@@ -46,6 +46,9 @@ const EditProfile = () => {
 
   const [alertOpen, setAlertOpen] = React.useState(false);
 
+  const [showPasswords, setShowPasswords] = React.useState(false);
+  const toggleProps = { value: showPasswords, toggle: () => setShowPasswords(!showPasswords) };
+
   React.useEffect(() => {
     if (!cookies.token) return;
 
@@ -188,6 +191,7 @@ const EditProfile = () => {
           label="New password"
           value={newPassword}
           onChange={e => setNewPassword(e.target.value)}
+          toggle={toggleProps}
           size="small"
           fullWidth
           required
@@ -198,6 +202,7 @@ const EditProfile = () => {
           label="Confirm new password"
           value={confirmNewPasword}
           onChange={e => setConfirmNewPassword(e.target.value)}
+          toggle={toggleProps}
           size="small"
           fullWidth
           required
