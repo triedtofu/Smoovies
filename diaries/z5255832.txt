@@ -36,3 +36,9 @@ Week 8
 
 Week 9
 - Began working on sprint 3
+
+Week 10
+- Completed backend functionality assigned in Jira
+- Completed section assigned in final report
+- Refactored and cleaned up code 
+
