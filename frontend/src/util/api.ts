@@ -4,20 +4,20 @@
 const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
 
 import {
+  ActorResponse,
+  AddMovieResponse,
+  BlacklistResponse,
+  DirectorResponse,
+  HigherOrLowerResponse,
   LoginResponse,
   MovieDetails,
   MovieSummaries,
   RegisterReponse,
-  SpecificMovieResponse,
-  WishlistResponse,
-  AddMovieResponse,
-  UserReviewResponse,
-  ActorResponse,
-  DirectorResponse,
   SearchResponse,
-  BlacklistSummary,
-  BlacklistResponse,
-  HigherOrLowerResponse,
+  SpecificMovieResponse,
+  UserDetails,
+  UserReviewResponse,
+  WishlistResponse,
 } from './interface';
 
 const apiFetch = <Type>(path: string, init?: RequestInit) => {
@@ -53,8 +53,12 @@ export const apiAuthLogin = (email: string, password: string) => {
 
 // Movies
 
-export const apiMovieHomepage = () => {
-  return apiFetch<MovieSummaries>('/movie/homepage');
+export const apiMovieHomepage = (token?: string) => {
+  let path = '/movie/homepage';
+
+  if (token) path += `?token=${token}`;
+
+  return apiFetch<MovieSummaries>(path);
 };
 
 export const apiMovieSearch = (
@@ -157,8 +161,12 @@ export const apiGetHigherOrLower = (
 };
 
 // TODO update once api is done
-export const apiUserWishlist = (id: number) => {
-  return apiFetch<WishlistResponse>(`/user/wishlist?userId=${id}`);
+export const apiUserWishlist = (id: number, token?: string) => {
+  let path = `/user/wishlist?userId=${id}`;
+
+  if (token) path += `&token=${token}`;
+
+  return apiFetch<WishlistResponse>(path);
 };
 
 export const apiPutUserWishlist = (
@@ -230,6 +238,26 @@ export const apiPutBlacklistUser = (
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, userId, turnon }),
+  });
+};
+
+export const apiGetUserDetails = (token: string) => {
+  return apiFetch<UserDetails>(`/user/details?token=${token}`);
+};
+
+export interface UpdateUserParams {
+  token: string;
+  name?: string;
+  email?: string;
+  oldPassword?: string;
+  password?: string;
+}
+
+export const apiUpdateUserDetails = (params: UpdateUserParams) => {
+  return apiFetch<Record<string, never>>('/user/details', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
   });
 };
 

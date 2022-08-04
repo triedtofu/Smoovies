@@ -171,7 +171,7 @@ public class ServiceErrors {
      * @return {"error": "You have blacklisted this user, you can not view their info."}
      */
     public static JSONObject cannotViewBlacklistedUser() {
-        return generateErrorMessage("You have blacklisted this user, you can not view their info");
+        return generateErrorMessage("You have blacklisted this user, you cannot view their info");
     }
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ public class ServiceErrors {
     }
 
     public static JSONObject userNotFound() {
-        return generateErrorMessage("User is not found");
+        return generateErrorMessage("User not found");
     }
 
     public static JSONObject reviewNotFound() {

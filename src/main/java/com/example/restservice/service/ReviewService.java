@@ -92,13 +92,6 @@ public class ReviewService {
 
         if (user == null) return ServiceErrors.userIdInvalidError();
         if (user.getIsBanned()) return ServiceErrors.userBannedError();
-        
-        // check that user is not trying to view a blacklisted users reviews
-        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
-        for (UserBlacklist blacklist: userBlacklist) {
-            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
-            
-        }
 
         //Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         //if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
@@ -110,6 +103,12 @@ public class ReviewService {
             returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
         }
         if (token != null && !token.isEmpty()) {
+            // check that user is not trying to view a blacklisted users reviews
+            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+            for (UserBlacklist blacklist: userBlacklist) {
+                if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            }
+
             Long user_id = ServiceJWTHelper.getTokenId(token, null);
             if (user_id.equals(id)) {
                 returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(true, user, userReviews));
@@ -117,10 +116,10 @@ public class ReviewService {
                 returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
             }
         }
-        
+
         //If there is no token or the user_id does not match the id from the token
-        
-        
+
+
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
@@ -195,17 +194,17 @@ public class ReviewService {
             responseFromLike = review.removeLike(user);
         }
         reviewDAO.save(review);
-        
+
         if (responseFromLike.length() != 0) return responseFromLike;
         return new JSONObject(returnMessage);
     }
-    
+
     /**
      * Checks the movie on the review indentifier exists
      * Checks the review exists from the given user and review
      * Checks if the requestUser (Token bearer) exists
      * Checks if the requestUser is banned
-     * 
+     *
      * @param movieId The movie of the review
      * @param token The token of the requester
      * @param userId The userId of the review
@@ -214,13 +213,13 @@ public class ReviewService {
     private JSONObject reviewErrorChecks(Long movieId, String token, Long userId) {
         Movie dbMovie = movieDAO.findMovieByID(movieId);
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
-        
+
         Long token_user_id = ServiceJWTHelper.getTokenId(token, null);
         if (token_user_id == null) return ServiceErrors.userNotFoundFromTokenIdError();
         User dbRequestUser = userDAO.findUserById(token_user_id);
         if (dbRequestUser == null) return ServiceErrors.userNotFound();
         if (dbRequestUser.getIsBanned()) return ServiceErrors.userBannedError();
-        
+
         Review dbreview = reviewDAO.findReview(movieId, userId);
         if (dbreview == null) return ServiceErrors.reviewNotFound();
 

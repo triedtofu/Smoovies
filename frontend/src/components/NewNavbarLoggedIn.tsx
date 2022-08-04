@@ -15,8 +15,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -62,7 +62,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
 
   const profilePages = [
     ['My Profile', `/user/${props.id}`],
-    ['Edit Profile', `/user/${props.id}/edit`],
+    ['Edit Profile', '/editprofile'],
     ['My Wishlist', `/user/${props.id}/wishlist`],
     ['My Blacklist', `/user/${props.id}/blacklist`],
   ];
@@ -190,9 +190,9 @@ const Navbar = (props: NavbarLoggedInProps) => {
 
             <IconButton onClick={colorMode.toggleColorMode} color="inherit">
               {theme.palette.mode === 'dark' ? (
-                <Brightness7Icon />
+                <DarkModeIcon />
               ) : (
-                <Brightness4Icon />
+                <LightModeIcon />
               )}
             </IconButton>
           </Box>

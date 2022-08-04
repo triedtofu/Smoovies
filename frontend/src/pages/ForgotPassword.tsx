@@ -26,7 +26,9 @@ const ForgotPassword = () => {
 
   if (success) return (
     <Container maxWidth="md">
-      <h2>An email with a link has been sent to your registered email account</h2>
+      <Typography variant="h5" component="h2">
+        An email with a link has been sent to your registered email account
+      </Typography>
     </Container>
   );
 

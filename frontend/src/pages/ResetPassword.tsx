@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
 import ToggleablePassword from '../components/ToggleablePassword';
 import MyFormControl from '../components/MyFormControl';
 import Container from '../components/MyContainer';
+import MyLink from '../components/MyLink';
 
 import { apiResetPassword } from '../util/api';
 import { getErrorMessage } from '../util/helper';
@@ -20,6 +21,8 @@ const ResetPassword= () => {
   const [password2, setPassword2] = React.useState('');
   const [success, setSuccess] = React.useState(false);
 
+  const [showPasswords, setShowPasswords] = React.useState(false);
+  const toggleProps = { value: showPasswords, toggle: () => setShowPasswords(!showPasswords) };
 
   const [passwordErr, setPasswordErr] = React.useState('');
   const [errorStr, setErrorStr] = React.useState('');
@@ -38,13 +41,15 @@ const ResetPassword= () => {
 
   if (searchParams.get('token') === null) return (
     <Container maxWidth="md">
-      <h2>Invalid link</h2>
+      <Typography variant="h5" component="h2">Invalid link</Typography>
     </Container>
   );
 
   if (success) return (
     <Container maxWidth="md">
-      <h2>Your password has been reset. Click <Link to="/login">here to login.</Link></h2>
+      <Typography variant="h5" component="h2">
+        Your password has been reset. Click <MyLink href="/login">here to login.</MyLink>
+      </Typography>
     </Container>
   );
 
@@ -61,6 +66,7 @@ const ResetPassword= () => {
             value={password1}
             onChange={e => setPassword1(e.target.value)}
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <MyFormControl>
@@ -70,6 +76,7 @@ const ResetPassword= () => {
             value={password2}
             onChange={e => setPassword2(e.target.value)}
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <FormLabel error={!!passwordErr}>{passwordErr}</FormLabel>

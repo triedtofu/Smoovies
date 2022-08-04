@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCookies } from 'react-cookie';
 import { Helmet } from 'react-helmet-async';
 
 import styles from './Homepage.module.css';
@@ -13,13 +14,15 @@ import { MovieSummary } from '../util/interface';
 import Typography from '@mui/material/Typography';
 
 const Homepage = () => {
+  const [cookies] = useCookies();
+
   // store the movies
   const [movies, setMovies] = React.useState<MovieSummary[]>([]);
 
   // fetch the movies when the page loads
   React.useEffect(() => {
     try {
-      apiMovieHomepage().then((data) => setMovies(data.movies));
+      apiMovieHomepage(cookies.token).then((data) => setMovies(data.movies));
     } catch (err) {
       console.warn(err);
     }
@@ -31,18 +34,35 @@ const Homepage = () => {
         <title>Recommended - Smoovies</title>
       </Helmet>
 
-      <Typography gutterBottom variant="h4" component="h1">Recommended</Typography>
+      {cookies.token && (
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
+          Recommended
+        </Typography>
+      )}
 
-      {movies.length > 0 &&
+      {!cookies.token && (
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
+          Top Rated
+        </Typography>
+      )}
+
+      {movies.length > 0 && (
         <div className={styles.container}>
-          {movies.map(movie => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-            />
+          {movies.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
-      }
+      )}
     </Container>
   );
 };

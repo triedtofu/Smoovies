@@ -58,24 +58,18 @@ const Movie = () => {
   };
 
   React.useEffect(() => {
-    setErrorStr('');
-    setMovie(undefined);
+    const id = parseInt(params.id ?? '');
 
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      setErrorStr('Error');
+    if (Number.isNaN(id)) {
+      setErrorStr('Invalid movie id');
       return;
     }
 
-    try {
-      const id = parseInt(idStr);
-      updateMovie(id);
-    } catch (error) {
-      setErrorStr(getErrorMessage(error));
-    }
-  }, [params]);
+    setErrorStr('');
+    setMovie(undefined);
+
+    updateMovie(id);
+  }, [params.id]);
 
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
@@ -144,7 +138,11 @@ const Movie = () => {
     );
   };
 
-  if (errorStr) return <p>{errorStr}</p>;
+  if (errorStr) return (
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h2">{errorStr}</Typography>
+    </Container>
+  );
 
   if (movie && Object.keys(movie).length === 0) return <></>;
 
@@ -220,7 +218,12 @@ const Movie = () => {
         <title>{`${movie.name} - Smoovies`}</title>
       </Helmet>
       <div className={styles.titleDiv}>
-        <Typography gutterBottom variant="h4" component="h1">
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
           {movie.name} ({movie.year})
         </Typography>
 
@@ -247,16 +250,21 @@ const Movie = () => {
       <div className={styles.movieSummary}>
         <img src={movie.poster} style={{ height: '300px', width: '200px' }} />
 
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', display: 'flex ' }}>
           <div>
-            <Typography gutterBottom variant="h5" component="h2">
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              fontFamily={'Verdana'}
+            >
               {movie.name}
             </Typography>
 
-            <p>
+            <p style={{ display: 'flex' }}>
               Genre:{' '}
               {movie.genres
-                .map(s => (s[0].toUpperCase() + s.slice(1)))
+                .map((s) => s[0].toUpperCase() + s.slice(1))
                 .join(', ')}
               <br />
               Director:{' '}
@@ -280,24 +288,34 @@ const Movie = () => {
           </div>
         </div>
       </div>
-
+      <br />
       <div>
-        <Typography variant="h6" component="h3">
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
           Movie Info
         </Typography>
 
         <p>{movie.description}</p>
       </div>
+      <br />
       <div>
-        <h2>Movies similar to this one!</h2>
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
+          Movies similar to this one!
+        </Typography>
+        <br />
         <div className={styles.similarMoviesDiv}>
           {movie.similar.map((similarMovie) => (
             <SimilarMovieCard key={similarMovie.id} movie={similarMovie} />
           ))}
         </div>
       </div>
+      <br />
       <div>
-        <Typography gutterBottom variant="h5" component="h2">
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="h2"
+          fontFamily={'Verdana'}
+        >
           Reviews
         </Typography>
         <div className={styles.reviewsDiv}>
@@ -310,13 +328,16 @@ const Movie = () => {
             />
           ))}
 
-          {numReviewsShown < movie.reviews.length &&
+          {numReviewsShown < movie.reviews.length && (
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button variant="contained" onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}>
+              <Button
+                variant="contained"
+                onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}
+              >
                 Show more
               </Button>
             </div>
-          }
+          )}
         </div>
       </div>
 

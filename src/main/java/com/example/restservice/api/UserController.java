@@ -21,6 +21,7 @@ import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.DeleteReviewRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
+import com.example.restservice.dataModels.requests.UpdateUserDetailsRequest;
 import com.example.restservice.dataModels.requests.UpdateWishlistRequest;
 import com.example.restservice.service.ReviewService;
 import com.example.restservice.service.UserService;
@@ -29,7 +30,7 @@ import com.example.restservice.service.UserService;
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
-//Expose endpoints so clients can consume 
+//Expose endpoints so clients can consume
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -39,7 +40,7 @@ public class UserController {
 
     @Autowired
     private final ReviewService reviewService;
-    
+
     @Autowired
     public UserController(UserService userService, ReviewService reviewService) {
         this.userService = userService;
@@ -62,7 +63,7 @@ public class UserController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
-    
+
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -83,12 +84,12 @@ public class UserController {
     }
 
 
-    @GetMapping("/reviews") 
+    @GetMapping("/reviews")
     public ResponseEntity<Object> getUserReviews(@RequestParam(name = "userId") long id, @RequestParam(name = "token", required = false) String token) {
         JSONObject response = reviewService.getUserReviews(id, token);
         return ControllerResponses.generateHttpResponse(response);
     }
-        
+
 
     @PostMapping("/requestResetPassword")
     public ResponseEntity<Object> requestResetPassword(@RequestBody RequestResetPasswordRequest requestResetPasswordRequest ) {
@@ -124,6 +125,18 @@ public class UserController {
     @GetMapping("/blacklist")
     public ResponseEntity<Object> getUserBlacklist(@RequestParam(name = "token") String token) {
         JSONObject response = userService.getUserBlacklist(token);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<Object> getUserDetails(@RequestParam(name = "token") String token) {
+        JSONObject response = userService.getUserDetails(token);
+        return ControllerResponses.generateHttpResponse(response);
+    }
+
+    @PutMapping("/details")
+    public ResponseEntity<Object> updateUserDetails(@RequestBody UpdateUserDetailsRequest updateUserDetailsRequest ) {
+        JSONObject response = userService.updateUserDetails(updateUserDetailsRequest);
         return ControllerResponses.generateHttpResponse(response);
     }
 }

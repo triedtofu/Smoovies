@@ -13,7 +13,7 @@
   display: flex;
   align-items: flex-start;
   flex: 1;
-  gap: 5px
+  gap: 5px;
 }
 
 .reviewDiv {
@@ -26,6 +26,7 @@
   align-items: center;
   flex: 1;
   gap: 20px;
+  justify-content: space-between;
 }
 
 .ratingDiv {

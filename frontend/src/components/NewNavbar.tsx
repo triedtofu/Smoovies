@@ -15,8 +15,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 import Logo from './Logo';
 
@@ -107,7 +107,7 @@ const NewNavbar = () => {
               onClick={colorMode.toggleColorMode}
               color="inherit"
             >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon /> }
             </IconButton>
           </Box>
         </Toolbar>

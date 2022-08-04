@@ -20,6 +20,7 @@ import com.example.restservice.dataModels.requests.BanUserRequest;
 import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
+import com.example.restservice.dataModels.requests.UpdateUserDetailsRequest;
 //import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
@@ -31,7 +32,7 @@ import com.example.restservice.database.UserDataAccessService;
 @Service
 public class UserService {
     @Autowired
-	private UserDataAccessService userDAO;
+    private UserDataAccessService userDAO;
 
     @Autowired
     private MovieDataAccessService movieDAO;
@@ -43,13 +44,12 @@ public class UserService {
     private UserBlacklistDataAccessService userBlacklistDAO;
 
     /**
-     * Logs a user in based on their email and password.
-     * @param email
-     * @param password
-     * @return userID, isAdmin, token
-     */
+    * Logs a user in based on their email and password.
+    * @param email
+    * @param password
+    * @return userID, isAdmin, token
+    */
     public JSONObject UserLogin(String email, String password) {
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // checks inputs for errors (in terms of formatting)
@@ -70,11 +70,6 @@ public class UserService {
             return ServiceErrors.userBannedError();
         }
 
-        //Password verification step
-        // if (!password.equals(user.getPassword())) {
-        //     return ServiceErrors.userPasswordIncorrectError();
-        // }
-
         returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
         returnMessage.put("userId", user.getId());
         returnMessage.put("isAdmin", user.getIsAdmin());
@@ -85,11 +80,11 @@ public class UserService {
     }
 
     /**
-     * Adds user to database
-     * @param user
-     * @param isAdmin
-     * @return token, userID
-     */
+    * Adds user to database
+    * @param user
+    * @param isAdmin
+    * @return token, userID
+    */
     public JSONObject register(User user, Boolean isAdmin, Boolean isBanned) {
         if (!ServiceInputChecks.checkName(user.getName())) {
             return ServiceErrors.userNameInvalidError();
@@ -128,23 +123,21 @@ public class UserService {
     }
 
     /**
-     * Get list of all users from database
-     * @return list of users
-     */
+    * Get list of all users from database
+    * @return list of users
+    */
     public List<User> getAllUsers() {
         return userDAO.findAll();
     }
 
     /**
-     * Grabs the wishlist of a user
-     * @param id
-     * @return wishlist of user
-     */
+    * Grabs the wishlist of a user
+    * @param id
+    * @return wishlist of user
+    */
     public JSONObject getUserWishlist(long id, String token) {
-
         // verify the users token
-        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
-        if (!tokenCheck) {
+        if (token != null && !ServiceJWTHelper.verifyUserGetRequestToken(token, null)) {
             return ServiceErrors.userTokenInvalidError();
         }
 
@@ -152,11 +145,12 @@ public class UserService {
             return ServiceErrors.userIdInvalidError();
         }
 
-        // check that user is not trying to view a blacklisted users wishlist
-        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
-        for (UserBlacklist blacklist: userBlacklist) {
-            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
-            
+        if (token != null) {
+            // check that user is not trying to view a blacklisted users wishlist
+            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+            for (UserBlacklist blacklist: userBlacklist) {
+                if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            }
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -164,7 +158,7 @@ public class UserService {
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
         if (user == null) return ServiceErrors.userIdInvalidError();
-        
+
         // check the user is not banned
         if (user.getIsBanned()) {
             return ServiceErrors.userBannedError();
@@ -197,12 +191,12 @@ public class UserService {
     }
 
     /**
-     * Updates the wishlist of a user
-     * @param token
-     * @param movieId
-     * @param addRemove
-     * @return {}
-     */
+    * Updates the wishlist of a user
+    * @param token
+    * @param movieId
+    * @param addRemove
+    * @return {}
+    */
     public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
 
         if (!ServiceInputChecks.checkId(movieId)) {
@@ -376,7 +370,7 @@ public class UserService {
             } else {
                 return ServiceErrors.userAlreadyInBlacklist();
             }
-        } 
+        }
         // otherwise, remove from blacklist table
         else {
             UserBlacklist userBlacklist = userBlacklistDAO.findUserFromBlacklist(userId, blacklistedUserId);
@@ -420,6 +414,80 @@ public class UserService {
         returnMessage.put("username", userDAO.findUserById(user_id).getName());
         returnMessage.put("users", blacklistArray);
         JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    /**
+    *
+    * @param token
+    * @return The details of the user associated with the token
+    */
+    public JSONObject getUserDetails(String token) {
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id == null) return ServiceErrors.userTokenInvalidError();
+
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFound();
+
+        HashMap<String, Object> returnMessage = new HashMap<>();
+        returnMessage.put("name", user.getName());
+        returnMessage.put("email", user.getEmail());
+
+        JSONObject responseJson = new JSONObject(returnMessage);
+        return responseJson;
+    }
+
+    public JSONObject updateUserDetails(UpdateUserDetailsRequest updateUserDetailsRequest) {
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(updateUserDetailsRequest.getToken(), null);
+        if (user_id == null) return ServiceErrors.userTokenInvalidError();
+
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFound();
+
+        String oldEmail = user.getEmail();
+        String email = updateUserDetailsRequest.getEmail();
+
+        if (email != null) {
+            if (!ServiceInputChecks.checkEmail(email)) return ServiceErrors.userEmailInvalidError();
+
+            if (!email.equals(user.getEmail()) && !ServiceInputChecks.checkUniqueEmail(email, userDAO)) {
+                return ServiceErrors.userEmailInUseError();
+            }
+
+            user.setEmail(email);
+        }
+
+        String username = updateUserDetailsRequest.getName();
+
+        if (username != null) {
+            if (!ServiceInputChecks.checkName(username)) return ServiceErrors.userNameInvalidError();
+
+            user.setName(username);
+        }
+
+        String oldPassword = updateUserDetailsRequest.getOldPassword();
+        String password = updateUserDetailsRequest.getPassword();
+
+        if (password != null) {
+            if (oldPassword == null)
+            return ServiceErrors.generateErrorMessage("Old password is null");
+
+            // check old password is correct
+            if (userDAO.findUserByEmailPassword(oldEmail, oldPassword) == null)
+                return ServiceErrors.generateErrorMessage("Old password is incorrect");
+
+            String error = ServiceInputChecks.checkPassword(password);
+            if (!error.equals(""))
+                return ServiceErrors.generateErrorMessage("New " + error.toLowerCase());
+
+            userDAO.updateUserPassword(oldEmail, password);
+        } else {
+            userDAO.save(user);
+        }
+
+        JSONObject responseJson = new JSONObject();
         return responseJson;
     }
 }

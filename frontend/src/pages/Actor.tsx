@@ -36,7 +36,7 @@ const Actor = () => {
     apiGetActor(actorId)
       .then(data => setActorRes(data))
       .catch(error => setErrorString(getErrorMessage(error)));
-  }, [params]);
+  }, [params.id]);
 
   // show error message if there is
   if (errorString) return (

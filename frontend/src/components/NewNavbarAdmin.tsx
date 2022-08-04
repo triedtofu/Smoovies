@@ -15,8 +15,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,6 +25,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { Context, useContext } from '../context';
 import Search from './NewSearch';
 import Logo from './Logo';
+import { DarkMode, LightMode } from '@mui/icons-material';
 
 const pages = [
   ["Higher or Lower", "/higherorlower"]
@@ -179,7 +180,7 @@ const Navbar = (props: NavbarAdminProps) => {
               onClick={colorMode.toggleColorMode}
               color="inherit"
             >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {theme.palette.mode === 'dark' ? <DarkMode /> : <LightMode />}
             </IconButton>
           </Box>
         </Toolbar>

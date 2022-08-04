@@ -8,21 +8,37 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import RequiredTextField from './RequiredTextField';
 
-const ToggleablePassword = (props: TextFieldProps): JSX.Element => {
+interface ToggleProps {
+  value: boolean;
+  toggle: () => void;
+}
+
+type ToggleablePasswordProps = TextFieldProps & { toggle?: ToggleProps };
+
+const ToggleablePassword = (props: ToggleablePasswordProps) => {
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const boolShowPassword = props.toggle ? props.toggle.value : showPassword;
+  const togglePassword = () => {
+    if (props.toggle) {
+      props.toggle.toggle();
+    } else {
+      setShowPassword(!showPassword);
+    }
+  }
 
   return (
     <RequiredTextField
-      type={showPassword ? 'text' : 'password'}
+      type={boolShowPassword ? 'text' : 'password'}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
             <IconButton
               aria-label="toggle password visibility"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={togglePassword}
               edge="end"
             >
-              {showPassword ? <VisibilityOff /> : <Visibility />}
+              {boolShowPassword ? <Visibility /> : <VisibilityOff /> }
             </IconButton>
           </InputAdornment>
         )
