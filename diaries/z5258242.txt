@@ -46,3 +46,7 @@ Sunday
 Week 9
 Thursday
 - Worked on like/dislike reviews, a few extra apicalls needed as well as work for our extra feature higherorlower game.
+
+Week 10
+Thursday
+- Worked on a lot of UI changes. Changed star rating system, small changes to higher or lower functionality.
