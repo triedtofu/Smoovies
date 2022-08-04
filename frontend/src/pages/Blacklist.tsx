@@ -27,7 +27,7 @@ const Blacklist = () => {
     apiBlacklistUser(cookies.token).then((data) => {
       setBlacklistUsers(data.users);
     });
-  }, [params]);
+  }, [params.id]);
 
   if (!blacklistUsers) return <></>;
 

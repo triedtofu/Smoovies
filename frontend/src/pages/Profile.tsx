@@ -66,7 +66,7 @@ const Profile = () => {
     setReviews([]);
     setName('');
     refreshPage();
-  }, [params]);
+  }, [params.id]);
 
   const removeReview = (movieId: number) => {
     apiDeleteReview(cookies.token, movieId, parseInt(params.id!))

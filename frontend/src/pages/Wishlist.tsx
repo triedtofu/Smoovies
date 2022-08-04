@@ -61,7 +61,7 @@ const Wishlist = () => {
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
-  }, [params]);
+  }, [params.id]);
 
   // returns whether the remove from wishlist button should be shown
   const showButton = () => {

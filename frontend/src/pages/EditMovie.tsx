@@ -57,7 +57,7 @@ const EditMovie = () => {
     } catch {
       // TODO handle errors
     }
-  }, [params]);
+  }, [params.id]);
 
 
   React.useEffect(() => {

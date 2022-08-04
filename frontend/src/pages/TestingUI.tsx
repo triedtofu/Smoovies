@@ -72,7 +72,7 @@ const TestingUI = () => {
     } catch (error) {
       setErrorStr(getErrorMessage(error));
     }
-  }, [params]);
+  }, [params.id]);
 
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
