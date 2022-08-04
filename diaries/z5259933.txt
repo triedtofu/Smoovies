@@ -80,3 +80,10 @@ Tasks completed
 
 Sunday scrum
 - Retrospective B meeting
+
+Week 10
+
+Tasks completed
+- Python script for generating and adding reviews completed
+- Retrospective B completed and submitted
+- Higher or Lower completed
