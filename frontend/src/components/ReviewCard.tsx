@@ -46,9 +46,8 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   }, []);
 
   const likeUnlikeClick = () => {
-    // TODO
     if (heartColour === '#a9a9a9') {
-      // Set to like status
+      // set to like status
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
@@ -61,7 +60,7 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       );
       // Do api
     } else {
-      // Set to unlike status
+      // set to unlike status
       setHeartColour('#a9a9a9');
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');

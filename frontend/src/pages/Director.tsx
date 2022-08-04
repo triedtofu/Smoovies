@@ -56,7 +56,7 @@ const Director = () => {
 
       <Typography gutterBottom variant="h4" component="h1">{directorRes.name}</Typography>
 
-      <h2>Directed:</h2>
+      <Typography gutterBottom variant="h5" component="h2">Directed:</Typography>
 
       {directorRes.movies.slice(0, numMoviesShown).map(movie => (
         <MovieResultCard

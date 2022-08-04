@@ -26,7 +26,6 @@ const BlacklistPersonResultCard = (props: BlacklistPersonResultCardProps) => {
   const [cookies] = useCookies();
 
   const removeFromBlacklist = () => {
-    // TODO
     apiPutBlacklistUser(cookies.token, props.userId, BLRemove);
     setBLRemove(true);
   };

@@ -43,15 +43,8 @@ const Profile = () => {
 
   const refreshPage = () => {
     setErrorStr('');
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
     try {
-      apiGetUserReviews(parseInt(idStr), cookies.token)
+      apiGetUserReviews(parseInt(params.id!), cookies.token)
         .then((data) => {
           setReviews(data.reviews);
           setName(data.username);
@@ -76,16 +69,9 @@ const Profile = () => {
 
   // returns whether the remove from review button should be shown
   const showButton = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return false;
-    }
-
     if (
       !cookies.token ||
-      (!cookies.admin && idStr !== parseJwt(cookies.token).jti)
+      (!cookies.admin && params.id! !== parseJwt(cookies.token).jti)
     )
       return false;
 
@@ -105,7 +91,6 @@ const Profile = () => {
   };
 
   const blacklistUser = () => {
-    // TODO
     const idStr = params.id ?? '';
     apiPutBlacklistUser(cookies.token, parseInt(idStr), BLUser);
     setBLUser(false);

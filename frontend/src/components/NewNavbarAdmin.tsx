@@ -63,7 +63,8 @@ const Navbar = (props: NavbarAdminProps) => {
   };
 
   const profilePages = [
-    ["Add Movie", "/addMovie"]
+    ["Add Movie", "/addMovie"],
+    ["Edit profile", "/editprofile"]
   ];
 
   const drawer = (

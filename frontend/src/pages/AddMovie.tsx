@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
@@ -46,11 +47,17 @@ const AddMovie = () => {
 
   // check whether the user is an admin
   if (!cookies.token || !cookies.admin) return  (
-    <h2>Access denied. Only admins can access this page.</h2>
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h2">Access denied. Only admins can access this page.</Typography>
+    </Container>
   );
 
   return (
     <Container maxWidth="sm">
+      <Helmet>
+        <title>Add a Movie - Smoovies</title>
+      </Helmet>
+
       <Typography gutterBottom variant="h4" component="h1">
         Add a Movie
       </Typography>

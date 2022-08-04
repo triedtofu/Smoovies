@@ -44,40 +44,29 @@ const Wishlist = () => {
     setMovies([]);
     setName('');
     setErrorStr('');
-    const idStr = params.id ?? '';
+    const id = parseInt(params.id ?? '');
 
-    if (idStr === '') {
-      // TODO handle error
+    if (Number.isNaN(id)) {
+      setErrorStr(`Error: '${params.id}' is not an integer`);
       return;
     }
 
-    try {
-      apiUserWishlist(parseInt(idStr), cookies.token)
-        .then((data) => {
-          setMovies(data.movies);
-          setName(data.username);
-        })
-        .catch((error) => setErrorStr(getErrorMessage(error)));
-    } catch (error) {
-      setErrorStr(getErrorMessage(error));
-    }
+    apiUserWishlist(id, cookies.token)
+      .then((data) => {
+        setMovies(data.movies);
+        setName(data.username);
+      })
+      .catch((error) => setErrorStr(getErrorMessage(error)));
   }, [params.id]);
 
-  // returns whether the remove from wishlist button should be shown
-  const showButton = () => {
-    const idStr = params.id ?? '';
+  // whether the remove from wishlist button should be shown
+  const showButton = cookies.token && params.id! === parseJwt(cookies.token).jti;
 
-    if (idStr === '') {
-      // TODO handle error
-      return false;
-    }
-
-    if (!cookies.token || idStr !== parseJwt(cookies.token).jti) return false;
-
-    return true;
-  };
-
-  if (errorStr || name === '') return <h2>{errorStr}</h2>;
+  if (errorStr || name === '') return (
+    <Container maxWidth="md">
+      <h2>{errorStr}</h2>
+    </Container>
+  )
 
   return (
     <Container maxWidth="lg">
@@ -107,7 +96,7 @@ const Wishlist = () => {
         <MovieResultCard
           key={movie.id}
           movie={movie}
-          buttonClick={showButton() ? () => removeMovie(movie.id) : null}
+          buttonClick={showButton ? () => removeMovie(movie.id) : null}
         />
       ))}
 

@@ -147,37 +147,15 @@ const Movie = () => {
   if (movie && Object.keys(movie).length === 0) return <></>;
 
   const addMovieToWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), true)
-        .then((_) => setButton(2))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), true)
+      .then((_) => setButton(2))
+      .catch((err) => console.log(err));
   };
 
   const removeMovieFromWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), false)
-        .then((_) => setButton(1))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), false)
+      .then((_) => setButton(1))
+      .catch((err) => console.log(err));
   };
 
   const submitReview = (rating: number, review: string) => {
@@ -196,7 +174,6 @@ const Movie = () => {
     apiDeleteReview(cookies.token, movieId, reviewUser)
       .then(() => updateMovie(movieId))
       .catch((error) => setDeleteReviewErr(getErrorMessage(error)));
-    // TODO handle error
   };
 
   const deleteButtonFunc = (reviewUser: number) => {
