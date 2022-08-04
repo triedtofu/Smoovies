@@ -41,7 +41,11 @@ public class ReviewService {
 
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
-
+    /**
+     * Adds a user review to a movie.
+     * @param addReviewRequest
+     * @return
+     */
     public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
         String token = addReviewRequest.getToken();
@@ -84,7 +88,12 @@ public class ReviewService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Returns the list of user reviews.
+     * @param id
+     * @param token
+     * @return
+     */
     public JSONObject getUserReviews(Long id, String token) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
 
@@ -163,7 +172,7 @@ public class ReviewService {
         return responseJson;
     }
     /**
-     *
+     * Delete review from database
      * @param movie The movie in the review;
      * @param user The user who wrote the review;
      * @param review
@@ -176,7 +185,11 @@ public class ReviewService {
         userDAO.save(user);
         reviewDAO.delete(review);
     }
-
+    /**
+     * Likes a review
+     * @param request
+     * @return
+     */
     public JSONObject likeReview(LikeReviewRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 

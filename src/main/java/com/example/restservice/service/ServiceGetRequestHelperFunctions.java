@@ -14,7 +14,13 @@ import com.example.restservice.database.UserBlacklistDataAccessService;
 
 
 public class ServiceGetRequestHelperFunctions {
-
+    /**
+     * Gets the average rating for a movie for a logged in user, taking into account thier blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return
+     */
     public static double getMovieAverageRatingByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)
@@ -40,7 +46,13 @@ public class ServiceGetRequestHelperFunctions {
         // round to 1dp
         return (double)Math.round(averageRating.doubleValue() * 10d) / 10d;
     }
-
+    /**
+     * Gets the reviews on a movie that a user should see, taking into account their blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return
+     */
     public static List<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)
