@@ -44,3 +44,9 @@ Week 8
 - Attended team meeting for Retrospective B
 - Completed dark mode and added a new navbar
 - Improved the UI for mobile devices
+
+Week 9
+
+- Finished sprint 3 tasks for frontend
+- Prepared demo
+- Worked on final report
