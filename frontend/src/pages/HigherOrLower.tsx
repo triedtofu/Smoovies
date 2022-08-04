@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { apiGetHigherOrLower, apiGetGenres } from '../util/api';
-import { randInt } from '../util/helper';
+import { randInt, getErrorMessage } from '../util/helper';
 import { HigherOrLowerData } from '../util/interface';
 
 const transition = {
@@ -48,6 +48,8 @@ const HigherOrLower = () => {
   const [index1, setIndex1] = React.useState(-1);
   const [index2, setIndex2] = React.useState(-1);
   const [index3, setIndex3] = React.useState(-1);
+
+  const [loadingMovies, setLoadingMovies] = React.useState(false);
 
   const [errorStr, setErrorStr] = React.useState('');
 
@@ -138,6 +140,7 @@ const HigherOrLower = () => {
 
   const handleSubmit = () => {
     setErrorStr('');
+    setLoadingMovies(true);
 
     const startYearInt = parseInt(startYear);
     const endYearInt = parseInt(endYear);
@@ -147,15 +150,22 @@ const HigherOrLower = () => {
       return;
     }
 
-    apiGetHigherOrLower(startYearInt, endYearInt, genres, contentRatings).then(res => {
-      if (res.movies.length < 10) {
-        setErrorStr("Sorry, there aren't enough movies that match the criteria");
-        return;
-      }
+    apiGetHigherOrLower(startYearInt, endYearInt, genres, contentRatings)
+      .then(res => {
+        if (res.movies.length < 10) {
+          setErrorStr("Sorry, there aren't enough movies that match the criteria");
+          setLoadingMovies(false);
+          return;
+        }
 
-      setData(res.movies);
-      newGame(res.movies.length);
-    });
+        setData(res.movies);
+        newGame(res.movies.length);
+        setLoadingMovies(false);
+      })
+      .catch(error => {
+        setErrorStr(getErrorMessage(error));
+        setLoadingMovies(false);
+      });
   }
 
   if (gameStatus === 'init') return (
@@ -196,7 +206,6 @@ const HigherOrLower = () => {
         </div>
 
         <Autocomplete
-          // className={styles.flexContents1}
           multiple
           id="tags-standard"
           options={['NR', 'G', 'PG', 'PG-13', 'M', 'MA 15+', 'R', 'TV-PG', 'TV-14']}
@@ -233,7 +242,7 @@ const HigherOrLower = () => {
           )}
         />
 
-        <Button variant="contained" type="submit">
+        <Button variant="contained" type="submit" disabled={loadingMovies}>
           Start game
         </Button>
       </form>
@@ -241,7 +250,6 @@ const HigherOrLower = () => {
       <Button
         variant="text"
         className={styles.endHomeButton}
-        // sx={{ color: 'white' }}
         onClick={() => navigate('/')}
       >
         Home
