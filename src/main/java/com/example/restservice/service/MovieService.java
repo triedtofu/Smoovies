@@ -272,7 +272,11 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Returns the homepage for a logged in user (top rated movies), and not logged in user.
+     * @param token
+     * @return
+     */
     public JSONObject homepage(String token) {
 
         // verify the users token
@@ -418,7 +422,11 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * ADMIN FUNCTION : Deletes a movie from the database.
+     * @param request
+     * @return
+     */
     public JSONObject deleteMovie(DeleteMovieRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -451,7 +459,11 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Edit the fields of a movie.
+     * @param editMovieRequest
+     * @return
+     */
     public JSONObject editMovie(EditMovieRequest editMovieRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -507,13 +519,19 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Gets all genres that a movie has
+     * @return
+     */
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("genres",  new JSONArray(Genre.genreCollectionToStrList(genreDAO.findAll())));
         return new JSONObject(returnMessage);
     }
-
+    /**
+     * Adds an actor to a movie, and if the actor does not exist in the database, adds them to a database.
+     * @param dbMovie
+     */
     private void overwriteMovieDBCast(Movie dbMovie) {
         dbMovie.clearDBCast();
         String cast = dbMovie.getCast();
@@ -534,7 +552,10 @@ public class MovieService {
             }
         }
     }
-
+    /**
+     * Adds a director to a movie, and if the director does not exist in the database, adds them to a database.
+     * @param dbMovie
+     */
     private void overwriteMovieDBDirectors(Movie dbMovie) {
         dbMovie.clearDBDirectors();
         String directors = dbMovie.getDirectors();
@@ -552,7 +573,10 @@ public class MovieService {
             }
         }
     }
-
+    /**
+     * Adds a genre to a movie, and if the genre does not exist in the database, throws an error.
+     * @param dbMovie
+     */
     private void overwriteMovieDBGenres(Movie dbMovie) {
         List<String> genres = dbMovie.getGenreString();
         if (!genres.isEmpty() && genres != null) {
