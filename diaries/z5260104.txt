@@ -46,3 +46,10 @@ Week6:
   Week 9:
   -added liking reviews
   -worked on API
+
+Week 10:
+- Refactor code
+- added similar movies algorihtm
+- fixed homepage
+- Added api routes
+- order review by likes
