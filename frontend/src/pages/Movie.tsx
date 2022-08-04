@@ -35,8 +35,6 @@ let addingReview = false;
 
 const PAGE_SIZE = 5;
 
-let oldId: undefined | number = undefined;
-
 const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
@@ -67,15 +65,11 @@ const Movie = () => {
       return;
     }
 
-    if (oldId === id) return;
-
     setErrorStr('');
     setMovie(undefined);
 
-    oldId = id;
-
     updateMovie(id);
-  }, [params]);
+  }, [params.id]);
 
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
