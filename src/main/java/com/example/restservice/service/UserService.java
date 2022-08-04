@@ -232,7 +232,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Sends an email to request for a password change.
+     * @param requestResetPasswordRequest
+     * @return
+     */
     public JSONObject requestResetPassword(RequestResetPasswordRequest requestResetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -251,7 +255,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * For a given user, resets their password
+     * @param resetPasswordRequest
+     * @return
+     */
     public JSONObject resetPassword(ResetPasswordRequest resetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -290,7 +298,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * ADMIN FUNCTION: Bans the given user.
+     * @param banUserRequest
+     * @return
+     */
     public JSONObject banUser(BanUserRequest banUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -335,7 +347,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * For a given user, adds/remove a user from their blacklist.
+     * @param blacklistUserRequest
+     * @return
+     */
     public JSONObject blackListUser(BlacklistUserRequest blacklistUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -384,7 +400,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Returns the given users blacklist.
+     * @param token
+     * @return
+     */
     public JSONObject getUserBlacklist(String token) {
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(token, null);
@@ -418,7 +438,7 @@ public class UserService {
     }
 
     /**
-    *
+    * Gets the users name and email.
     * @param token
     * @return The details of the user associated with the token
     */
@@ -437,7 +457,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Updates a users details 
+     * @param updateUserDetailsRequest
+     * @return
+     */
     public JSONObject updateUserDetails(UpdateUserDetailsRequest updateUserDetailsRequest) {
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(updateUserDetailsRequest.getToken(), null);
