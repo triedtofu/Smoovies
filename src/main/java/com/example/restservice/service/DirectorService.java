@@ -20,7 +20,12 @@ public class DirectorService {
     
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
-
+    /**
+     * Returns and actor and all their movies.
+     * @param id
+     * @param token
+     * @return
+     */
     public JSONObject getDirector(Long id, String token) {
 
         // verify the users token
