@@ -163,6 +163,7 @@ public class MovieService {
 
         Movie dbMovie = movieDAO.findMovieByID(id);
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
+
         returnMessage.put("name", dbMovie.getName());
         returnMessage.put("year", dbMovie.getYear());
         returnMessage.put("poster", dbMovie.getPoster());
@@ -180,18 +181,16 @@ public class MovieService {
             reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
         }
         if (token == null) {
-        List<Review> reviews = ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token);
-        
-        for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
-            if (review.getUser().getIsBanned()) continue;
-            HashMap<String, Object> movieReview = new HashMap<String,Object>();
-            movieReview.put("user", review.getUser().getId());
-            movieReview.put("name", review.getUser().getName());
-            movieReview.put("review", review.getReviewString());
-            movieReview.put("rating", review.getRating());
-            movieReview.put("likes", review.getLikes());
-            JSONObject movieReviewJSON = new JSONObject(movieReview);
-            reviewArray.put(movieReviewJSON);
+            for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
+                if (review.getUser().getIsBanned()) continue;
+                HashMap<String, Object> movieReview = new HashMap<String,Object>();
+                movieReview.put("user", review.getUser().getId());
+                movieReview.put("name", review.getUser().getName());
+                movieReview.put("review", review.getReviewString());
+                movieReview.put("rating", review.getRating());
+                movieReview.put("likes", review.getLikes());
+                JSONObject movieReviewJSON = new JSONObject(movieReview);
+                reviewArray.put(movieReviewJSON);
             }
         }
         returnMessage.put("reviews", reviewArray);
@@ -278,7 +277,7 @@ public class MovieService {
      * @return
      */
     public JSONObject homepage(String token) {
-
+        String requiredFields = "id, name, year, poster, description, genres, averageRating";
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         if (!tokenCheck) {
@@ -298,26 +297,9 @@ public class MovieService {
             long user_id = ServiceJWTHelper.getTokenId(token, null);
             movies = findRecommendedMovies(user_id);
         }
-        if (movies.size() > 0) {
-            for (int i=0; i < movies.size(); i++) {
-                Movie movie = movies.get(i);
-                //Puts the fields into a Hashmap --> JSON Object
-                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
-                dbMovieDetails.put("id", movie.getId());
-                dbMovieDetails.put("name", movie.getName());
-                dbMovieDetails.put("year", movie.getYear());
-                dbMovieDetails.put("poster", movie.getPoster());
-                dbMovieDetails.put("description", movie.getDescription());
-                dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, movie, token));
-
-                //Make it into a JSONObject
-                JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
-                //Put the object into the JSONArray
-                homepageList.put(movieDetailsJson);
-            }
-        } else {
-            return ServiceErrors.movieTrendingEmptyError();
+        if (movies.size() <= 0) return ServiceErrors.movieTrendingEmptyError();
+        for (Movie movie : movies) {
+            homepageList.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, token, null));
         }
         returnMessage.put("movies", homepageList);
         JSONObject responseJson = new JSONObject(returnMessage);
@@ -331,7 +313,7 @@ public class MovieService {
      * @return
      */
     public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
-
+        String requiredFields = "id, name, year, poster, description, genres, averageRating, contentRating";
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         if (!tokenCheck) {
@@ -346,14 +328,10 @@ public class MovieService {
         JSONArray moviesArray = new JSONArray();
         List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
         List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
-
-
         List<Movie> dbMovies = new ArrayList<Movie>();
-        
         for (Movie m: nameMovies) {
             dbMovies.add(m);
         }
-
         for (Movie m : descMovies) {
             if (!dbMovies.contains(m)) dbMovies.add(m);
         }

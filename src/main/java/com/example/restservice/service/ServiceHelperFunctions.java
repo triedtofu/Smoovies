@@ -6,11 +6,15 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
+import com.example.restservice.database.ActorDataAccessService;
+import com.example.restservice.database.MovieDataAccessService;
 
 public class ServiceHelperFunctions {
+    
     /**
      * Returns the JSONArray for a users reviews containing all fields
      * @param needLiked the reviews need the liked field, when the token matches the id given
@@ -61,4 +65,6 @@ public class ServiceHelperFunctions {
         }
         return reviewJSONArray;
     }
+
+    
 }
