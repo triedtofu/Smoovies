@@ -312,7 +312,25 @@ public class MovieService {
         for (Movie movie : filteredMovies) {
             moviesArray.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, token, null));
         }
+
+        //Allow for searching with no query but filter on genre.
+        List<Movie> genreMovieList = new ArrayList<Movie>();
+        if (searchRequest.getGenres() != null && searchRequest.getName() == null) {
+            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
+            for (String genre : inputGenreList) {
+                Genre g = genreDAO.findGenreByName(genre);
+                for (Movie m : g.getMoviesInGenre()) {
+                    genreMovieList.add(m);
+                }
+            }
+        }
+
+        for (Movie m : genreMovieList) {
+            moviesArray.put(JSONObjectGenerators.movieObject(requiredFields, m, userBlacklistDAO, token, null));
+        }
+
         returnMessage.put("movies", moviesArray);
+
         JSONArray actorsArray = new JSONArray();
         List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
         String peopleRequiredFields = "id, name";
@@ -327,6 +345,7 @@ public class MovieService {
             directorsArray.put(JSONObjectGenerators.directorObject(peopleRequiredFields, d, userBlacklistDAO));
         }
         returnMessage.put("directors", directorsArray);
+       
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;

@@ -128,7 +128,6 @@ public class ReviewService {
         String token = deleteReviewRequest.getToken();
         Long token_user_id = ServiceJWTHelper.getTokenId(token, null);
 
-
         Movie dbMovie = movieDAO.findMovieByID(deleteReviewRequest.getMovieId());
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
 
