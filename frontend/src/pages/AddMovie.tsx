@@ -33,28 +33,47 @@ const AddMovie = () => {
     cast,
     runtime
   ) => {
-    const movie = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
+    const movie = {
+      name,
+      year,
+      poster,
+      trailer,
+      description,
+      genres,
+      contentRating,
+      cast,
+      director,
+      runtime,
+    };
     apiAddMovie(cookies.token, movie)
-      .then(res => navigate(`/movie/${res.movieId}`))
-      .catch(error => setNewMovieErr(getErrorMessage(error)));
+      .then((res) => navigate(`/movie/${res.movieId}`))
+      .catch((error) => setNewMovieErr(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
     // get the list of possible genres
-    apiGetGenres().then(data => setAllGenres(data.genres));
+    apiGetGenres().then((data) => setAllGenres(data.genres));
   }, []);
 
   // check whether the user is an admin
-  if (!cookies.token || !cookies.admin) return  (
-    <h2>Access denied. Only admins can access this page.</h2>
-  );
+  if (!cookies.token || !cookies.admin)
+    return <h2>Access denied. Only admins can access this page.</h2>;
 
   return (
     <Container maxWidth="sm">
-      <Typography gutterBottom variant="h4" component="h1">
+      <Typography
+        gutterBottom
+        variant="h4"
+        component="h1"
+        fontFamily={'Verdana'}
+      >
         Add a Movie
       </Typography>
-      <NewMovieForm submit={newMovie} error={newMovieErr} allGenres={allGenres} />
+      <NewMovieForm
+        submit={newMovie}
+        error={newMovieErr}
+        allGenres={allGenres}
+      />
     </Container>
   );
 };
