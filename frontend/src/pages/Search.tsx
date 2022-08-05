@@ -87,9 +87,9 @@ const Search = () => {
       contentRatings.length != 0 ? [...contentRatings] : undefined;
     const myGenres = genres.length != 0 ? [...genres] : undefined;
 
-    const name = searchParams.get('name') ?? '';
-
-    if (name === '') {
+    const name = searchParams.get('name');
+    
+    if (name === null) {
       setFetched(true);
       return;
     }

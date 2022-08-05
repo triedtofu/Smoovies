@@ -6,7 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+/**
+ * Database table that maps a user, to a genre giving them a preference score for it.
+ */
 @Entity
 @Table(name = "user_genre_preference_scores")
 public class UserGenrePreferenceScore {
@@ -44,7 +46,10 @@ public class UserGenrePreferenceScore {
     public long getScore() {
         return score;
     }
-
+    /**
+     * Updates the score for a user genre preference.
+     * @param rating
+     */
     public void updateScore(int rating) {
         double reviewScore = 0;
         if (rating > 0) {

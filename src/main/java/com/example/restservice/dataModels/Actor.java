@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonProperty;
+/**
+ * Database representation of an actor.
+ */
 @Entity
 @Table(name = "actors")
 public class Actor {
