@@ -149,6 +149,7 @@ const HigherOrLower = () => {
 
     if (startYearInt > endYearInt) {
       setErrorStr("Start year cannot be greater than End year");
+      setLoadingMovies(false);
       return;
     }
 
