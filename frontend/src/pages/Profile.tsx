@@ -140,11 +140,13 @@ const Profile = () => {
         )}
         {!BLUser &&
           cookies.token &&
-          params.id !== parseJwt(cookies.token).jti && (
+          params.id !== parseJwt(cookies.token).jti && 
+          (
             <h2 style={{ color: 'red', font: 'Futura' }}>
               You have blacklisted this user
             </h2>
-          )}
+          )
+        }
       </div>
 
       {!(cookies.token && params.id === parseJwt(cookies.token).jti) && (
