@@ -14,7 +14,12 @@ import com.example.restservice.dataModels.Review;
 @Repository
 public interface ReviewDataAccessService extends JpaRepository<Review, Long> {
     long deleteByMovie(Movie movie);
-
+    /**
+     * Find review by user and movie id's.
+     * @param movie_id
+     * @param user_id
+     * @return Review
+     */
     @Query(value = "SELECT * FROM reviews r WHERE r.movie_id = :movie_id AND r.user_id = :user_id", nativeQuery = true)
     public Review findReview(@Param("movie_id") Long movie_id, @Param("user_id") Long user_id);
     

@@ -13,6 +13,11 @@ import com.example.restservice.dataModels.UserGenrePreferenceScore;
  */
 @Repository
 public interface UserGenrePreferenceScoreDataAccessService extends JpaRepository<UserGenrePreferenceScore, Long> {
+    /**
+     * Finds all links which represent the user preference scores for a genre.
+     * @param genre_id
+     * @return UserGenrePreferenceScore
+     */
     @Query(value = "SELECT * FROM user_genre_preference_scores u WHERE u.user_id = :user_id and u.genre_id = :genre_id", nativeQuery = true)
     public UserGenrePreferenceScore findUserPreferenceScoreByGenreId(@Param("user_id") Long user_id, @Param("genre_id") Long genre_id);
     
