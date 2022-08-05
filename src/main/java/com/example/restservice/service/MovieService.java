@@ -278,7 +278,19 @@ public class MovieService {
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        
         JSONArray moviesArray = new JSONArray();
+        JSONArray actorsArray = new JSONArray();
+        JSONArray directorsArray = new JSONArray();
+        //Case where there is no filtering or search results at all
+        if (searchRequest.getName().isEmpty()) {
+            if (searchRequest.getGenres() == null && searchRequest.getContentRating() == null) {
+                returnMessage.put("movies", new JSONArray());
+                returnMessage.put("actors", new JSONArray());
+                returnMessage.put("directors", new JSONArray());
+                return new JSONObject(returnMessage);
+            }
+        }
         List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
         List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
         List<Movie> dbMovies = new ArrayList<Movie>();
@@ -309,43 +321,28 @@ public class MovieService {
             }
             filteredMovies.removeAll(removeValues);
         }
+
         for (Movie movie : filteredMovies) {
             moviesArray.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, token, null));
         }
-
-        //Allow for searching with no query but filter on genre.
-        List<Movie> genreMovieList = new ArrayList<Movie>();
-        if (searchRequest.getGenres() != null && searchRequest.getName() == null) {
-            List<String> inputGenreList = Arrays.asList(searchRequest.getGenres().split(",[ ]*"));
-            for (String genre : inputGenreList) {
-                Genre g = genreDAO.findGenreByName(genre);
-                for (Movie m : g.getMoviesInGenre()) {
-                    genreMovieList.add(m);
-                }
-            }
-        }
-
-        for (Movie m : genreMovieList) {
-            moviesArray.put(JSONObjectGenerators.movieObject(requiredFields, m, userBlacklistDAO, token, null));
-        }
-
         returnMessage.put("movies", moviesArray);
-
-        JSONArray actorsArray = new JSONArray();
-        List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
-        String peopleRequiredFields = "id, name";
-        for (Actor a : dbActors) {
-            actorsArray.put(JSONObjectGenerators.actorObject(peopleRequiredFields, a, userBlacklistDAO));
+        
+        if (!searchRequest.getName().isEmpty()) {
+            String peopleRequiredFields = "id, name";
+            List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
+            for (Director d : dbdirectors) {
+                directorsArray.put(JSONObjectGenerators.directorObject(peopleRequiredFields, d, userBlacklistDAO));
+            }
+            List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
+            for (Actor a : dbActors) {
+                actorsArray.put(JSONObjectGenerators.actorObject(peopleRequiredFields, a, userBlacklistDAO));
+            }
+            returnMessage.put("directors", directorsArray);
+            returnMessage.put("actors", actorsArray);
+        } else {
+            returnMessage.put("directors", new JSONArray());
+            returnMessage.put("actors", new JSONArray());
         }
-        returnMessage.put("actors", actorsArray);
-
-        JSONArray directorsArray = new JSONArray();
-        List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
-        for (Director d : dbdirectors) {
-            directorsArray.put(JSONObjectGenerators.directorObject(peopleRequiredFields, d, userBlacklistDAO));
-        }
-        returnMessage.put("directors", directorsArray);
-       
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
