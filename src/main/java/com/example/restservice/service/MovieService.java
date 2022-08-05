@@ -44,8 +44,15 @@ import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceInputChecks;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
 
 //import com.example.restservice.service.ServiceErrors;
+/**
+ * Service for Movies that performs backend operations dependent on REST API calls
+ */
 @Service
 @Transactional
 public class MovieService {

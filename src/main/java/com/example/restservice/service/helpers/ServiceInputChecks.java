@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 //import com.example.restservice.dataModels.Movie;
 //import com.example.restservice.dataModels.User;

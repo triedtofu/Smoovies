@@ -6,6 +6,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 // Refrenced from https://github.com/arjungautam1/SpringBootEmail
+/**
+ * Service for Email sending that performs backend operations dependent on REST API calls
+ */
 @Service
 public class EmailSenderService {
     @Autowired

@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 
 import java.util.ArrayList;
@@ -85,6 +85,13 @@ public class JSONObjectGenerators {
         return new JSONObject(returnMovie);
     }
     
+    /**
+     * 
+     * @param requiredFields
+     * @param review
+     * @param user The user making the request
+     * @return
+     */
     public static JSONObject reviewObject(String requiredFields, Review review, User user) {
         HashMap<String,Object> returnReview = new HashMap<>();
         List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));

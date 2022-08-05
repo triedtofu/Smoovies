@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -2,6 +2,9 @@ package com.example.restservice.dataModels.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class containing all fields for a request from REST API to update a users details
+ */
 public class UpdateUserDetailsRequest {
     private String token;
     private String name;

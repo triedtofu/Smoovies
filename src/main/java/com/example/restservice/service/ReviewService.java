@@ -24,7 +24,13 @@ import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 //import com.google.gson.JsonObject;
 import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
 
+/**
+ * Service for Reviews that performs backend operations dependent on REST API calls
+ */
 @Service
 public class ReviewService {
     @Autowired
@@ -44,7 +50,7 @@ public class ReviewService {
     /**
      * Adds a user review to a movie.
      * @param addReviewRequest
-     * @return
+     * @return {}, error message on its owns if there is an error
      */
     public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
