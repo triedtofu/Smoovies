@@ -1,7 +1,4 @@
-// const baseUrl = '';
-// const baseUrl = 'http://localhost:8080';
-// const baseUrl = 'https://comp3900-lawnchair-back.herokuapp.com';
-const baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com';
+const baseUrl = '';
 
 import {
   ActorResponse,
