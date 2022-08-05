@@ -23,10 +23,10 @@ public class DirectorService {
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
     /**
-     * Returns and actor and all their movies.
+     * Finds a director and all their movies.
      * @param id
      * @param token
-     * @return
+     * @return a director and all their movies , error message on its owns if there is an error
      */
     public JSONObject getDirector(Long id, String token) {
 

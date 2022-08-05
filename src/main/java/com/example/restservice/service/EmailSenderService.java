@@ -14,6 +14,12 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     * Sends an email to a user
+     * @param toEmail Email to send to
+     * @param subject Subject of the email
+     * @param body Body text of the email
+     */
     public void sendEmail(String toEmail,
                                 String subject,
                                 String body

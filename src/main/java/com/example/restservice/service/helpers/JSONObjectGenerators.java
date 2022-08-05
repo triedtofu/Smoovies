@@ -25,7 +25,7 @@ public class JSONObjectGenerators {
      * @param userBlacklistDAO used for averageRating
      * @param token The optional token parameter, used for average rating
      * @param user The user that is making the request.
-     * @return
+     * @return JSONObject with required fields
      */
     public static JSONObject movieObject(String requiredFields, Movie movie, UserBlacklistDataAccessService userBlacklistDAO, String token, User user) {
         HashMap<String, Object> returnMovie = new HashMap<>();
@@ -86,11 +86,11 @@ public class JSONObjectGenerators {
     }
     
     /**
-     * 
+     * Generates a Review object JSON representation
      * @param requiredFields
      * @param review
      * @param user The user making the request
-     * @return
+     * @return JSONObject with required fields
      */
     public static JSONObject reviewObject(String requiredFields, Review review, User user) {
         HashMap<String,Object> returnReview = new HashMap<>();
@@ -133,6 +133,13 @@ public class JSONObjectGenerators {
         return new JSONObject(returnReview);
     }
 
+    /**
+     * Generates a Actor object JSON representation
+     * @param requiredFields
+     * @param actor
+     * @param userBlacklistDAO
+     * @return JSONObject with required fields
+     */
     public static JSONObject actorObject(String requiredFields, Actor actor, UserBlacklistDataAccessService userBlacklistDAO){
         HashMap<String, Object> returnActor = new HashMap<>();
         List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
@@ -156,12 +163,13 @@ public class JSONObjectGenerators {
         }
         return new JSONObject(returnActor);
     }
+
     /**
      * Generates a director JSON object based on required fields.
      * @param requiredFields
      * @param director
      * @param userBlacklistDAO
-     * @return
+     * @return JSONObject with required fields
      */
     public static JSONObject directorObject(String requiredFields, Director director, UserBlacklistDataAccessService userBlacklistDAO){
         HashMap<String, Object> returnDirector = new HashMap<>();
@@ -186,12 +194,13 @@ public class JSONObjectGenerators {
         }
         return new JSONObject(returnDirector);
     }
+
     /**
      * Generates a user JSON representation based on the required fields.
      * @param requiredFields
      * @param user
      * @param token - ONLY used for checking if a user has liked a review, othewise pass through null
-     * @return
+     * @return JSONObject with required fields
      */
     public static JSONObject userObject(String requiredFields, User user, String token) {
         HashMap<String,Object> returnUser = new HashMap<>();

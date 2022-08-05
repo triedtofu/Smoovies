@@ -24,9 +24,9 @@ public class ActorService {
     private UserBlacklistDataAccessService userBlacklistDAO;
     
     /**
-     * Returns an actor and all their movies
+     * Finds an actor and all their movies
      * @param id
-     * @return
+     * @return an actor and all their movies, error message on its owns if there is an error
      */
     public JSONObject getActor(Long id, String token) {
 

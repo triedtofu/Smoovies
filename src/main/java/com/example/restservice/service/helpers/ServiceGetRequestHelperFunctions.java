@@ -19,7 +19,7 @@ public class ServiceGetRequestHelperFunctions {
      * @param userBlacklistDAO
      * @param movie
      * @param token
-     * @return
+     * @return Average rating of a movie that the given user will see
      */
     public static double getMovieAverageRatingByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
@@ -51,7 +51,7 @@ public class ServiceGetRequestHelperFunctions {
      * @param userBlacklistDAO
      * @param movie
      * @param token
-     * @return
+     * @return reviews on a movie that the user should see
      */
     public static List<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         

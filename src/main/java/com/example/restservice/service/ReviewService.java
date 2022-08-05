@@ -88,7 +88,7 @@ public class ReviewService {
      * Returns the list of user reviews.
      * @param id
      * @param token
-     * @return
+     * @return all the reviews from a given user , error message on its owns if there is an error
      */
     public JSONObject getUserReviews(Long id, String token) {
         User viewUser = userDAO.findUserById(id);
@@ -126,7 +126,7 @@ public class ReviewService {
      * Check for:
      * If review exists, if user exists, if movie exists, if user_id matches the token.
      * @param deleteReviewRequest
-     * @return
+     * @return {}, error message on its owns if there is an error
      */
     public JSONObject deleteReview (DeleteReviewRequest deleteReviewRequest) {
         HashMap<String, Object> returnMessage = new HashMap<String,Object>();
@@ -160,6 +160,7 @@ public class ReviewService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
     /**
      * Delete review from database
      * @param movie The movie in the review;
@@ -174,10 +175,11 @@ public class ReviewService {
         userDAO.save(user);
         reviewDAO.delete(review);
     }
+
     /**
      * Likes a review
      * @param request
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject likeReview(LikeReviewRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -210,7 +212,7 @@ public class ReviewService {
      * @param movieId The movie of the review
      * @param token The token of the requester
      * @param userId The userId of the review
-     * @return
+     * @return {}, error message on its owns if there is an error
      */
     private JSONObject reviewErrorChecks(Long movieId, String token, Long userId) {
         Movie dbMovie = movieDAO.findMovieByID(movieId);

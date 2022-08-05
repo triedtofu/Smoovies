@@ -88,7 +88,7 @@ public class MovieService {
     /**
      * Adds a movie to the database
      * @param movie
-     * @return movie id, name, year
+     * @return movie id, name, year, error message on its owns if there is an error
      */
     public JSONObject addMovie(AddMovieRequest addMovieRequest) {
 
@@ -145,7 +145,7 @@ public class MovieService {
     /**
      * Grabs the complete details of a movie by id
      * @param id
-     * @return complete details of movie, all variables in Movies.java
+     * @return complete details of movie, all variables in Movies.java, error message on its owns if there is an error
      */
     public JSONObject  getMovieDetails(long id, String token) {
         //if (token.isEmpty()) {return ServiceErrors.generateErrorMessage("weird token");}
@@ -185,7 +185,7 @@ public class MovieService {
      * @param endYear
      * @param genres
      * @param contentRating
-     * @return
+     * @return List of movies, error message on its owns if there is an error
      */
     public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
         HashMap<String, Object> returnMessage = new HashMap<>();
@@ -234,7 +234,7 @@ public class MovieService {
     /**
      * Returns the homepage for a logged in user (top rated movies), and not logged in user.
      * @param token
-     * @return
+     * @return List of movies, error message on its owns if there is an error
      */
     public JSONObject homepage(String token) {
         String requiredFields = "id, name, year, poster, description, genres, averageRating";
@@ -270,7 +270,7 @@ public class MovieService {
      * Searches the database based on a query, returns based on title and then description.
      * @param searchRequest
      * @param token
-     * @return
+     * @return List of movies, actors and directors, error message on its owns if there is an error
      */
     public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
         String requiredFields = "id, name, year, poster, description, genres, averageRating, contentRating";
@@ -350,7 +350,7 @@ public class MovieService {
     /**
      * ADMIN FUNCTION : Deletes a movie from the database.
      * @param request
-     * @return
+     * @return {}, error message on its owns if there is an error
      */
     public JSONObject deleteMovie(DeleteMovieRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -386,7 +386,7 @@ public class MovieService {
     /**
      * Edit the fields of a movie.
      * @param editMovieRequest
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject editMovie(EditMovieRequest editMovieRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -443,15 +443,17 @@ public class MovieService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
+
     /**
      * Gets all genres that a movie has
-     * @return
+     * @return List of all genres, error message on its owns if there is an error
      */
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("genres",  new JSONArray(Genre.genreCollectionToStrList(genreDAO.findAll())));
         return new JSONObject(returnMessage);
     }
+
     /**
      * Adds an actor to a movie, and if the actor does not exist in the database, adds them to a database.
      * @param dbMovie
@@ -526,7 +528,7 @@ public class MovieService {
      * 10% simlarity in director - how many points per director it has.
      * 10% simlarity in actors - how many simlar actors does it have.
      * @param movie
-     * @return
+     * @return List of similar movies and their similarity scores
      */
     private HashMap<Movie, Double> similarMovies(Movie movie) {
         List<Movie> allMovies = movieDAO.findAll();
@@ -606,7 +608,7 @@ public class MovieService {
     /**
      * Find recommended movies based on the genres of movies that the user has placed reviews on
      * @param user_id
-     * @return
+     * @return List of movies that are recommended
      */
     private List<Movie> findRecommendedMovies(Long user_id) {
         List<Movie> recommendedMoviesList = new ArrayList<>();
@@ -655,8 +657,8 @@ public class MovieService {
         return recommendedMoviesList;
     }
     /**
-     * Returns the 12 top rated movies that has more than 5 reviews.
-     * @return
+     * Finds the 12 top rated movies that have more than 5 reviews.
+     * @return Returns the 12 top rated movies that has more than 5 reviews.
      */
     private List<Movie> topRated() {
         List<Movie> dbTopRated = movieDAO.topRated();

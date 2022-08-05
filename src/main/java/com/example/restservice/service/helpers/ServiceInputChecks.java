@@ -123,7 +123,7 @@ public class ServiceInputChecks {
     
     /**
      * Check if an email is unique (does not exist in database)
-     * @param email
+     * @param email 
      * @param userDAO
      * @return true if unique
      */
