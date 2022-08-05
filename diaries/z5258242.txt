@@ -30,3 +30,23 @@ Week 6
 Saturday
 - Meeting to discuss the next sprint. Allocated work on Add/Edit/Delete Movies as well as the admin functionalities on the frontend.
 - Discussed UI designes with teammates and have a rough idea of what we want to do for the homepage which I will implement the first draft of
+
+Week 7
+Thursday
+- Discussed sprint 2 and was given task of UI improvements for most pages, Admin screens and functionality as well as editing profile page.
+
+Week 8
+Thursday
+- Demo day. Took a few days break towards the retro meeting.
+
+Sunday
+- Retro meeting. And discussed quite a lot about what went good and bad. ultimately it was overestimating how much we could do.
+- also allocated work for all group members to do
+
+Week 9
+Thursday
+- Worked on like/dislike reviews, a few extra apicalls needed as well as work for our extra feature higherorlower game.
+
+Week 10
+Thursday
+- Worked on a lot of UI changes. Changed star rating system, small changes to higher or lower functionality.

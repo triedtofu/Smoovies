@@ -4,10 +4,14 @@ import json
 
 baseUrl = 'https://comp3900-lawnchair-front.herokuapp.com'
 
+movieData = []
+header = []
 with open('completeMovieData.csv', newline='', encoding='utf-8') as f:
+
     reader = csv.reader(f)
     header = next(reader)
-    movieData = list(reader)
+    for row in reader:
+        movieData.append(row)
 
 addMovieUrl = baseUrl + '/api/movie/addMovie'
 loginUrl = baseUrl + '/api/user/login'
@@ -21,12 +25,13 @@ for movie in movieData:
     movieDict["token"] = adminInfo.json()["token"]
     for i, data in enumerate(movie):
         if header[i] == "genres":
-            movieDict["genres"] = data.split(",")
+            movieDict["genres"] = list(map(lambda x: x.lower(), data.split(",")))
+            if movieDict["genres"] == ['']:
+              movieDict["genres"] = []
         else:
             movieDict[header[i]] = data
 
     movieDict['cast'] = ','.join(movieDict['cast'].split(',')[:3])
-
     # print("Movie is: ", movieDict)
 
     x = requests.post(addMovieUrl, json=movieDict)

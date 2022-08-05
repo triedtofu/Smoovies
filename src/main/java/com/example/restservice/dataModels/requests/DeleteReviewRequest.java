@@ -2,6 +2,9 @@ package com.example.restservice.dataModels.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class containing all fields for a request from REST API to delete a review
+ */
 public class DeleteReviewRequest {
     private Long movie_id;
     private Long user_id;

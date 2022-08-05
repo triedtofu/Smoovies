@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restservice.service.DirectorService;
 
+/**
+ * REST API controller for director routes
+ */
 @RestController
 @RequestMapping("api/director")
 public class DirectorController {

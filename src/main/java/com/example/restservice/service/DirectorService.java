@@ -7,7 +7,14 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.database.DirectorDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceInputChecks;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
 
+/**
+ * Service for Directors that performs backend operations dependent on REST API calls
+ */
 @Service
 public class DirectorService {
     @Autowired
@@ -16,10 +23,10 @@ public class DirectorService {
     @Autowired
     private UserBlacklistDataAccessService userBlacklistDAO;
     /**
-     * Returns and actor and all their movies.
+     * Finds a director and all their movies.
      * @param id
      * @param token
-     * @return
+     * @return a director and all their movies , error message on its owns if there is an error
      */
     public JSONObject getDirector(Long id, String token) {
 

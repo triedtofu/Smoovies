@@ -4,6 +4,10 @@ import com.example.restservice.dataModels.Movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+
+/**
+ * Class containing all fields for a request from REST API to add movies
+ */
 public class AddMovieRequest {
     
     private String token;
