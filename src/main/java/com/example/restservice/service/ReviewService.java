@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,9 +49,7 @@ public class ReviewService {
     public JSONObject addReview(AddReviewRequest addReviewRequest) {
         // split the request into its parts
         String token = addReviewRequest.getToken();
-
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         // check valid inputs
         // check movieId exists/is valid
         Movie movie = movieDAO.findMovieByID(addReviewRequest.getMovieId());
@@ -62,22 +61,14 @@ public class ReviewService {
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-
         User user = userDAO.findUserById(user_id);
-
         if (user == null) return ServiceErrors.userIdInvalidError();
-
         // check the user is not banned
         if (user.getIsBanned()) return ServiceErrors.userBannedError();
-
         Review dbReview = reviewDAO.findReview(movie.getId(), user.getId());
-
         if (dbReview != null) return ServiceErrors.reviewAlreadyExistsError();
-
         Review review = new Review(movie, user, addReviewRequest.getReview(), addReviewRequest.getRating());
-
         updateUserReviewGenrePreference(movie, user_id, review, true);
-
         movie.addReviewToMovie(review);
         user.addReviewUser(review);
         movie.recalculateAverageRating();
@@ -94,42 +85,36 @@ public class ReviewService {
      * @return
      */
     public JSONObject getUserReviews(Long id, String token) {
-        HashMap<String, Object> returnMessage = new HashMap<String,Object>();
-
-        User user = userDAO.findUserById(id);
-
-        if (user == null) return ServiceErrors.userIdInvalidError();
-        if (user.getIsBanned()) return ServiceErrors.userBannedError();
-
-        //Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
-        //if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
-        //The user_id of the authorisation
-        returnMessage.put("username", user.getName());
-        Set<Review> userReviews = user.getUserReviews();
-        //List<Review> listUserReviews = new ArrayList<>(userReviews);
-        if (token == null || token.isEmpty()) {
-            returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
-        }
-        if (token != null && !token.isEmpty()) {
-            // check that user is not trying to view a blacklisted users reviews
-            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+        User viewUser = userDAO.findUserById(id);
+        if (viewUser == null) return ServiceErrors.userIdInvalidError();
+        if (viewUser.getIsBanned()) return ServiceErrors.userBannedError();
+        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
+        if (!tokenCheck) return ServiceErrors.userTokenInvalidError();
+        
+        String requiredFields = "username";
+        JSONObject returnJSON = JSONObjectGenerators.userObject(requiredFields, viewUser, token);
+        //Check blacklist:
+        JSONArray reviewArray = new JSONArray();
+        if (token != null) {
+            Long requestUserId = ServiceJWTHelper.getTokenId(token, null);
+            User requestUser = userDAO.findUserById(requestUserId);
+            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(requestUserId);
+            String requiredReviewFields = "movieId, movieName, poster, review, rating, likes, liked";
             for (UserBlacklist blacklist: userBlacklist) {
                 if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
             }
-
-            Long user_id = ServiceJWTHelper.getTokenId(token, null);
-            if (user_id.equals(id)) {
-                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(true, user, userReviews));
-            } else {
-                returnMessage.put("reviews", ServiceHelperFunctions.reviewJSONArray(false, user, userReviews));
+            for (Review review : viewUser.getUserReviews()) {
+                reviewArray.put(JSONObjectGenerators.reviewObject(requiredReviewFields, review, requestUser));
             }
+        } else {
+            String requiredReviewFields = "movieId, movieName, poster, review, rating, likes";
+            for (Review review : viewUser.getUserReviews()) {
+                reviewArray.put(JSONObjectGenerators.reviewObject(requiredReviewFields, review, null));
+            }
+
         }
-
-        //If there is no token or the user_id does not match the id from the token
-
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        returnJSON.put("reviews", reviewArray);
+        return returnJSON;
     }
     /**
      * Check for:

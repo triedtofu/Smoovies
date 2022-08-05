@@ -1,11 +1,8 @@
 package com.example.restservice.service;
-
-import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 //import java.util.Optional;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,7 +47,6 @@ public class UserService {
     * @return userID, isAdmin, token
     */
     public JSONObject UserLogin(String email, String password) {
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // checks inputs for errors (in terms of formatting)
         if (!ServiceInputChecks.checkEmail(email)) {
@@ -70,7 +66,7 @@ public class UserService {
             return ServiceErrors.userBannedError();
         }
         String requiredFields = "token, userId, isAdmin, name";
-        return JSONObjectGenerators.userObject(requiredFields, user);
+        return JSONObjectGenerators.userObject(requiredFields, user, null);
     }
 
     /**
@@ -103,7 +99,7 @@ public class UserService {
 
             user = userDAO.addNewUser(user.getEmail(), user.getIsAdmin(), user.getName(), user.getPassword());
             String requiredFields = "token, userId, name";
-            return JSONObjectGenerators.userObject(requiredFields, user);
+            return JSONObjectGenerators.userObject(requiredFields, user, null);
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }
@@ -139,8 +135,6 @@ public class UserService {
                 if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
             }
         }
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
@@ -151,7 +145,7 @@ public class UserService {
             return ServiceErrors.userBannedError();
         }
         String requiredUserFields = "username";
-        JSONObject responseJSON = JSONObjectGenerators.userObject(requiredUserFields, user);
+        JSONObject responseJSON = JSONObjectGenerators.userObject(requiredUserFields, user, null);
         //TODO: Sort alphabetically
         String requiredMovieFields = "id, name, year, poster, description, genres, averageRating";
         for (Movie movie : user.getWishlistMovies()) {
@@ -390,10 +384,10 @@ public class UserService {
         String requiredBlacklistFields = "userId, username";
         for (int i = 0; i < userIdList.size(); i ++) {
             User user = userDAO.findUserById(userIdList.get(i).getBlacklistedUserId());
-            blacklistArray.put(JSONObjectGenerators.userObject(requiredBlacklistFields, user));
+            blacklistArray.put(JSONObjectGenerators.userObject(requiredBlacklistFields, user, null));
         }
         String requiredUserFields = "username";
-        JSONObject responseJson = JSONObjectGenerators.userObject(requiredUserFields, userDAO.findUserById(user_id));
+        JSONObject responseJson = JSONObjectGenerators.userObject(requiredUserFields, userDAO.findUserById(user_id), null);
         responseJson.put("users", blacklistArray);
         return responseJson;
     }
@@ -412,7 +406,7 @@ public class UserService {
         if (user == null) return ServiceErrors.userNotFound();
 
         String requiredFields = "name, email";
-        return JSONObjectGenerators.userObject(requiredFields, user);
+        return JSONObjectGenerators.userObject(requiredFields, user, null);
     }
     /**
      * Updates a users details 

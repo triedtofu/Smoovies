@@ -72,8 +72,10 @@ public class JSONObjectGenerators {
                 }
                 JSONArray reviewArray = new JSONArray();
                 for (Review review : reviewList) {
+                    if (review.getUser().getIsBanned()) continue;
                     reviewArray.put(reviewObject(requiredReviewFields, review, user));
                 }
+                returnMovie.put("reviews", reviewArray);
                 break;
                 case "averageRating" :
                 returnMovie.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, movie, token));
@@ -181,9 +183,10 @@ public class JSONObjectGenerators {
      * Generates a user JSON representation based on the required fields.
      * @param requiredFields
      * @param user
+     * @param token - ONLY used for checking if a user has liked a review, othewise pass through null
      * @return
      */
-    public static JSONObject userObject(String requiredFields, User user) {
+    public static JSONObject userObject(String requiredFields, User user, String token) {
         HashMap<String,Object> returnUser = new HashMap<>();
         List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
         for (String field : required) {
@@ -205,6 +208,7 @@ public class JSONObjectGenerators {
                 break;
                 case "email" :
                 returnUser.put("email", user.getEmail());
+                break;
             }
         }
         return new JSONObject(returnUser);
