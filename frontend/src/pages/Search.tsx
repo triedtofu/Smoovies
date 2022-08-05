@@ -89,11 +89,6 @@ const Search = () => {
 
     const name = searchParams.get('name') ?? '';
 
-    if (name === '') {
-      setFetched(true);
-      return;
-    }
-
     apiMovieSearch(name, myGenres, myContentRatings)
       .then((res) => {
         setMovies(res.movies);
