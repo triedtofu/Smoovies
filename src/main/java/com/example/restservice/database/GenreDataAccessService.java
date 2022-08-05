@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.Genre;
 
+/**
+ * Implementation of JpaRepository for managing the Genre models Data
+ */
 @Repository
 public interface GenreDataAccessService extends JpaRepository<Genre, Long> {
     @Query(value = "SELECT * from genres g WHERE g.name = LOWER(:name)", nativeQuery = true)

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.Director;
 
+/**
+ * Implementation of JpaRepository for managing the Director models Data
+ */
 @Repository
 public interface DirectorDataAccessService extends JpaRepository<Director, Long> {
     @Query(value = "SELECT * FROM directors d WHERE d.name = :name", nativeQuery = true)

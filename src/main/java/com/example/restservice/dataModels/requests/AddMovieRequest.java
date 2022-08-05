@@ -4,6 +4,7 @@ import com.example.restservice.dataModels.Movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+
 public class AddMovieRequest {
     
     private String token;

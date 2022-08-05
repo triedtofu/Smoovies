@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.Actor;
 
+/**
+ * Implementation of JpaRepository for managing the Actor models Data
+ */
 @Repository
 public interface ActorDataAccessService extends JpaRepository<Actor, Long> {
     @Query(value = "SELECT * FROM actors a WHERE a.name = :name", nativeQuery = true)

@@ -31,6 +31,9 @@ import com.example.restservice.service.ReviewService;
 
 //import com.example.restservice.api.ControllerResponses;
 
+/**
+ * REST API controller for movie routes
+ */
 @RestController
 @RequestMapping("/api/movie")
 public class MovieController {

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.User;
 
-//the Long is from id type 
+/**
+ * Implementation of JpaRepository for managing the User models Data
+ */
 @Repository 
 public interface UserDataAccessService extends JpaRepository<User, Long>{
     /**

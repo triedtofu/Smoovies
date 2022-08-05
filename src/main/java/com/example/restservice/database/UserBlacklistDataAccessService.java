@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.UserBlacklist;
 
+/**
+ * Implementation of JpaRepository for managing the UserBlacklist models Data
+ */
 @Repository
 public interface UserBlacklistDataAccessService extends JpaRepository<UserBlacklist, Long>{
     @Query(value = "SELECT * FROM userblacklist b WHERE b.user_id = :user_id", nativeQuery = true)

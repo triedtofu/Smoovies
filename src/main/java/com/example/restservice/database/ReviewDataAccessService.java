@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 
+/**
+ * Implementation of JpaRepository for managing the Review models Data
+ */
 @Repository
 public interface ReviewDataAccessService extends JpaRepository<Review, Long> {
     long deleteByMovie(Movie movie);

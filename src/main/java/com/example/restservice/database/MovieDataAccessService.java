@@ -9,7 +9,9 @@ import com.example.restservice.dataModels.Movie;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-//the Long is from id type 
+/**
+ * Implementation of JpaRepository for managing the Movie models Data
+ */
 @Repository 
 public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
     @Query(value = "SELECT * FROM movies limit 12", nativeQuery = true)

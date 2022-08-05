@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.restservice.dataModels.UserGenrePreferenceScore;
 
+/**
+ * Implementation of JpaRepository for managing the UserGenrePreferenceScore models Data
+ */
 @Repository
 public interface UserGenrePreferenceScoreDataAccessService extends JpaRepository<UserGenrePreferenceScore, Long> {
     @Query(value = "SELECT * FROM user_genre_preference_scores u WHERE u.user_id = :user_id and u.genre_id = :genre_id", nativeQuery = true)
