@@ -14,7 +14,7 @@ import { Review } from '../util/interface';
 import { motion } from 'framer-motion';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-import { CookiesProvider, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { apilikeUnlikeReview } from '../util/api';
 
 interface ReviewCardProps {

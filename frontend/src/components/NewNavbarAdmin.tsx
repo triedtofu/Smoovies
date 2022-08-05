@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -25,7 +24,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { Context, useContext } from '../context';
 import Search from './NewSearch';
 import Logo from './Logo';
-import { DarkMode, LightMode } from '@mui/icons-material';
 
 const pages = [
   ["Higher or Lower", "/higherorlower"]
@@ -90,9 +88,6 @@ const Navbar = (props: NavbarAdminProps) => {
         </ListItem>
 
         <List disablePadding>
-          {/* <ListItemButton sx={{ pl: 4 }}>
-            <ListItemText primary="Starred" />
-          </ListItemButton> */}
           {profilePages.map(item => (
             <ListItem key={item[0]} disablePadding>
               <ListItemButton sx={{ pl: 4 }} onClick={() => navigate(item[1])}>
@@ -181,7 +176,7 @@ const Navbar = (props: NavbarAdminProps) => {
               onClick={colorMode.toggleColorMode}
               color="inherit"
             >
-              {theme.palette.mode === 'dark' ? <DarkMode /> : <LightMode />}
+              {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
             </IconButton>
           </Box>
         </Toolbar>

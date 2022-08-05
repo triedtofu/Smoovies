@@ -28,16 +28,11 @@ const Wishlist = () => {
   const [errorStr, setErrorStr] = React.useState('');
 
   const removeMovie = (movieId: number) => {
-    try {
-      apiPutUserWishlist(cookies.token, movieId, false)
-        .then((_) => {
-          // delete movie
-          setMovies(movies.filter((movie) => movie.id != movieId));
-        })
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, movieId, false)
+      .then(() => {
+        // delete movie
+        setMovies(movies.filter((movie) => movie.id !== movieId));
+      });
   };
 
   React.useEffect(() => {

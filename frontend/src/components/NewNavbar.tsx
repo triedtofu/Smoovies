@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -46,13 +45,6 @@ const NewNavbar = () => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      {/* <Typography
-        variant="h6"
-        sx={{
-          my: 2,
-        }}>
-        <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Smoovies</a>
-      </Typography> */}
       <div style={{ margin: '5px' }}>
         <Logo/>
       </div>

@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 import Card from '@mui/material/Card';

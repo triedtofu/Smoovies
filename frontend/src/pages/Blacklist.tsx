@@ -1,6 +1,5 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
-import { useParams } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
 
@@ -9,25 +8,40 @@ import Container from '../components/MyContainer';
 import BlacklistPersonResultCard from '../components/BlacklistPersonResultCard';
 
 import { apiBlacklistUser } from '../util/api';
-import { parseJwt, getErrorMessage } from '../util/helper';
+import { getErrorMessage } from '../util/helper';
 import { BlacklistSummary } from '../util/interface';
 
 const Blacklist = () => {
-  const params = useParams();
   const [cookies] = useCookies();
 
   const [blacklistUsers, setBlacklistUsers] = React.useState<
     BlacklistSummary[] | undefined
   >(undefined);
 
+  const [errorStr, setErrorStr] = React.useState('');
+
   React.useEffect(() => {
+    setErrorStr('');
     setBlacklistUsers(undefined);
 
+    if (!cookies.token) {
+      setErrorStr('You must be logged in to view this page');
+      return;
+    }
+
     // get the blacklisted users
-    apiBlacklistUser(cookies.token).then((data) => {
-      setBlacklistUsers(data.users);
-    });
-  }, [params.id]);
+    apiBlacklistUser(cookies.token)
+      .then((data) => {
+        setBlacklistUsers(data.users);
+      })
+      .catch(error => setErrorStr(getErrorMessage(error)));
+  }, [cookies.token]);
+
+  if (errorStr) return (
+    <Container maxWidth="lg">
+      <h2>{errorStr}</h2>
+    </Container>
+  );
 
   if (!blacklistUsers) return <></>;
 

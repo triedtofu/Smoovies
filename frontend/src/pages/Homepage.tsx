@@ -21,11 +21,7 @@ const Homepage = () => {
 
   // fetch the movies when the page loads
   React.useEffect(() => {
-    try {
-      apiMovieHomepage(cookies.token).then((data) => setMovies(data.movies));
-    } catch (err) {
-      console.warn(err);
-    }
+    apiMovieHomepage(cookies.token).then(data => setMovies(data.movies));
   }, []);
 
   return (

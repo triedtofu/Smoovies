@@ -94,22 +94,17 @@ const Search = () => {
       return;
     }
 
-    try {
-      apiMovieSearch(name, myGenres, myContentRatings)
-        .then((res) => {
-          setMovies(res.movies);
-          setActors(res.actors);
-          setDirectors(res.directors);
-          setFetched(true);
-        })
-        .catch((err) => {
-          setMovies([]);
-          setFetched(true);
-        });
-    } catch (err) {
-      console.log(err);
-      setMovies([]);
-    }
+    apiMovieSearch(name, myGenres, myContentRatings)
+      .then((res) => {
+        setMovies(res.movies);
+        setActors(res.actors);
+        setDirectors(res.directors);
+        setFetched(true);
+      })
+      .catch(() => {
+        setMovies([]);
+        setFetched(true);
+      });
   }, [searchParams, genres, contentRatings]);
 
   React.useEffect(() => {

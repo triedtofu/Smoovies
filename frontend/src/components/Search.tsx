@@ -43,7 +43,7 @@ const Search = ({ submitSearch }: { submitSearch: (str: string) => void }) => {
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
-      <form onSubmit={() => submitSearch(movieSearch)}>
+      <form onSubmit={(e) => {e.preventDefault(); submitSearch(movieSearch);}}>
         <StyledInputBase
           placeholder="Search…"
           inputProps={{ 'aria-label': 'search' }}

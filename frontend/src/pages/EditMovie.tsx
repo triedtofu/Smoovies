@@ -40,7 +40,7 @@ const EditMovie = () => {
   ) => {
     const movieDetails = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
     apiEditMovie(cookies.token, movie!.id, movieDetails)
-      .then(_ => navigate(`/movie/${movie!.id}`))
+      .then(() => navigate(`/movie/${movie!.id}`))
       .catch(error => setErrorString(getErrorMessage(error)));
   };
 
@@ -53,9 +53,9 @@ const EditMovie = () => {
       return;
     }
 
-      apiGetMovie(movieId)
-        .then((data) => setMovie(data))
-        .catch(error => setErrorString(getErrorMessage(error)));
+    apiGetMovie(movieId)
+      .then((data) => setMovie(data))
+      .catch(error => setErrorString(getErrorMessage(error)));
   }, [params.id]);
 
 

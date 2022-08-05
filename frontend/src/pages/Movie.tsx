@@ -74,17 +74,15 @@ const Movie = () => {
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
 
-    try {
-      apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
+    apiUserWishlist(parseInt(parseJwt(cookies.token).jti))
+      .then(data => {
         if (data.movies.find((m) => m.id === movie.id)) {
           setButton(2);
         } else {
           setButton(1);
         }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch(error => setErrorStr(getErrorMessage(error)));
   }, [movie]);
 
   const WishlistButton = ({ state }: buttonProps) => {
@@ -148,14 +146,14 @@ const Movie = () => {
 
   const addMovieToWishlist = () => {
     apiPutUserWishlist(cookies.token, parseInt(params.id!), true)
-      .then((_) => setButton(2))
-      .catch((err) => console.log(err));
+      .then(() => setButton(2))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const removeMovieFromWishlist = () => {
     apiPutUserWishlist(cookies.token, parseInt(params.id!), false)
-      .then((_) => setButton(1))
-      .catch((err) => console.log(err));
+      .then(() => setButton(1))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const submitReview = (rating: number, review: string) => {
