@@ -19,8 +19,10 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 @Table(name = "movies")
@@ -276,11 +278,20 @@ public class Movie {
         }
     }
 
+
     public double getAverageRating() {
         return average_rating.doubleValue();
     }
 
     public void removeMovieReview(Review r) {
         movieReviews.remove(r);
+    }
+
+    public Set<Actor> getActorsInMovie() {
+        return this.actorsInMovie;
+    }
+
+    public Set<Director> getDirectorsInMovie() {
+        return this.directorsInMovie;
     }
 }

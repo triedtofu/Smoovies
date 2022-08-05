@@ -1,0 +1,13 @@
+@media (hover: hover) {
+  .movieCard:hover {
+    transform: scale(1.1);
+    transition: 0.2s linear 0.3s;
+  }
+}
+
+.genresDiv {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}

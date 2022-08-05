@@ -1,4 +1,18 @@
-.movieCard:hover {
-  transform: scale(1.5);
-  transition: 0.2s linear 0.3s;
+@media (hover: hover) {
+  .movieCard:hover {
+    transform: scale(1.1);
+    transition: 0.2s linear 0.3s;
+  }
+}
+
+.genresDiv {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.movieLink:hover {
+  text-decoration: underline;
+  text-decoration-color: '#b77a37';
 }

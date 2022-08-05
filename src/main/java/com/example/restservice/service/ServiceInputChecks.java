@@ -1,6 +1,6 @@
 package com.example.restservice.service;
 
-import com.example.restservice.dataModels.Movie;
+//import com.example.restservice.dataModels.Movie;
 //import com.example.restservice.dataModels.User;
 
 import com.example.restservice.database.UserDataAccessService;
@@ -15,11 +15,20 @@ import java.util.regex.*;
 public class ServiceInputChecks {
     
     
-    // Checks if id is valid format, true = valid
+    /**
+     * Checks if and id is of valid format
+     * @param id
+     * @return true if vaild
+     */
     public static Boolean checkId(long id) {
         return id > 0;
     }
-    // Checks if name is valid format, true = valid
+    
+    /**
+     * Checks is name is of valid format
+     * @param name
+     * @return true if valid
+     */
     public static Boolean checkName(String name) {
         CharacterIterator it = new StringCharacterIterator(name);
 
@@ -35,20 +44,32 @@ public class ServiceInputChecks {
         }
         return true;
     }
-    // Pattern Matching for Email Validation
+    /**
+     * Checks if email matches a regex pattern
+     * @param emailAddress
+     * @param regexPattern
+     * @return true if matches
+     */
     public static boolean patternMatches(String emailAddress, String regexPattern) {
         return Pattern.compile(regexPattern)
           .matcher(emailAddress)
           .matches();
     }
-    // Checks if email is of valid format
-    // TODO: Check if email is already in database
+    /**
+     * Checks if email is of valid format
+     * @param email
+     * @return true if valid
+     */
     public static Boolean checkEmail(String email) {
         String regexPattern = "^(.+)@(\\S+)$";
         return patternMatches(email, regexPattern);
     }
-    // Checks if password is valid format, true = valid
-    // Modified code from https://www.delftstack.com/howto/java/password-checker-java/
+    /**
+     * Checks if a password is of valid format.
+     * Modified code from https://www.delftstack.com/howto/java/password-checker-java/
+     * @param Password
+     * @return error message if invalid and "" if valid
+     */
     public static String checkPassword(String Password) {
         // Specify the minimum and maximum number of letters in a password
         final int min = 8; 
@@ -100,13 +121,12 @@ public class ServiceInputChecks {
         return "";
     }
     
-    // TODO: checks all variables in the "movie" object are valid, true = valid
-    public static Boolean checkMovie(Movie movie) {
-        return true;
-    }
-
-    // TODO: check if the email already exists in db, false = exists, true = does not exist = valid
-    // Will have to clear database each time to test this 
+    /**
+     * Check if an email is unique (does not exist in database)
+     * @param email
+     * @param userDAO
+     * @return true if unique
+     */
     public static Boolean checkUniqueEmail(String email, UserDataAccessService userDAO) {
         return userDAO.uniqueEmail(email);
     }

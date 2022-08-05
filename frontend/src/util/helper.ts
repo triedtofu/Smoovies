@@ -28,3 +28,13 @@ export const youtubeURLToCode = (url: string) => {
 
   return null;
 }
+
+/**
+ * 
+ * @param low 
+ * @param high 
+ * @returns random integer inclusive from low to high
+ */
+export const randInt = (low: number, high: number) => {
+  return Math.floor((Math.random() * (high - low + 1)) + low);
+}

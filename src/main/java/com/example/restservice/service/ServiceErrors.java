@@ -86,11 +86,21 @@ public class ServiceErrors {
         return generateErrorMessage("Invalid reset code.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "A user is unable to add 2 reviews to a movie."}
+     */
     public static JSONObject reviewAlreadyExistsError() {
-        return generateErrorMessage("A user is unable to add 2 reviews to a movie");
+        return generateErrorMessage("A user is unable to add 2 reviews to a movie.");
     }
 
-
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "The user is already in the blacklist."}
+     */
+    public static JSONObject userAlreadyInBlacklist() {
+        return generateErrorMessage("The user is already in the blacklist.");
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 403 FORBIDDEN errors                                  //
@@ -155,6 +165,15 @@ public class ServiceErrors {
         return generateErrorMessage("User is banned.");
     }
 
+    /**
+     * Returns JSONObject with error message, case where user tries to view info (reviews/wishlist etc) of a user
+     * they have blacklisted
+     * @return {"error": "You have blacklisted this user, you can not view their info."}
+     */
+    public static JSONObject cannotViewBlacklistedUser() {
+        return generateErrorMessage("You have blacklisted this user, you cannot view their info");
+    }
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                  //
     //                                       Http 404 NOT_FOUND errors                                  //
@@ -170,7 +189,7 @@ public class ServiceErrors {
     }
 
     public static JSONObject userNotFound() {
-        return generateErrorMessage("User is not found");
+        return generateErrorMessage("User not found");
     }
 
     public static JSONObject reviewNotFound() {
@@ -207,6 +226,14 @@ public class ServiceErrors {
      */
     public static JSONObject userNotFoundFromTokenIdError() {
         return generateErrorMessage("User not found, userId in token does not exist in database.");
+    }
+
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User not found in blacklist."}
+     */
+    public static JSONObject userNotFoundInBlacklist() {
+        return generateErrorMessage("User not found in blacklist.");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////

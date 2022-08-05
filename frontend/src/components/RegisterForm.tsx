@@ -22,6 +22,10 @@ const RegisterForm = (props: RegisterProps) => {
 
   const [passwordErr, setPasswordErr] = React.useState('');
 
+  const [showPasswords, setShowPasswords] = React.useState(false);
+
+  const toggleProps = { value: showPasswords, toggle: () => setShowPasswords(!showPasswords) };
+
   const signupSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (password1 === password2) {
@@ -66,6 +70,7 @@ const RegisterForm = (props: RegisterProps) => {
               setPassword1(e.target.value)
             }
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <MyFormControl>
@@ -77,6 +82,7 @@ const RegisterForm = (props: RegisterProps) => {
               setPassword2(e.target.value)
             }
             error={!!passwordErr}
+            toggle={toggleProps}
           />
         </MyFormControl>
         <FormLabel error={!!passwordErr}>{passwordErr}</FormLabel>
@@ -89,7 +95,7 @@ const RegisterForm = (props: RegisterProps) => {
 
       <div className={styles.box}>
         Already have an account?{' '}
-        <MyLink className={styles.boxLink} to="/login">
+        <MyLink className={styles.boxLink} href="/login">
           Login
         </MyLink>
       </div>

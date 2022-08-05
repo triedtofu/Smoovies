@@ -1,13 +1,14 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import { apiRequestResetPassword } from '../util/api';
 import { getErrorMessage } from '../util/helper';
 
 import MakePage from '../components/MakePage';
 import ResetPasswordForm from '../components/ResetPasswordForm';
+import Container from '../components/MyContainer';
 
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 const ForgotPassword = () => {
   const [errorStr, setErrorStr] = React.useState('');
@@ -25,7 +26,9 @@ const ForgotPassword = () => {
 
   if (success) return (
     <Container maxWidth="md">
-      <h2>An email with a link has been sent to your registered email account</h2>
+      <Typography variant="h5" component="h2">
+        An email with a link has been sent to your registered email account
+      </Typography>
     </Container>
   );
 
@@ -35,8 +38,8 @@ const ForgotPassword = () => {
         <title>Forgot Password - Smoovies</title>
       </Helmet>
 
-      <h2>Forgot your password?</h2>
-      <h2>Enter your email.</h2>
+      <Typography gutterBottom variant="h5" component="h2">Forgot your password?</Typography>
+      <Typography variant="h5" component="h2">Enter your email.</Typography>
       <ResetPasswordForm submit={resetPassword} error={errorStr} />
     </Container>
   );

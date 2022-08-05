@@ -7,13 +7,14 @@ import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Typography from '@mui/material/Typography';
 
 import styles from './ReviewResultCard.module.css';
 import MyLink from './MyLink';
 import ConfirmModal from './ConfirmModal';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { UserReview } from '../util/interface';
-
 
 interface ReviewResultCardProps {
   buttonClick: (() => void) | null;
@@ -21,45 +22,67 @@ interface ReviewResultCardProps {
   error?: string;
 }
 
-const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps) => {
+const ReviewResultCard = ({
+  buttonClick,
+  review,
+  error,
+}: ReviewResultCardProps) => {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
 
   return (
-    <Card className={styles.card}>
-      <CardMedia
-        component="img"
-        image={review.poster}
-        alt={`Movie poster for ${review.movieName}`}
-        id={styles.card_media}
-      />
-      <CardContent className={styles.card_content}>
-        <div style={{ display: 'flex' }}>
-          <h1>
-            <MyLink to={`/movie/${review.movieId}`}>{review.movieName}</MyLink> &nbsp;&nbsp;&nbsp;
-            <Rating name="read-only" value={review.rating} readOnly />
-            &nbsp;&nbsp;&nbsp;
-            {review.rating} / 5
-          </h1>
-        </div>
-        <Divider variant="middle" />
-        <div style={{ marginTop: '15px', marginLeft: '4px' }}>
-          <span style={{ fontSize: '18px' }}>{review.review}</span>
-        </div>
-      </CardContent>
-      {buttonClick ? (
-        <Button
-          variant="outlined"
-          color="error"
-          sx={{ margin: '10px' }}
-          onClick={() => setConfirmDelete(true)}
-        >
-          <DeleteIcon></DeleteIcon>
-        </Button>
-      ) : (
-        <div></div>
-      )}
+    <>
+      <Card className={styles.card}>
+        <CardMedia
+          component="img"
+          image={review.poster}
+          alt={`Movie poster for ${review.movieName}`}
+          className={styles.cardMedia}
+        />
+        <CardContent className={styles.cardContent}>
+          <div className={styles.reviewDiv}>
+            <div className={styles.reviewHead}>
+              <Typography variant="h5" component="h2">
+                <MyLink href={`/movie/${review.movieId}`}>
+                  {review.movieName}
+                </MyLink>
+              </Typography>
+              <div className={styles.ratingDiv}>
+                <Rating name="read-only" value={review.rating} readOnly />
+                {/* <Typography variant="h5" component="h2">
+                  {review.rating} / 5
+                </Typography> */}
+                <Button
+                  disabled
+                  variant="outlined"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderColor: '#bebebe',
+                  }}
+                >
+                  <FavoriteIcon style={{ color: '#a9a9a9' }} />
+                  &nbsp;
+                  <span style={{ color: '#bebebe' }}>{review.likes}</span>
+                </Button>
+              </div>
+            </div>
+            <Divider />
+            <p>{review.review}</p>
+          </div>
 
-      {buttonClick && confirmDelete &&
+          {buttonClick ? (
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <DeleteIcon></DeleteIcon>
+            </Button>
+          ) : (
+            <div></div>
+          )}
+        </CardContent>
+      </Card>
+      {buttonClick && confirmDelete && (
         <ConfirmModal
           title="Delete review"
           body="Are you sure you want to delete this review? This action can't be undone."
@@ -67,8 +90,8 @@ const ReviewResultCard = ({ buttonClick, review, error }: ReviewResultCardProps)
           cancel={() => setConfirmDelete(false)}
           error={error ?? ''}
         />
-      }
-    </Card>
+      )}
+    </>
   );
 };
 

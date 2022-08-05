@@ -1,14 +1,16 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
-import Container from '@mui/material/Container';
-
+import Container from '../components/MyContainer';
 import NewMovieForm, { SubmitMovie } from '../components/NewMovieForm';
 
 import { apiGetGenres, apiAddMovie } from '../util/api';
 import { getErrorMessage } from '../util/helper';
+
+import Typography from '@mui/material/Typography';
 
 const AddMovie = () => {
   const [cookies] = useCookies();
@@ -17,6 +19,9 @@ const AddMovie = () => {
   const [newMovieErr, setNewMovieErr] = React.useState('');
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
+  /**
+   * Calls the api to add a new movie
+   */
   const newMovie: SubmitMovie = (
     name,
     year,
@@ -36,16 +41,26 @@ const AddMovie = () => {
   };
 
   React.useEffect(() => {
+    // get the list of possible genres
     apiGetGenres().then(data => setAllGenres(data.genres));
   }, []);
 
+  // check whether the user is an admin
   if (!cookies.token || !cookies.admin) return  (
-    <h2>Access denied. Only admins can access this page.</h2>
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h2">Access denied. Only admins can access this page.</Typography>
+    </Container>
   );
 
   return (
     <Container maxWidth="sm">
-      <h1>Add a Movie</h1>
+      <Helmet>
+        <title>Add a Movie - Smoovies</title>
+      </Helmet>
+
+      <Typography gutterBottom variant="h4" component="h1">
+        Add a Movie
+      </Typography>
       <NewMovieForm submit={newMovie} error={newMovieErr} allGenres={allGenres} />
     </Container>
   );

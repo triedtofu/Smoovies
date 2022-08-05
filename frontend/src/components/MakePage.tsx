@@ -1,10 +1,10 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
-import Navbar from './Navbar';
-import NavbarLoggedIn from './NavbarLoggedIn';
-import NavbarAdmin from './NavbarAdmin';
+import Navbar from './NewNavbar';
+import NavbarLoggedIn from './NewNavbarLoggedIn';
+import NavbarAdmin from './NewNavbarAdmin';
 
 import { parseJwt } from '../util/helper';
 

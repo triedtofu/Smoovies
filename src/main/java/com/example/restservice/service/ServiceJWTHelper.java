@@ -20,22 +20,24 @@ public class ServiceJWTHelper {
     //Sample method to construct a JWT
     public static String generateJWT(String id, String subject, String signKey) {
         
-        long ttlMillis = tokenTimeInMilliSeconds();
-
+        
         //The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-
+        
         //We will sign our JWT with our ApiKey secret
         byte[] apiKeySecretBytes;
+        long ttlMillis;
         if (signKey != null) {
             // if sign key isnt long enough, pad it 
             signKey = padSignKey(signKey);
             apiKeySecretBytes = DatatypeConverter.parseBase64Binary(signKey);
+            ttlMillis = resetTokenTimeInMilliSeconds();
         } else {
             apiKeySecretBytes = DatatypeConverter.parseBase64Binary(defaultSignKey);
+            ttlMillis = loginTokenTimeInMilliSeconds();
         }
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
     
@@ -81,14 +83,22 @@ public class ServiceJWTHelper {
         }
     }
 
-    private static long tokenTimeInMilliSeconds() {
-        // currently 1 hr
-        return 60 * 60 * 1000; 
+    private static long loginTokenTimeInMilliSeconds() {
+        // currently 1 month
+        return 30 * 24 * 60 * 60 * 1000; 
     }
 
-    public static long tokenTimeInHours() {
-        // currently 1 hr
-        return tokenTimeInMilliSeconds()/60/60/1000; 
+    public static long loginTokenTimeInHours() {
+        return loginTokenTimeInMilliSeconds()/60/60/1000; 
+    }
+
+    private static long resetTokenTimeInMilliSeconds() {
+            // currently 1 hour
+            return 60 * 60 * 1000; 
+    }
+
+    public static long resetTokenTimeInHours() {
+        return resetTokenTimeInMilliSeconds()/60/60/1000; 
     }
 
     public static String getTokenSubject(String jwt, String signKey) {
@@ -100,7 +110,27 @@ public class ServiceJWTHelper {
         
     }
 
+    /**
+     *  Checks that a users token is valid on GET request
+     * @param jwt
+     * @param signKey
+     * @return true if valid
+     */
+    public static Boolean verifyUserGetRequestToken(String jwt, String signKey) {
+        // case where no token (e.g not logged in)
+        if (jwt == null) {
+            return true;
+        }
+        // case where logged in
+        Claims claims = verifyJWT(jwt, signKey);
+        if (claims != null) {
+            return true;
+        }
+        return false;
+    }
+
     public static Long getTokenId(String jwt, String signKey) {
+
         Claims claims = verifyJWT(jwt, signKey);
         if (claims != null) {
             return Long.valueOf(claims.getId());
