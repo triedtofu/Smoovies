@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 import org.json.JSONObject;
 
-import com.example.restservice.service.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceErrors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
