@@ -6,7 +6,6 @@
   width: 100%;
   position: fixed;
   left: -50%;
-  /* overflow: hidden; */
 }
 
 .endScreen {
@@ -15,9 +14,7 @@
   height: 100%;
   flex-direction: column;
   align-items: center;
-  /* color: white; */
   justify-content: center;
-  /* background-color: black; */
   font-size: 1.35rem;
 }
 
