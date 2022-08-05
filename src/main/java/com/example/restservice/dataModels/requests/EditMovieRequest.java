@@ -4,6 +4,9 @@ import com.example.restservice.dataModels.Movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * Class containing all fields for a request from REST API to edit a movie
+ */
 public class EditMovieRequest {
 
     private String token;

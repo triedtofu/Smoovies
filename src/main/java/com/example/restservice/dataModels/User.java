@@ -3,7 +3,7 @@ package com.example.restservice.dataModels;
 import java.util.HashSet;
 import java.util.Set;
 
-//import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +17,9 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * Entity that represents a user.
+ */
 @Entity
 @Table(name = "users")
 public class User {

@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,7 +14,13 @@ import com.example.restservice.database.UserBlacklistDataAccessService;
 
 
 public class ServiceGetRequestHelperFunctions {
-
+    /**
+     * Gets the average rating for a movie for a logged in user, taking into account thier blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return Average rating of a movie that the given user will see
+     */
     public static double getMovieAverageRatingByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)
@@ -40,7 +46,13 @@ public class ServiceGetRequestHelperFunctions {
         // round to 1dp
         return (double)Math.round(averageRating.doubleValue() * 10d) / 10d;
     }
-
+    /**
+     * Gets the reviews on a movie that a user should see, taking into account their blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return reviews on a movie that the user should see
+     */
     public static List<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)

@@ -48,9 +48,6 @@ const ReviewResultCard = ({
               </Typography>
               <div className={styles.ratingDiv}>
                 <Rating name="read-only" value={review.rating} readOnly />
-                {/* <Typography variant="h5" component="h2">
-                  {review.rating} / 5
-                </Typography> */}
                 <Button
                   disabled
                   variant="outlined"

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.restservice.service.ActorService;
 
+/**
+ * REST API controller for actor routes
+ */
 @RestController
 @RequestMapping("/api/actor")
 public class ActorController {

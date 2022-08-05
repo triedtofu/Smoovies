@@ -21,9 +21,9 @@ import { randInt, getErrorMessage } from '../util/helper';
 import { HigherOrLowerData } from '../util/interface';
 
 const transition = {
-  x: { type: "tween", duration: 1},
-  layout: { type: "tween", duration: 1},
-}
+  x: { type: 'tween', duration: 1 },
+  layout: { type: 'tween', duration: 1 },
+};
 
 let timeout: undefined | NodeJS.Timeout = undefined;
 let selectedHigher = false;
@@ -31,10 +31,14 @@ let selectedHigher = false;
 const HigherOrLower = () => {
   const navigate = useNavigate();
 
-  const [gameStatus, setGameStatus] = React.useState<"init" | "playing" | "animating" | "next" | "ending" | "end" | "win">("init");
+  const [gameStatus, setGameStatus] = React.useState<
+    'init' | 'playing' | 'animating' | 'next' | 'ending' | 'end' | 'win'
+  >('init');
 
   const [startYear, setStartYear] = React.useState('1888');
-  const [endYear, setEndYear] = React.useState(new Date().getFullYear().toString());
+  const [endYear, setEndYear] = React.useState(
+    new Date().getFullYear().toString()
+  );
   const [genres, setGenres] = React.useState<string[]>([]);
   const [contentRatings, setContentRatings] = React.useState<string[]>([]);
 
@@ -53,7 +57,7 @@ const HigherOrLower = () => {
 
   const [errorStr, setErrorStr] = React.useState('');
 
-  const newGame = (len : number) => {
+  const newGame = (len: number) => {
     setScore(0);
 
     const indexes: number[] = [];
@@ -69,19 +73,19 @@ const HigherOrLower = () => {
     setIndex3(indexes[3]);
 
     setGameStatus('playing');
-  }
+  };
 
   React.useEffect(() => {
     // get list of genres
-    apiGetGenres().then(res => setAllGenres(res.genres));
+    apiGetGenres().then((res) => setAllGenres(res.genres));
 
     () => clearTimeout(timeout);
   }, []);
 
-  const handleClick = (higher : boolean) => {
+  const handleClick = (higher: boolean) => {
     selectedHigher = higher;
     setGameStatus('animating');
-  }
+  };
 
   const changeMovie = () => {
     let rand = randInt(0, data.length - 1);
@@ -94,12 +98,18 @@ const HigherOrLower = () => {
     setIndex1(index2);
     setIndex2(index3);
     setIndex3(rand);
-  }
+  };
 
   const checkCorrect = () => {
-    if (selectedHigher && data[index1].averageRating <= data[index2].averageRating) {
+    if (
+      selectedHigher &&
+      data[index1].averageRating <= data[index2].averageRating
+    ) {
       setScore(score + 1);
-    } else if (!selectedHigher && data[index1].averageRating >= data[index2].averageRating) {
+    } else if (
+      !selectedHigher &&
+      data[index1].averageRating >= data[index2].averageRating
+    ) {
       setScore(score + 1);
     } else {
       setGameStatus('ending');
@@ -112,7 +122,7 @@ const HigherOrLower = () => {
 
     setGameStatus('next');
     changeMovie();
-  }
+  };
 
   const AnimatedNumber = ({ value }: { value: number }) => {
     const animatedValue = useSpring<{ val: number }>({
@@ -122,7 +132,7 @@ const HigherOrLower = () => {
       delay: 200,
       onRest: () => {
         if (gameStatus === 'animating') checkCorrect();
-      }
+      },
     });
 
     if (gameStatus === 'animating') {
@@ -132,13 +142,13 @@ const HigherOrLower = () => {
         </animated.span>
       );
     } else if (gameStatus === 'ending') {
-      return <div className={styles.rating}>{value}</div>
+      return <div className={styles.rating}>{value}</div>;
     }
 
     return <></>;
-  }
+  };
 
-  const handleSubmit = (e : FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     setErrorStr('');
@@ -148,14 +158,17 @@ const HigherOrLower = () => {
     const endYearInt = parseInt(endYear);
 
     if (startYearInt > endYearInt) {
-      setErrorStr("Start year cannot be greater than End year");
+      setErrorStr('Start year cannot be greater than End year');
+      setLoadingMovies(false);
       return;
     }
 
     apiGetHigherOrLower(startYearInt, endYearInt, genres, contentRatings)
-      .then(res => {
+      .then((res) => {
         if (res.movies.length < 10) {
-          setErrorStr("Sorry, there aren't enough movies that match the criteria");
+          setErrorStr(
+            "Sorry, there aren't enough movies that match the criteria"
+          );
           setLoadingMovies(false);
           return;
         }
@@ -164,141 +177,159 @@ const HigherOrLower = () => {
         newGame(res.movies.length);
         setLoadingMovies(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setErrorStr(getErrorMessage(error));
         setLoadingMovies(false);
       });
-  }
+  };
 
-  if (gameStatus === 'init') return (
-    <div className={styles.endScreen}>
-      <Helmet>
-        <title>Higher or Lower - Smoovies</title>
-      </Helmet>
+  if (gameStatus === 'init')
+    return (
+      <div className={styles.endScreen}>
+        <Helmet>
+          <title>Higher or Lower - Smoovies</title>
+        </Helmet>
 
-      <Typography gutterBottom variant="h4" component="h1">Higher or Lower Menu</Typography>
+        <Typography gutterBottom variant="h4" component="h1">
+          Higher or Lower Menu
+        </Typography>
 
-      <form onSubmit={handleSubmit} style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {errorStr && <FormLabel error>{errorStr}</FormLabel>}
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            width: '50%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+          }}
+        >
+          {errorStr && <FormLabel error>{errorStr}</FormLabel>}
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <TextField
+              id="outlined-number"
+              label="Start year"
+              type="number"
+              size="small"
+              sx={{ flex: '1' }}
+              value={startYear}
+              onChange={(e) => setStartYear(e.target.value)}
+              helperText="Start year (inclusive)"
+              required
+            />
 
-          <TextField
-            id="outlined-number"
-            label="Start year"
-            type="number"
+            <TextField
+              id="outlined-number"
+              label="End year"
+              type="number"
+              size="small"
+              sx={{ flex: '1' }}
+              value={endYear}
+              onChange={(e) => setEndYear(e.target.value)}
+              helperText="End year (inclusive)"
+              required
+            />
+          </div>
+
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={[
+              'NR',
+              'G',
+              'PG',
+              'PG-13',
+              'M',
+              'MA 15+',
+              'R',
+              'TV-PG',
+              'TV-14',
+            ]}
+            autoHighlight
             size="small"
-            sx={{ flex: '1' }}
-            value={startYear}
-            onChange={e => setStartYear(e.target.value)}
-            helperText="Start year (inclusive)"
-            required
+            value={contentRatings}
+            onChange={(_, value) => setContentRatings(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Content Rating"
+                helperText="Optional: Filter the movies based on their content rating"
+              />
+            )}
           />
 
-          <TextField
-            id="outlined-number"
-            label="End year"
-            type="number"
+          <Autocomplete
+            className={styles.flexContents2}
+            multiple
+            id="tags-standard"
+            options={allGenres}
+            autoHighlight
             size="small"
-            sx={{ flex: '1' }}
-            value={endYear}
-            onChange={e => setEndYear(e.target.value)}
-            helperText="End year (inclusive)"
-            required
+            loading
+            loadingText="Loading..."
+            value={genres}
+            onChange={(_, value) => setGenres(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Genres"
+                helperText="Optional: Genres which the movies must have at least one of"
+              />
+            )}
           />
-        </div>
 
-        <Autocomplete
-          multiple
-          id="tags-standard"
-          options={['NR', 'G', 'PG', 'PG-13', 'M', 'MA 15+', 'R', 'TV-PG', 'TV-14']}
-          autoHighlight
-          size="small"
-          value={contentRatings}
-          onChange={(_, value) => setContentRatings(value)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Content Rating"
-              helperText="Optional: Filter the movies based on their content rating"
-            />
-          )}
-        />
+          <Button variant="contained" type="submit" disabled={loadingMovies}>
+            Start game
+          </Button>
+        </form>
 
-        <Autocomplete
-          className={styles.flexContents2}
-          multiple
-          id="tags-standard"
-          options={allGenres}
-          autoHighlight
-          size="small"
-          loading
-          loadingText="Loading..."
-          value={genres}
-          onChange={(_, value) => setGenres(value)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Genres"
-              helperText="Optional: Genres which the movies must have at least one of"
-            />
-          )}
-        />
-
-        <Button variant="contained" type="submit" disabled={loadingMovies}>
-          Start game
+        <Button
+          variant="text"
+          className={styles.endHomeButton}
+          onClick={() => navigate('/')}
+        >
+          Home
         </Button>
-      </form>
-
-      <Button
-        variant="text"
-        className={styles.endHomeButton}
-        onClick={() => navigate('/')}
-      >
-        Home
-      </Button>
-    </div>
-  );
+      </div>
+    );
 
   if (index1 < 0 || index2 < 0) return <></>;
 
-  if (gameStatus === 'end') return (
-    <div className={styles.endScreen}>
+  if (gameStatus === 'end')
+    return (
+      <div className={styles.endScreen}>
+        <div>You scored: </div>
 
-      <div>You scored: </div>
+        <div className={styles.endScore}>{score}</div>
 
-      <div className={styles.endScore}>{score}</div>
+        <Button
+          variant="contained"
+          color="error"
+          className={styles.button}
+          onClick={() => newGame(data.length)}
+        >
+          Play again
+        </Button>
 
-      <Button
-        variant="contained"
-        color="error"
-        className={styles.button}
-        onClick={() => newGame(data.length)}
-      >
-        Play again
-      </Button>
+        <Button
+          variant="contained"
+          className={styles.button}
+          onClick={() => setGameStatus('init')}
+        >
+          Go to menu
+        </Button>
 
-      <Button
-        variant="contained"
-        className={styles.button}
-        onClick={() => setGameStatus('init')}
-      >
-        Go to menu
-      </Button>
-
-      <Button
-        variant="text"
-        className={styles.endHomeButton}
-        onClick={() => navigate('/')}
-      >
-        Home
-      </Button>
-    </div>
-  );
+        <Button
+          variant="text"
+          className={styles.endHomeButton}
+          onClick={() => navigate('/')}
+        >
+          Home
+        </Button>
+      </div>
+    );
 
   return (
-    <div
-      className={styles.flexDiv}
-    >
+    <div className={styles.flexDiv}>
       <AnimatePresence initial={false}>
         <motion.div
           key={`${data[index0].name} (${data[index0].year})`}
@@ -307,7 +338,9 @@ const HigherOrLower = () => {
           layoutId={`${data[index0].name} (${data[index0].year})`}
           transition={transition}
         >
-          <h2 className={styles.movieTitle}>{data[index0].name} ({data[index0].year})</h2>
+          <h2 className={styles.movieTitle}>
+            {data[index0].name} ({data[index0].year})
+          </h2>
 
           <p>has a</p>
 
@@ -324,7 +357,9 @@ const HigherOrLower = () => {
           transition={transition}
           onLayoutAnimationComplete={() => setGameStatus('playing')}
         >
-          <h2 className={styles.movieTitle}>{data[index1].name} ({data[index1].year})</h2>
+          <h2 className={styles.movieTitle}>
+            {data[index1].name} ({data[index1].year})
+          </h2>
 
           <p>has a</p>
 
@@ -340,29 +375,35 @@ const HigherOrLower = () => {
           layoutId={`${data[index2].name} (${data[index2].year})`}
           transition={transition}
         >
-          <h2 className={styles.movieTitle}>{data[index2].name} ({data[index2].year})</h2>
+          <h2 className={styles.movieTitle}>
+            {data[index2].name} ({data[index2].year})
+          </h2>
 
           <p>has a</p>
 
-          {(gameStatus === 'playing' || gameStatus === 'next') && <><Button
-            className={styles.button}
-            variant="contained"
-            color="success"
-            startIcon={<ArrowUpwardIcon />}
-            onClick={() => handleClick(true)}
-          >
-            Higher
-          </Button>
+          {(gameStatus === 'playing' || gameStatus === 'next') && (
+            <>
+              <Button
+                className={styles.button}
+                variant="contained"
+                color="success"
+                startIcon={<ArrowUpwardIcon />}
+                onClick={() => handleClick(true)}
+              >
+                Higher
+              </Button>
 
-          <Button
-            className={styles.button}
-            variant="contained"
-            color="error"
-            startIcon={<ArrowDownwardIcon />}
-            onClick={() => handleClick(false)}
-          >
-            Lower
-          </Button></>}
+              <Button
+                className={styles.button}
+                variant="contained"
+                color="error"
+                startIcon={<ArrowDownwardIcon />}
+                onClick={() => handleClick(false)}
+              >
+                Lower
+              </Button>
+            </>
+          )}
 
           <AnimatedNumber value={data[index2].averageRating} />
 
@@ -376,7 +417,9 @@ const HigherOrLower = () => {
           layoutId={`${data[index3].name} (${data[index3].year})`}
           transition={transition}
         >
-          <h2 className={styles.movieTitle}>{data[index3].name} ({data[index3].year})</h2>
+          <h2 className={styles.movieTitle}>
+            {data[index3].name} ({data[index3].year})
+          </h2>
 
           <p>has a</p>
 
@@ -423,13 +466,27 @@ const HigherOrLower = () => {
         Home
       </Button>
 
-      {(gameStatus === 'playing' || gameStatus === 'animating') && <div className={styles.center}>VS</div>}
+      {(gameStatus === 'playing' || gameStatus === 'animating') && (
+        <div className={styles.center}>VS</div>
+      )}
 
-      {gameStatus === 'next' &&
-      <div className={`${styles.center} ${styles.circle}`} id={styles.correct}><CheckIcon sx={{ width: '3rem', height: '3rem' }} /></div>}
+      {gameStatus === 'next' && (
+        <div
+          className={`${styles.center} ${styles.circle}`}
+          id={styles.correct}
+        >
+          <CheckIcon sx={{ width: '3rem', height: '3rem' }} />
+        </div>
+      )}
 
-      {gameStatus === 'ending' &&
-      <div className={`${styles.center} ${styles.circle}`} id={styles.incorrect}><CloseIcon sx={{ width: '3rem', height: '3rem' }} /></div>}
+      {gameStatus === 'ending' && (
+        <div
+          className={`${styles.center} ${styles.circle}`}
+          id={styles.incorrect}
+        >
+          <CloseIcon sx={{ width: '3rem', height: '3rem' }} />
+        </div>
+      )}
     </div>
   );
 };

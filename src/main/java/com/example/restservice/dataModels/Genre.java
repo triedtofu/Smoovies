@@ -15,7 +15,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * Entity that represents a genre
+ */
 @Entity
 @Table(name = "genres")
 public class Genre {
@@ -41,7 +43,9 @@ public class Genre {
     public String getName() {
         return this.name;
     }
-
+    /**
+     * Returns the list of genres as strings.
+     */
     public static List<String> genreCollectionToStrList(Collection<Genre> genres) {
         List<String> genreList = new ArrayList<>();
         for (Genre genre : genres) genreList.add(genre.getName());

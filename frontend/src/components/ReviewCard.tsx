@@ -86,8 +86,6 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
             emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
           />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          {/* <StarIcon className={styles.starRating}></StarIcon> &nbsp;
-          {review.rating}/5 &nbsp;&nbsp;&nbsp;&nbsp; */}
           {cookies.token && (
             <motion.div
               whileHover={{ scale: 1.1 }}

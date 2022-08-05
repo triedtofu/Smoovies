@@ -13,6 +13,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+/**
+ * Entity that represents a director
+ */
 @Entity
 @Table(name = "directors")
 public class Director {

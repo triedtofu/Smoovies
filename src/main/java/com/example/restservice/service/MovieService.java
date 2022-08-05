@@ -5,22 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-//import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-// import java.util.ArrayList;
-// import java.util.Set;
-// import java.util.Optional;
+
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.text.similarity.JaroWinklerDistance;
-// import org.apache.tomcat.jni.Address;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +27,10 @@ import com.example.restservice.dataModels.Actor;
 import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Genre;
 import com.example.restservice.dataModels.Movie;
-import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.UserGenrePreferenceScore;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
-// import com.example.restservice.dataModels.requests.AddReviewRequest;
+
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
 import com.example.restservice.dataModels.requests.SearchRequest;
@@ -46,8 +42,15 @@ import com.example.restservice.database.ReviewDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
 import com.example.restservice.database.UserGenrePreferenceScoreDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceInputChecks;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
 
-//import com.example.restservice.service.ServiceErrors;
+
+/**
+ * Service for Movies that performs backend operations dependent on REST API calls
+ */
 @Service
 @Transactional
 public class MovieService {
@@ -83,7 +86,7 @@ public class MovieService {
     /**
      * Adds a movie to the database
      * @param movie
-     * @return movie id, name, year
+     * @return movie id, name, year, error message on its owns if there is an error
      */
     public JSONObject addMovie(AddMovieRequest addMovieRequest) {
 
@@ -107,9 +110,8 @@ public class MovieService {
             return ServiceErrors.userAdminPermissionError();
         }
 
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        JSONObject returnMessage = new JSONObject();
         try{
-
             // overwrite old cast in database (which is nothing since new movie)
             movie.setCast(movie.getCast());
             overwriteMovieDBCast(movie);
@@ -121,31 +123,19 @@ public class MovieService {
             overwriteMovieDBGenres(movie);
 
             Movie dbMovie = movieDAO.save(movie);
-
-            returnMessage.put("movieId", dbMovie.getId());
-            returnMessage.put("name", dbMovie.getName());
-            returnMessage.put("year", dbMovie.getYear());
+            String requiredFields = "id, name, year";
+            returnMessage = JSONObjectGenerators.movieObject(requiredFields, dbMovie, userBlacklistDAO, null, null);
+            return returnMessage;
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
-    }
-
-    /**
-     * Grabs all movies from the database
-     * @return List of all movies
-     */
-    public List<Movie> getAllMovies() {
-        return movieDAO.findAll();
     }
 
 
     /**
      * Grabs the complete details of a movie by id
      * @param id
-     * @return complete details of movie, all variables in Movies.java
+     * @return complete details of movie, all variables in Movies.java, error message on its owns if there is an error
      */
     public JSONObject  getMovieDetails(long id, String token) {
         //if (token.isEmpty()) {return ServiceErrors.generateErrorMessage("weird token");}
@@ -158,59 +148,26 @@ public class MovieService {
         if (!ServiceInputChecks.checkId(id)) {
             return ServiceErrors.movieIdInvalidError();
         }
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
-
         Movie dbMovie = movieDAO.findMovieByID(id);
         if (dbMovie == null) return ServiceErrors.movieNotFoundError();
-        returnMessage.put("name", dbMovie.getName());
-        returnMessage.put("year", dbMovie.getYear());
-        returnMessage.put("poster", dbMovie.getPoster());
-        returnMessage.put("trailer", dbMovie.getTrailer());
-        returnMessage.put("description", dbMovie.getDescription());
-        returnMessage.put("director", dbMovie.getDirectors());
-        returnMessage.put("contentRating", dbMovie.getContentRating());
-        returnMessage.put("cast", dbMovie.getCast());
-        returnMessage.put("runtime", dbMovie.getRuntime());
-        returnMessage.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-        JSONArray reviewArray = new JSONArray();
+        String requiredFields = "name, year, poster, trailer, description, director, contentRating, cast, runtime, genres, reviews, averageRating";
+        JSONObject movie = new JSONObject();
         if (token != null) {
             Long user_id = ServiceJWTHelper.getTokenId(token, null);
             User user = userDAO.findUserById(user_id);
-            reviewArray = ServiceHelperFunctions.reviewJSONArrayMovies(true, user, ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token));
+            movie = JSONObjectGenerators.movieObject(requiredFields, dbMovie, userBlacklistDAO, token, user);
+        } else {
+            movie = JSONObjectGenerators.movieObject(requiredFields, dbMovie, userBlacklistDAO, token, null);
         }
-        if (token == null) {
-        List<Review> reviews = ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token);
-        
-        for (Review review : ServiceGetRequestHelperFunctions.getMovieReviewsByUserToken(userBlacklistDAO, dbMovie, token)) {
-            if (review.getUser().getIsBanned()) continue;
-            HashMap<String, Object> movieReview = new HashMap<String,Object>();
-            movieReview.put("user", review.getUser().getId());
-            movieReview.put("name", review.getUser().getName());
-            movieReview.put("review", review.getReviewString());
-            movieReview.put("rating", review.getRating());
-            movieReview.put("likes", review.getLikes());
-            JSONObject movieReviewJSON = new JSONObject(movieReview);
-            reviewArray.put(movieReviewJSON);
-            }
-        }
-        returnMessage.put("reviews", reviewArray);
-        returnMessage.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
         HashMap<Movie, Double> similarMovies = similarMovies(dbMovie);
         JSONArray similarMoviesArray = new JSONArray();
+        String similarMovieFields = "name, id, year, poster";
         for (Map.Entry<Movie,Double> entry : similarMovies.entrySet()) {
-            HashMap<String,Object> similarMovieObject = new HashMap<String,Object>();
             Movie similarMovie = entry.getKey();
-            similarMovieObject.put("name", similarMovie.getName());
-            similarMovieObject.put("id", similarMovie.getId());
-            similarMovieObject.put("year", similarMovie.getYear());
-            similarMovieObject.put("poster", similarMovie.getPoster());
-            similarMovieObject.put("similarityRating", entry.getValue());
-            similarMoviesArray.put(new JSONObject(similarMovieObject));
+            similarMoviesArray.put(JSONObjectGenerators.movieObject(similarMovieFields, similarMovie, userBlacklistDAO, token, null));
         }
-        returnMessage.put("similar", similarMoviesArray);
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        movie.put("similar", similarMoviesArray);
+        return movie;
     }
     /**
      * Returns a list of movies that satisfy the given parameters
@@ -218,7 +175,7 @@ public class MovieService {
      * @param endYear
      * @param genres
      * @param contentRating
-     * @return
+     * @return List of movies, error message on its owns if there is an error
      */
     public JSONObject higherOrLower(int startYear, int endYear, String genres, String contentRating) {
         HashMap<String, Object> returnMessage = new HashMap<>();
@@ -235,7 +192,6 @@ public class MovieService {
 
         for (Movie movie : allMovies) {
             Boolean movieHasGenre = false;
-            HashMap<String, Object> movieDetails = new HashMap<String, Object>();
             // Checking that the current movie satisfies the user inputted filters. Skip iteration if not.
             if (movie.getAverageRating() == 0) continue;
 
@@ -259,22 +215,19 @@ public class MovieService {
                 continue;
             }
             // Putting all the details into Hashmap, making it a JSON object, and putting it in the movie Array
-            movieDetails.put("name", movie.getName());
-            movieDetails.put("year", movie.getYear());
-            movieDetails.put("averageRating", movie.getAverageRating());
-            movieDetails.put("poster", movie.getPoster());
-            movieDetails.put("director", movie.getDirectors());
-            movieDetails.put("cast", movie.getCast());
-            JSONObject movieDetailsJSON = new JSONObject(movieDetails);
-            movieDetailsArray.put(movieDetailsJSON);
+            String requiredFields = "name, year, averageRating, poster, director, cast";
+            movieDetailsArray.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, null, null));
         }
         returnMessage.put("movies", movieDetailsArray);
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        return new JSONObject(returnMessage);
     }
-
+    /**
+     * Returns the homepage for a logged in user (top rated movies), and not logged in user.
+     * @param token
+     * @return List of movies, error message on its owns if there is an error
+     */
     public JSONObject homepage(String token) {
-
+        String requiredFields = "id, name, year, poster, description, genres, averageRating";
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         if (!tokenCheck) {
@@ -294,26 +247,9 @@ public class MovieService {
             long user_id = ServiceJWTHelper.getTokenId(token, null);
             movies = findRecommendedMovies(user_id);
         }
-        if (movies.size() > 0) {
-            for (int i=0; i < movies.size(); i++) {
-                Movie movie = movies.get(i);
-                //Puts the fields into a Hashmap --> JSON Object
-                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
-                dbMovieDetails.put("id", movie.getId());
-                dbMovieDetails.put("name", movie.getName());
-                dbMovieDetails.put("year", movie.getYear());
-                dbMovieDetails.put("poster", movie.getPoster());
-                dbMovieDetails.put("description", movie.getDescription());
-                dbMovieDetails.put("genres", new JSONArray(movie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, movie, token));
-
-                //Make it into a JSONObject
-                JSONObject movieDetailsJson = new JSONObject(dbMovieDetails);
-                //Put the object into the JSONArray
-                homepageList.put(movieDetailsJson);
-            }
-        } else {
-            return ServiceErrors.movieTrendingEmptyError();
+        if (movies.size() <= 0) return ServiceErrors.movieTrendingEmptyError();
+        for (Movie movie : movies) {
+            homepageList.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, token, null));
         }
         returnMessage.put("movies", homepageList);
         JSONObject responseJson = new JSONObject(returnMessage);
@@ -324,10 +260,10 @@ public class MovieService {
      * Searches the database based on a query, returns based on title and then description.
      * @param searchRequest
      * @param token
-     * @return
+     * @return List of movies, actors and directors, error message on its owns if there is an error
      */
     public JSONObject searchMovieByName(SearchRequest searchRequest, String token) {
-
+        String requiredFields = "id, name, year, poster, description, genres, averageRating, contentRating";
         // verify the users token
         Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
         if (!tokenCheck) {
@@ -339,17 +275,18 @@ public class MovieService {
         }
 
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
+        
         JSONArray moviesArray = new JSONArray();
+        JSONArray actorsArray = new JSONArray();
+        JSONArray directorsArray = new JSONArray();
+        //Case where there is no filtering or search results at all
+        
         List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
         List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
-
-
         List<Movie> dbMovies = new ArrayList<Movie>();
-        
         for (Movie m: nameMovies) {
             dbMovies.add(m);
         }
-
         for (Movie m : descMovies) {
             if (!dbMovies.contains(m)) dbMovies.add(m);
         }
@@ -375,50 +312,36 @@ public class MovieService {
             filteredMovies.removeAll(removeValues);
         }
 
-        if (filteredMovies.size() > 0) {
-            for(int i = 0; i < filteredMovies.size(); i++) {
-                Movie dbMovie = filteredMovies.get(i);
-                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
-                dbMovieDetails.put("id", dbMovie.getId());
-                dbMovieDetails.put("name", dbMovie.getName());
-                dbMovieDetails.put("year", dbMovie.getYear());
-                dbMovieDetails.put("poster", dbMovie.getPoster());
-                dbMovieDetails.put("description", dbMovie.getDescription());
-                dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
-                dbMovieDetails.put("contentRating", dbMovie.getContentRating());
-                JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
-                moviesArray.put(dbMovieDetailsJson);
-            }
+        for (Movie movie : filteredMovies) {
+            moviesArray.put(JSONObjectGenerators.movieObject(requiredFields, movie, userBlacklistDAO, token, null));
         }
         returnMessage.put("movies", moviesArray);
-
-        JSONArray actorsArray = new JSONArray();
-        List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
-        for (Actor a : dbActors) {
-            HashMap<String,Object> dbActorDetails = new HashMap<String,Object>();
-            dbActorDetails.put("name", a.getName());
-            dbActorDetails.put("id", a.getId());
-            JSONObject dbActorDetailsJson = new JSONObject(dbActorDetails);
-            actorsArray.put(dbActorDetailsJson);
+        
+        if (!searchRequest.getName().isEmpty()) {
+            String peopleRequiredFields = "id, name";
+            List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
+            for (Director d : dbdirectors) {
+                directorsArray.put(JSONObjectGenerators.directorObject(peopleRequiredFields, d, userBlacklistDAO));
+            }
+            List<Actor> dbActors = actorDAO.searchActorByName(searchRequest.getName());
+            for (Actor a : dbActors) {
+                actorsArray.put(JSONObjectGenerators.actorObject(peopleRequiredFields, a, userBlacklistDAO));
+            }
+            returnMessage.put("directors", directorsArray);
+            returnMessage.put("actors", actorsArray);
+        } else {
+            returnMessage.put("directors", new JSONArray());
+            returnMessage.put("actors", new JSONArray());
         }
-        returnMessage.put("actors", actorsArray);
-
-        JSONArray directorsArray = new JSONArray();
-        List<Director> dbdirectors = directorDAO.searchDirectorByName(searchRequest.getName());
-        for (Director d : dbdirectors) {
-            HashMap<String,Object> dbDirectordetails = new HashMap<String,Object>();
-            dbDirectordetails.put("name", d.getName());
-            dbDirectordetails.put("id", d.getId());
-            JSONObject dbDirectordetailsJson = new JSONObject(dbDirectordetails);
-            directorsArray.put(dbDirectordetailsJson);
-        }
-        returnMessage.put("directors", directorsArray);
 
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * ADMIN FUNCTION : Deletes a movie from the database.
+     * @param request
+     * @return {}, error message on its owns if there is an error
+     */
     public JSONObject deleteMovie(DeleteMovieRequest request) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -447,11 +370,14 @@ public class MovieService {
         } else {
             return ServiceErrors.movieNotFoundError();
         }
-
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Edit the fields of a movie.
+     * @param editMovieRequest
+     * @return {} , error message on its owns if there is an error
+     */
     public JSONObject editMovie(EditMovieRequest editMovieRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -508,12 +434,20 @@ public class MovieService {
         return responseJson;
     }
 
+    /**
+     * Gets all genres that a movie has
+     * @return List of all genres, error message on its owns if there is an error
+     */
     public JSONObject getAllGenres() {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("genres",  new JSONArray(Genre.genreCollectionToStrList(genreDAO.findAll())));
         return new JSONObject(returnMessage);
     }
 
+    /**
+     * Adds an actor to a movie, and if the actor does not exist in the database, adds them to a database.
+     * @param dbMovie
+     */
     private void overwriteMovieDBCast(Movie dbMovie) {
         dbMovie.clearDBCast();
         String cast = dbMovie.getCast();
@@ -534,7 +468,10 @@ public class MovieService {
             }
         }
     }
-
+    /**
+     * Adds a director to a movie, and if the director does not exist in the database, adds them to a database.
+     * @param dbMovie
+     */
     private void overwriteMovieDBDirectors(Movie dbMovie) {
         dbMovie.clearDBDirectors();
         String directors = dbMovie.getDirectors();
@@ -552,7 +489,10 @@ public class MovieService {
             }
         }
     }
-
+    /**
+     * Adds a genre to a movie, and if the genre does not exist in the database, throws an error.
+     * @param dbMovie
+     */
     private void overwriteMovieDBGenres(Movie dbMovie) {
         List<String> genres = dbMovie.getGenreString();
         if (!genres.isEmpty() && genres != null) {
@@ -578,7 +518,7 @@ public class MovieService {
      * 10% simlarity in director - how many points per director it has.
      * 10% simlarity in actors - how many simlar actors does it have.
      * @param movie
-     * @return
+     * @return List of similar movies and their similarity scores
      */
     private HashMap<Movie, Double> similarMovies(Movie movie) {
         List<Movie> allMovies = movieDAO.findAll();
@@ -658,7 +598,7 @@ public class MovieService {
     /**
      * Find recommended movies based on the genres of movies that the user has placed reviews on
      * @param user_id
-     * @return
+     * @return List of movies that are recommended
      */
     private List<Movie> findRecommendedMovies(Long user_id) {
         List<Movie> recommendedMoviesList = new ArrayList<>();
@@ -707,8 +647,8 @@ public class MovieService {
         return recommendedMoviesList;
     }
     /**
-     * Returns the 12 top rated movies that has more than 5 reviews.
-     * @return
+     * Finds the 12 top rated movies that have more than 5 reviews.
+     * @return Returns the 12 top rated movies that has more than 5 reviews.
      */
     private List<Movie> topRated() {
         List<Movie> dbTopRated = movieDAO.topRated();

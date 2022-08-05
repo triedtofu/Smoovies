@@ -18,7 +18,9 @@ const EditMovie = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(undefined);
+  const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
+    undefined
+  );
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
   const [errorString, setErrorString] = React.useState('');
@@ -38,10 +40,21 @@ const EditMovie = () => {
     cast,
     runtime
   ) => {
-    const movieDetails = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
+    const movieDetails = {
+      name,
+      year,
+      poster,
+      trailer,
+      description,
+      genres,
+      contentRating,
+      cast,
+      director,
+      runtime,
+    };
     apiEditMovie(cookies.token, movie!.id, movieDetails)
       .then(() => navigate(`/movie/${movie!.id}`))
-      .catch(error => setErrorString(getErrorMessage(error)));
+      .catch((error) => setErrorString(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
@@ -52,35 +65,35 @@ const EditMovie = () => {
       setErrorString(`Error: '${params.id}' is not an integer`);
       return;
     }
-
     apiGetMovie(movieId)
       .then((data) => setMovie(data))
-      .catch(error => setErrorString(getErrorMessage(error)));
+      .catch((error) => setErrorString(getErrorMessage(error)));
   }, [params.id]);
-
 
   React.useEffect(() => {
     // get the list of possible genres
-    apiGetGenres().then(data => setAllGenres(data.genres));
+    apiGetGenres().then((data) => setAllGenres(data.genres));
   }, []);
 
-  if (!cookies.token || !cookies.admin) return  (
-    <Container maxWidth="md">
-      <Typography gutterBottom variant="h5" component="h2">
-        Access denied. Only admins can access this page.
-      </Typography>
-    </Container>
-  );
+  if (!cookies.token || !cookies.admin)
+    return (
+      <Container maxWidth="md">
+        <Typography gutterBottom variant="h5" component="h2">
+          Access denied. Only admins can access this page.
+        </Typography>
+      </Container>
+    );
 
   if (!movie) return <></>;
 
-  if (errorString) return (
-    <Container maxWidth="md">
-      <Typography gutterBottom variant="h5" component="h2">
-        {errorString}
-      </Typography>
-    </Container>
-  );
+  if (errorString)
+    return (
+      <Container maxWidth="md">
+        <Typography gutterBottom variant="h5" component="h2">
+          {errorString}
+        </Typography>
+      </Container>
+    );
 
   return (
     <Container maxWidth="sm">
@@ -88,7 +101,14 @@ const EditMovie = () => {
         <title>Edit Movie - Smoovies</title>
       </Helmet>
 
-      <Typography gutterBottom variant="h4" component="h1">Movie - Edit Details</Typography>
+      <Typography
+        gutterBottom
+        variant="h4"
+        component="h1"
+        fontFamily={'Verdana'}
+      >
+        Movie - Edit Details
+      </Typography>
 
       <NewMovieForm
         submit={editMovie}
