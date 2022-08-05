@@ -147,7 +147,13 @@ public class JSONObjectGenerators {
         }
         return new JSONObject(returnActor);
     }
-
+    /**
+     * Generates a director JSON object based on required fields.
+     * @param requiredFields
+     * @param director
+     * @param userBlacklistDAO
+     * @return
+     */
     public static JSONObject directorObject(String requiredFields, Director director, UserBlacklistDataAccessService userBlacklistDAO){
         HashMap<String, Object> returnDirector = new HashMap<>();
         List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
@@ -171,5 +177,36 @@ public class JSONObjectGenerators {
         }
         return new JSONObject(returnDirector);
     }
-    
+    /**
+     * Generates a user JSON representation based on the required fields.
+     * @param requiredFields
+     * @param user
+     * @return
+     */
+    public static JSONObject userObject(String requiredFields, User user) {
+        HashMap<String,Object> returnUser = new HashMap<>();
+        List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
+        for (String field : required) {
+            switch(field) {
+                case "token" :
+                returnUser.put("token" , ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null) );
+                break;
+                case "userId" :
+                returnUser.put("userId", user.getId());
+                break;
+                case "isAdmin" :
+                returnUser.put("isAdmin", user.getIsAdmin());
+                break;
+                case "name" :
+                returnUser.put("name", user.getName());
+                break;
+                case "username" :
+                returnUser.put("username", user.getName());
+                break;
+                case "email" :
+                returnUser.put("email", user.getEmail());
+            }
+        }
+        return new JSONObject(returnUser);
+    }
 }
