@@ -21,3 +21,24 @@ Week 5
 - Wrote out api routes and server backend logic
 - Assisted backend group with writing out database logic
 - Communicated with frontend to establish overall functionality
+
+Week 6
+- Wrote python scripts with rapidAPI to gather data for movies
+- Ran script over the week to gather data (due to daily api call limits)
+
+Week 7
+- Began working on sprint 2
+- Wrote api routes for user stores in sprint 2 and implemented some backend logic for routes
+
+Week 8
+- Completed backend tasks for sprint 2
+- Joined team with sprint 2 demo, retrospective B and sprint 3 preparation
+
+Week 9
+- Began working on sprint 3
+
+Week 10
+- Completed backend functionality assigned in Jira
+- Completed section assigned in final report
+- Refactored and cleaned up code 
+
