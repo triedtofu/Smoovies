@@ -26,3 +26,30 @@ week 5:
     -Movie put, get
 -Wrote the query logic for extracting from database.
 -Checked controller routes, API Routes
+
+Week6:
+ - Flex week break 
+ 
+ Week 7:
+ - Added add movie functionality
+ - added directors/actors and genres database
+ - delete movie
+ 
+ Week 8:
+  - implemented review functionality,
+  - add review/delete review/review setup in database
+  - implemented search
+  - implemented get director details and actor details
+  - added api routes for the above
+  - added ratings for movie based on reviews.
+  
+  Week 9:
+  -added liking reviews
+  -worked on API
+
+Week 10:
+- Refactor code
+- added similar movies algorihtm
+- fixed homepage
+- Added api routes
+- order review by likes

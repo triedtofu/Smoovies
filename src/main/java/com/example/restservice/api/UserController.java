@@ -31,6 +31,10 @@ import com.example.restservice.service.UserService;
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
 //Expose endpoints so clients can consume
+
+/**
+ * REST API controller for user routes
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {

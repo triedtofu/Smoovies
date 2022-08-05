@@ -2,7 +2,9 @@ package com.example.restservice.dataModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+/**
+ * Entity that represents an authentication token
+ */
 public class AuthenticationToken {
     private String token;
     private long userId;

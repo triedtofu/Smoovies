@@ -22,10 +22,16 @@ import com.example.restservice.dataModels.requests.UpdateUserDetailsRequest;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceInputChecks;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
 
 //import io.jsonwebtoken.Claims;
 
-
+/**
+ * Service for users that performs backend operations dependent on REST API calls
+ */
 @Service
 public class UserService {
     @Autowired
@@ -44,7 +50,7 @@ public class UserService {
     * Logs a user in based on their email and password.
     * @param email
     * @param password
-    * @return userID, isAdmin, token
+    * @return userID, isAdmin, token, error message on its owns if there is an error
     */
     public JSONObject UserLogin(String email, String password) {
 
@@ -73,7 +79,7 @@ public class UserService {
     * Adds user to database
     * @param user
     * @param isAdmin
-    * @return token, userID
+    * @return token, userID , error message on its owns if there is an error
     */
     public JSONObject register(User user, Boolean isAdmin, Boolean isBanned) {
         if (!ServiceInputChecks.checkName(user.getName())) {
@@ -116,7 +122,7 @@ public class UserService {
     /**
     * Grabs the wishlist of a user
     * @param id
-    * @return wishlist of user
+    * @return wishlist of user , error message on its owns if there is an error
     */
     public JSONObject getUserWishlist(long id, String token) {
         // verify the users token
@@ -160,7 +166,7 @@ public class UserService {
     * @param token
     * @param movieId
     * @param addRemove
-    * @return {}
+    * @return {} , error message on its owns if there is an error
     */
     public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
 
@@ -200,7 +206,7 @@ public class UserService {
     /**
      * Sends an email to request for a password change.
      * @param requestResetPasswordRequest
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject requestResetPassword(RequestResetPasswordRequest requestResetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -223,7 +229,7 @@ public class UserService {
     /**
      * For a given user, resets their password
      * @param resetPasswordRequest
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject resetPassword(ResetPasswordRequest resetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -266,7 +272,7 @@ public class UserService {
     /**
      * ADMIN FUNCTION: Bans the given user.
      * @param banUserRequest
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject banUser(BanUserRequest banUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -315,7 +321,7 @@ public class UserService {
     /**
      * For a given user, adds/remove a user from their blacklist.
      * @param blacklistUserRequest
-     * @return
+     * @return {} , error message on its owns if there is an error
      */
     public JSONObject blackListUser(BlacklistUserRequest blacklistUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
@@ -368,7 +374,7 @@ public class UserService {
     /**
      * Returns the given users blacklist.
      * @param token
-     * @return
+     * @return username of blacklist and users on the blacklist , error message on its owns if there is an error
      */
     public JSONObject getUserBlacklist(String token) {
         // verify the token and extract the users id
@@ -395,7 +401,7 @@ public class UserService {
     /**
     * Gets the users name and email.
     * @param token
-    * @return The details of the user associated with the token
+    * @return The details of the user associated with the token, , error message on its owns if there is an error
     */
     public JSONObject getUserDetails(String token) {
         // verify the token and extract the users id
@@ -411,7 +417,7 @@ public class UserService {
     /**
      * Updates a users details 
      * @param updateUserDetailsRequest
-     * @return
+     * @return {}, error message on its owns if there is an error
      */
     public JSONObject updateUserDetails(UpdateUserDetailsRequest updateUserDetailsRequest) {
         // verify the token and extract the users id

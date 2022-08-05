@@ -17,6 +17,10 @@ tags:
     description: Managing movie data
   - name: Users
     description: Managing user profiles
+  - name: Actors
+    description: Managing actor data
+  - name: Directors
+    description: Managing director data
 paths:
   /api/user/login:
     post:
@@ -94,6 +98,8 @@ paths:
         - Movies
       summary: Get the list of movies for the home page
       description: Returns the list of movies for the home page
+      parameters:
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
@@ -114,6 +120,7 @@ paths:
       description: Returns the details of a specific movie
       parameters:
         - $ref: '#/components/parameters/MovieIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
@@ -140,6 +147,8 @@ paths:
                     $ref: '#/components/schemas/ContentRating'
                   averageRating:
                     $ref: '#/components/schemas/AverageRating'
+                  runtime:
+                    $ref: '#/components/schemas/Runtime'
                   cast:
                     $ref: '#/components/schemas/Cast'
                   reviews:
@@ -147,6 +156,19 @@ paths:
                     maxItems: 10
                     items:
                       $ref: '#/components/schemas/Review'
+                  similar:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/MovieId'
+                        name:
+                          $ref: '#/components/schemas/MovieName'
+                        year:
+                          $ref: '#/components/schemas/MovieYear'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -158,7 +180,9 @@ paths:
       summary: Search for movies
       description: Returns the details of movies matching the search criteria
       parameters:
-        - $ref: '#/components/parameters/MovieNameParam'
+        - $ref: '#/components/parameters/SearchNameParam'
+        - $ref: '#/components/parameters/MovieGenresParam'
+        - $ref: '#/components/parameters/ContentRatingParam'
       responses:
         '200':
           description: OK
@@ -171,6 +195,24 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MovieSummary'
+                  actors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/Actor'
+                        id:
+                          $ref: '#/components/schemas/ActorId'
+                  directors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/Director'
+                        id:
+                          $ref: '#/components/schemas/DirectorId'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -222,6 +264,8 @@ paths:
                   $ref: '#/components/schemas/Genres'
                 contentRating:
                   $ref: '#/components/schemas/ContentRating'
+                runtime:
+                  $ref: '#/components/schemas/Runtime'
                 cast:
                   $ref: '#/components/schemas/Cast'
       responses:
@@ -232,10 +276,58 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  movieId:
                     $ref: '#/components/schemas/MovieId'
                   name:
                     $ref: '#/components/schemas/MovieName'
+                  year:
+                    $ref: '#/components/schemas/MovieYear'
+        '400':
+          $ref: '#/components/responses/InputError'
+  /api/movie/editMovie:
+    put:
+      tags:
+        - Movies
+      summary: Edit a movie
+      description: Route for admin to edit a movie in the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                id:
+                  $ref: '#/components/schemas/MovieId'
+                name:
+                  $ref: '#/components/schemas/MovieName'
+                year:
+                  $ref: '#/components/schemas/MovieYear'
+                poster:
+                  $ref: '#/components/schemas/MoviePoster'
+                trailer:
+                  $ref: '#/components/schemas/YoutubeVideoId'
+                description:
+                  $ref: '#/components/schemas/MovieDescription'
+                director:
+                  $ref: '#/components/schemas/Director'
+                genres:
+                  $ref: '#/components/schemas/Genres'
+                contentRating:
+                  $ref: '#/components/schemas/ContentRating'
+                runtime:
+                  $ref: '#/components/schemas/Runtime'
+                cast:
+                  $ref: '#/components/schemas/Cast'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
         '400':
           $ref: '#/components/responses/InputError'
   /api/movie/deleteMovie:
@@ -300,14 +392,49 @@ paths:
           $ref: '#/components/responses/InputError'
         '403':
           $ref: '#/components/responses/AccessError'
-  /api/user/wishlist:
+  /api/movie/likeReview:
+    put:
+      tags:
+        - Movies
+      summary: Like or unlike a review
+      description: Allow an authorised user to like or unlike a review. If 'turnon' is set to true, then the action likes the review. If 'turnon' is set to false, then the action unlikes the review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+                turnon:
+                  $ref: '#/components/schemas/TurnOn'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+  /api/movie/higherOrLower:
     get:
       tags:
-        - Users
-      summary: Get the wishlist of a specific user
-      description: Returns the wishlist of a specific movie
+        - Movies
+      summary: Get higher or lower data
+      description: Returns the higher or lower data
       parameters:
-        - $ref: '#/components/parameters/UserIdParam'
+        - $ref: '#/components/parameters/StartYearParam'
+        - $ref: '#/components/parameters/EndYearParam'
+        - $ref: '#/components/parameters/MovieGenresParam'
+        - $ref: '#/components/parameters/ContentRatingParam'
       responses:
         '200':
           description: OK
@@ -319,7 +446,48 @@ paths:
                   movies:
                     type: array
                     items:
-                      $ref: '#/components/schemas/MovieSummary'
+                      type: object
+                      properties:
+                        name:
+                          $ref: '#/components/schemas/MovieName'
+                        year:
+                          $ref: '#/components/schemas/MovieYear'
+                        averageRating:
+                          $ref: '#/components/schemas/AverageRating'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
+                        director:
+                          $ref: '#/components/schemas/Director'
+                        cast:
+                          $ref: '#/components/schemas/Cast'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/wishlist:
+    get:
+      tags:
+        - Users
+      summary: Get the wishlist of a specific user
+      description: Returns the wishlist of a specific movie
+      parameters:
+        - $ref: '#/components/parameters/UserIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        $ref: '#/components/schemas/Name'
+                      movies:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MovieSummary'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -330,7 +498,7 @@ paths:
       tags:
         - Users
       summary: Add or remove a movie from wishlist
-      description: Allow an authorised user to add or remove a movie from their wishlist. If 'on' is set to true, then the action adds the movie. If 'on' is set to false, then the action removes the movie.
+      description: Allow an authorised user to add or remove a movie from their wishlist. If 'turnon' is set to true, then the action adds the movie. If 'turnon' is set to false, then the action removes the movie.
       requestBody:
         required: true
         content:
@@ -363,6 +531,7 @@ paths:
       description: Returns the reviews of a specific user
       parameters:
         - $ref: '#/components/parameters/UserIdParam'
+        - $ref: '#/components/parameters/UserTokenParam'
       responses:
         '200':
           description: OK
@@ -371,11 +540,309 @@ paths:
               schema:
                 type: object
                 properties:
+                  username:
+                    $ref: '#/components/schemas/Name'
                   reviews:
                     type: array
-                    maxItems: 10
                     items:
-                      $ref: '#/components/schemas/Review'
+                      type: object
+                      properties:
+                        movieId:
+                          $ref: '#/components/schemas/MovieId'
+                        movieName:
+                          $ref: '#/components/schemas/MovieName'
+                        poster:
+                          $ref: '#/components/schemas/MoviePoster'
+                        review:
+                          $ref: '#/components/schemas/ReviewString'
+                        rating:
+                          $ref: '#/components/schemas/ReviewRating'
+                        likes:
+                          $ref: '#/components/schemas/Likes'
+                        liked:
+                          $ref: '#/components/schemas/Liked'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/deleteReview:
+    post:
+      tags:
+        - Users
+      summary: Delete a review
+      description: Route to delete a review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                movieId:
+                  $ref: '#/components/schemas/MovieId'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/requestResetPassword:
+    post:
+      tags:
+        - Users
+      summary: Request the reset password email
+      description: Route for a user to request a password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/resetPassword:
+    post:
+      tags:
+        - Users
+      summary: Change the password of a user
+      description: Change the password of a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resetCode:
+                  $ref: '#/components/schemas/ResetPasswordCode'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/banUser:
+    put:
+      tags:
+        - Users
+      summary: Ban a user
+      description: Admin route to ban a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/blacklist:
+    get:
+      tags:
+        - Users
+      summary: Get the blacklist of the authorised user
+      parameters:
+        - $ref: '#/components/parameters/UserTokenRequiredParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        $ref: '#/components/schemas/Name'
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              $ref: '#/components/schemas/UserId'
+                            username:
+                              $ref: '#/components/schemas/Name'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+    put:
+      tags:
+        - Users
+      summary: Blacklist or unblacklist a user
+      description: Allow the current user to blacklist or unblacklist a user. If 'turnon' is set to true then the action blacklists a user. If 'turnon' is set to false, then the action unblacklists a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                userId:
+                  $ref: '#/components/schemas/UserId'
+                turnon:
+                  $ref: '#/components/schemas/TurnOn'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/user/details:
+    get:
+      tags:
+        - Users
+      summary: Get the authorised user's details
+      parameters:
+        - $ref: '#/components/parameters/UserTokenRequiredParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Name'
+                  email:
+                    $ref: '#/components/schemas/Email'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+    put:
+      tags:
+        - Users
+      summary: Updated the authorised user's details
+      description: Updates the user's email, password, name with the given details. It will only update defined fields provided. Any fields given that are undefined will remain unchanged.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  $ref: '#/components/schemas/Token'
+                name:
+                  $ref: '#/components/schemas/Name'
+                email:
+                  $ref: '#/components/schemas/Email'
+                confirmPassword:
+                  $ref: '#/components/schemas/Password'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/InputError'
+        '403':
+          $ref: '#/components/responses/AccessError'
+  /api/actor/getActor:
+    get:
+      tags:
+        - Actors
+      summary: Get the details of a specific actor
+      description: Returns the details of a specific actor
+      parameters:
+        - $ref: '#/components/parameters/ActorIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Actor'
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
+        '400':
+          $ref: '#/components/responses/InputError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /api/director/getDirector:
+    get:
+      tags:
+        - Directors
+      summary: Get the details of a specific director
+      description: Returns the details of a specific director
+      parameters:
+        - $ref: '#/components/parameters/DirectorIdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    $ref: '#/components/schemas/Director'
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MovieSummary'
         '400':
           $ref: '#/components/responses/InputError'
         '404':
@@ -437,6 +904,18 @@ components:
       type: string
       description: Name of a director
       example: Steven Spielberg
+    DirectorId:
+      type: number
+      description: ID of the director
+      example: 1729
+    Actor:
+      type: string
+      description: Name of a actor
+      example: Johnny Depp
+    ActorId:
+      type: number
+      description: ID of the actor
+      example: 1729
     Genre:
       type: string
       description: Genre of a movie
@@ -469,6 +948,10 @@ components:
       multipleOf: 0.01
       description: Average number rating
       example: 3.14
+    Runtime:
+      type: number
+      description: The runtime in minutes
+      example: 100
     Cast:
       type: string
       description: Cast of a movie
@@ -481,6 +964,14 @@ components:
       type: integer
       description: A rating of a movie
       example: 5
+    Likes:
+      type: integer
+      description: The number of likes a review has
+      example: 2
+    Liked:
+      type: boolean
+      description: Whether the user has liked the review
+      example: true
     Review:
       type: object
       properties:
@@ -492,6 +983,10 @@ components:
           $ref: '#/components/schemas/ReviewString'
         rating:
           $ref: '#/components/schemas/ReviewRating'
+        likes:
+          $ref: '#/components/schemas/Likes'
+        liked:
+          $ref: '#/components/schemas/Liked'
     TurnOn:
       type: boolean
       description: True if should add/enable, false if should remove/disable
@@ -517,6 +1012,9 @@ components:
       type: boolean
       description: Whether the authorised user is an admin
       example: false
+    ResetPasswordCode:
+      type: string
+      description: Code to identify user resetting their password
   parameters:
     UserIdParam:
       name: userId
@@ -532,13 +1030,73 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/MovieId'
-    MovieNameParam:
+    ActorIdParam:
+      name: id
+      in: query
+      description: ID of the actor
+      required: true
+      schema:
+        $ref: '#/components/schemas/ActorId'
+    DirectorIdParam:
+      name: id
+      in: query
+      description: ID of the director
+      required: true
+      schema:
+        $ref: '#/components/schemas/DirectorId'
+    SearchNameParam:
       name: name
       in: query
-      description: Name of the movie
+      description: Search query
       required: true
       schema:
         $ref: '#/components/schemas/MovieName'
+    MovieGenresParam:
+      name: genres
+      in: query
+      description: List of genres
+      required: false
+      schema:
+        type: string
+        example: action,fantasy
+    ContentRatingParam:
+      name: contentRating
+      in: query
+      description: Content rating
+      required: false
+      schema:
+        type: string
+        example: G,PG
+    UserTokenParam:
+      name: token
+      in: query
+      description: Token to provide authorisation
+      required: false
+      schema:
+        $ref: '#/components/schemas/Token'
+    UserTokenRequiredParam:
+      name: token
+      in: query
+      description: Token to provide authorisation
+      required: true
+      schema:
+        $ref: '#/components/schemas/Token'
+    StartYearParam:
+      name: startYear
+      in: query
+      description: Start year (inclusive)
+      required: true
+      schema:
+        type: number
+        example: 2000
+    EndYearParam:
+      name: endYear
+      in: query
+      description: End year (inclusive)
+      required: true
+      schema:
+        type: number
+        example: 2020
   responses:
     InputError:
       description: Input error

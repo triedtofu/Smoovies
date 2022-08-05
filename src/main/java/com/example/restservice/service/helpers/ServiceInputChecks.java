@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 //import com.example.restservice.dataModels.Movie;
 //import com.example.restservice.dataModels.User;
@@ -123,7 +123,7 @@ public class ServiceInputChecks {
     
     /**
      * Check if an email is unique (does not exist in database)
-     * @param email
+     * @param email 
      * @param userDAO
      * @return true if unique
      */

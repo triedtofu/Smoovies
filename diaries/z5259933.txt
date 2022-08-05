@@ -44,3 +44,46 @@ Sunday Scrum
 - We agreed upon the value of one story point for user stories to represent three hours of work for one person
 - We discussed final requirements for the completion of the project proposal, to be submitted to Leighton for formatting by 10pm
 - We discussed the priority hierarchy of user stories
+
+Week 5
+
+Tasks completed
+- I completed the ServiceInputChecks (checkId, checkName, checkEmail, checkPassword, checkUniqueEmail)
+- I added 20 movies to the database manually through Postman
+
+Tutorial
+- Project Demo A
+
+Friday Scrum
+- Discussed what went well, what went poorly, and things to try (Retrospective A)
+- Design consultation for UI based off feedback from Eugene
+
+Week 6 (Flex Week)
+
+Tasks completed
+- I wrote the Retrospective A report and sought feedback from other team members
+- I submitted the Retrospective A report
+
+Week 7
+
+Tasks completed
+- I wrote the Python script for inserting approx 450 movies and their details into the database
+
+Week 8
+
+Contracted covid - no progress made personally
+
+Week 9
+
+Tasks completed
+- I started and finished the Retrospective B report
+
+Sunday scrum
+- Retrospective B meeting
+
+Week 10
+
+Tasks completed
+- Python script for generating and adding reviews completed
+- Retrospective B completed and submitted
+- Higher or Lower completed

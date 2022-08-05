@@ -7,6 +7,14 @@ import org.springframework.stereotype.Service;
 import com.example.restservice.dataModels.Actor;
 import com.example.restservice.database.ActorDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
+import com.example.restservice.service.helpers.JSONObjectGenerators;
+import com.example.restservice.service.helpers.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceInputChecks;
+import com.example.restservice.service.helpers.ServiceJWTHelper;
+
+/**
+ * Service for Actors that performs backend operations dependent on REST API calls
+ */
 @Service
 public class ActorService {
     @Autowired
@@ -16,9 +24,9 @@ public class ActorService {
     private UserBlacklistDataAccessService userBlacklistDAO;
     
     /**
-     * Returns an actor and all their movies
+     * Finds an actor and all their movies
      * @param id
-     * @return
+     * @return an actor and all their movies, error message on its owns if there is an error
      */
     public JSONObject getActor(Long id, String token) {
 

@@ -1,6 +1,10 @@
 package com.example.restservice.dataModels.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Class containing all fields for a request to blacklist a user from REST API
+ */
 public class BlacklistUserRequest {
     private String token;
     private long userId;

@@ -26,3 +26,27 @@ Week 4
 Week 5 (Flex week)
 
 - Attended team meeting for Retrospective A
+
+Week 6
+
+- Added routes to swagger documentation
+- Refactored frontend code
+- Worked on addMovie page and admin navbar
+
+Week 7
+
+- Updated swagger documentation
+- Worked on add review, add/edit movie, reset password and search functionality
+- Met with team to discuss progress
+
+Week 8
+
+- Attended team meeting for Retrospective B
+- Completed dark mode and added a new navbar
+- Improved the UI for mobile devices
+
+Week 9
+
+- Finished sprint 3 tasks for frontend
+- Prepared demo
+- Worked on final report

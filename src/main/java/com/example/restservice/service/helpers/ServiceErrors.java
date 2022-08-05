@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 import org.json.JSONObject;
 
@@ -188,10 +188,18 @@ public class ServiceErrors {
         return generateErrorMessage("Email not found.");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "User not found"}
+     */
     public static JSONObject userNotFound() {
         return generateErrorMessage("User not found");
     }
 
+    /**
+     * Returns JSONObject with error message
+     * @return {"error": "No review has been found by the user to the requested movie"}
+     */
     public static JSONObject reviewNotFound() {
         return generateErrorMessage("No review has been found by the user to the requested movie");
     }
@@ -242,6 +250,11 @@ public class ServiceErrors {
     //                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////  
 
+    /**
+     * Generates an error message as a JSONObject from a string
+     * @param error
+     * @return error message in JSONObject
+     */
     public static JSONObject generateErrorMessage(String error) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         returnMessage.put("error", error);
