@@ -74,7 +74,6 @@ export const apiMovieSearch = (
   return apiFetch<SearchResponse>(`/movie/search?${searchStr}`);
 };
 
-// TODO update once api is done
 export const apiGetMovie = (id: number, token?: string) => {
   let path = `/movie/getMovie?id=${id}`;
 
@@ -160,7 +159,6 @@ export const apiGetHigherOrLower = (
   return apiFetch<HigherOrLowerResponse>(path);
 };
 
-// TODO update once api is done
 export const apiUserWishlist = (id: number, token?: string) => {
   let path = `/user/wishlist?userId=${id}`;
 

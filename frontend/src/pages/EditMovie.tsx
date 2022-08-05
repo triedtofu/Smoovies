@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
@@ -17,7 +18,9 @@ const EditMovie = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(undefined);
+  const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
+    undefined
+  );
   const [allGenres, setAllGenres] = React.useState<string[]>([]);
 
   const [errorString, setErrorString] = React.useState('');
@@ -37,45 +40,75 @@ const EditMovie = () => {
     cast,
     runtime
   ) => {
-    const movieDetails = {name, year, poster, trailer, description, genres, contentRating, cast, director, runtime};
+    const movieDetails = {
+      name,
+      year,
+      poster,
+      trailer,
+      description,
+      genres,
+      contentRating,
+      cast,
+      director,
+      runtime,
+    };
     apiEditMovie(cookies.token, movie!.id, movieDetails)
-      .then(_ => navigate(`/movie/${movie!.id}`))
-      .catch(error => setErrorString(getErrorMessage(error)));
+      .then(() => navigate(`/movie/${movie!.id}`))
+      .catch((error) => setErrorString(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
+    setErrorString('');
     const movieId = parseInt(params.id ?? '');
 
     if (Number.isNaN(movieId)) {
-      // TODO set error
+      setErrorString(`Error: '${params.id}' is not an integer`);
       return;
     }
-
-    try {
-      apiGetMovie(movieId)
-        .then((data) => setMovie(data));
-    } catch {
-      // TODO handle errors
-    }
+    apiGetMovie(movieId)
+      .then((data) => setMovie(data))
+      .catch((error) => setErrorString(getErrorMessage(error)));
   }, [params.id]);
-
 
   React.useEffect(() => {
     // get the list of possible genres
-    apiGetGenres().then(data => setAllGenres(data.genres));
+    apiGetGenres().then((data) => setAllGenres(data.genres));
   }, []);
 
-  if (!cookies.token || !cookies.admin) return  (
-    <Container maxWidth="md">
-      <h2>Access denied. Only admins can access this page.</h2>
-    </Container>
-  );
+  if (!cookies.token || !cookies.admin)
+    return (
+      <Container maxWidth="md">
+        <Typography gutterBottom variant="h5" component="h2">
+          Access denied. Only admins can access this page.
+        </Typography>
+      </Container>
+    );
 
   if (!movie) return <></>;
 
+  if (errorString)
+    return (
+      <Container maxWidth="md">
+        <Typography gutterBottom variant="h5" component="h2">
+          {errorString}
+        </Typography>
+      </Container>
+    );
+
   return (
     <Container maxWidth="sm">
-      <Typography gutterBottom variant="h4" component="h1">Movie - Edit Details</Typography>
+      <Helmet>
+        <title>Edit Movie - Smoovies</title>
+      </Helmet>
+
+      <Typography
+        gutterBottom
+        variant="h4"
+        component="h1"
+        fontFamily={'Verdana'}
+      >
+        Movie - Edit Details
+      </Typography>
 
       <NewMovieForm
         submit={editMovie}

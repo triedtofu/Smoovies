@@ -51,7 +51,6 @@ const MovieResultCard = ({ buttonClick, movie }: MovieResultCardProps) => {
           <Button
             variant="outlined"
             color="error"
-            // sx={{ margin: '10px' }}
             onClick={buttonClick}
           >
             <DeleteIcon></DeleteIcon>

@@ -12,10 +12,6 @@
   gap: 5px;
 }
 
-.movieLink {
-  /* TODO */
-}
-
 .movieLink:hover {
   text-decoration: underline;
   text-decoration-color: '#b77a37';

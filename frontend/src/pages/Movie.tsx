@@ -74,17 +74,15 @@ const Movie = () => {
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
 
-    try {
-      apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
+    apiUserWishlist(parseInt(parseJwt(cookies.token).jti))
+      .then(data => {
         if (data.movies.find((m) => m.id === movie.id)) {
           setButton(2);
         } else {
           setButton(1);
         }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch(error => setErrorStr(getErrorMessage(error)));
   }, [movie]);
 
   const WishlistButton = ({ state }: buttonProps) => {
@@ -147,37 +145,15 @@ const Movie = () => {
   if (movie && Object.keys(movie).length === 0) return <></>;
 
   const addMovieToWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), true)
-        .then((_) => setButton(2))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), true)
+      .then(() => setButton(2))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const removeMovieFromWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), false)
-        .then((_) => setButton(1))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), false)
+      .then(() => setButton(1))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const submitReview = (rating: number, review: string) => {
@@ -196,7 +172,6 @@ const Movie = () => {
     apiDeleteReview(cookies.token, movieId, reviewUser)
       .then(() => updateMovie(movieId))
       .catch((error) => setDeleteReviewErr(getErrorMessage(error)));
-    // TODO handle error
   };
 
   const deleteButtonFunc = (reviewUser: number) => {

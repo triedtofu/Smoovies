@@ -43,15 +43,8 @@ const Profile = () => {
 
   const refreshPage = () => {
     setErrorStr('');
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
     try {
-      apiGetUserReviews(parseInt(idStr), cookies.token)
+      apiGetUserReviews(parseInt(params.id!), cookies.token)
         .then((data) => {
           setReviews(data.reviews);
           setName(data.username);
@@ -76,16 +69,9 @@ const Profile = () => {
 
   // returns whether the remove from review button should be shown
   const showButton = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return false;
-    }
-
     if (
       !cookies.token ||
-      (!cookies.admin && idStr !== parseJwt(cookies.token).jti)
+      (!cookies.admin && params.id! !== parseJwt(cookies.token).jti)
     )
       return false;
 
@@ -105,7 +91,6 @@ const Profile = () => {
   };
 
   const blacklistUser = () => {
-    // TODO
     const idStr = params.id ?? '';
     apiPutBlacklistUser(cookies.token, parseInt(idStr), BLUser);
     setBLUser(false);
@@ -119,30 +104,32 @@ const Profile = () => {
         <title>
           {cookies.token && params.id === parseJwt(cookies.token).jti
             ? 'Your Reviews'
-            : `${name}'s Reviews`} - Smoovies
+            : `${name}'s Reviews`}{' '}
+          - Smoovies
         </title>
       </Helmet>
 
       <div className={styles.headerDiv}>
-        <Typography gutterBottom variant="h4" component="h1">
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
           {cookies.token && params.id === parseJwt(cookies.token).jti
             ? 'Your Reviews'
             : `${name}'s Reviews`}
         </Typography>
-        {cookies.token &&
-          cookies.admin &&
-          params.id !== parseJwt(cookies.token).jti &&
-          (
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => setConfirmBanUser(true)}
-            >
-              Ban User &nbsp;<CancelIcon></CancelIcon>
-            </Button>
-          )
-        }
-        {BLUser && (
+        {cookies.admin && params.id !== parseJwt(cookies.token).jti && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setConfirmBanUser(true)}
+          >
+            Ban User &nbsp;<CancelIcon></CancelIcon>
+          </Button>
+        )}
+        {BLUser && cookies.token && params.id !== parseJwt(cookies.token).jti && (
           <Button
             variant="outlined"
             color="error"
@@ -151,18 +138,22 @@ const Profile = () => {
             Blacklist User
           </Button>
         )}
-        {!BLUser && (
-          <h2 style={{ color: 'red', font: 'Futura' }}>
-            You have blacklisted this user
-          </h2>
-        )}
+        {!BLUser &&
+          cookies.token &&
+          params.id !== parseJwt(cookies.token).jti && 
+          (
+            <h2 style={{ color: 'red', font: 'Futura' }}>
+              You have blacklisted this user
+            </h2>
+          )
+        }
       </div>
 
-      {!(cookies.token && params.id === parseJwt(cookies.token).jti) &&
+      {!(cookies.token && params.id === parseJwt(cookies.token).jti) && (
         <Button variant="outlined" onClick={() => navigate('wishlist')}>
           Their Wishlist
         </Button>
-      }
+      )}
 
       {confirmBanUser && (
         <ConfirmModal
@@ -176,7 +167,7 @@ const Profile = () => {
 
       {reviews.length === 0 && <p>No reviews.</p>}
 
-      {reviews.slice(0, numReviewsShown).map(review => (
+      {reviews.slice(0, numReviewsShown).map((review) => (
         <ReviewResultCard
           key={review.movieId}
           review={review}
@@ -185,13 +176,16 @@ const Profile = () => {
         />
       ))}
 
-      {numReviewsShown < reviews.length &&
+      {numReviewsShown < reviews.length && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}>
+          <Button
+            variant="contained"
+            onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}
+          >
             Show more
           </Button>
         </div>
-      }
+      )}
     </Container>
   );
 };

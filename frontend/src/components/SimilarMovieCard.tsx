@@ -1,11 +1,9 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
 
 import { SimilarMovie } from '../util/interface';
 
@@ -26,7 +24,9 @@ const SimilarMovieCard = ({ movie }: { movie: SimilarMovie }) => {
           <Typography
             gutterBottom
             component="div"
+            color={'#b77a37'}
             sx={{ textAlign: 'center', fontSize: '12px' }}
+            className={styles.movieLink}
           >
             {`${movie.name} (${movie.year})`}
           </Typography>

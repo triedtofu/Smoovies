@@ -28,56 +28,40 @@ const Wishlist = () => {
   const [errorStr, setErrorStr] = React.useState('');
 
   const removeMovie = (movieId: number) => {
-    try {
-      apiPutUserWishlist(cookies.token, movieId, false)
-        .then((_) => {
-          // delete movie
-          setMovies(movies.filter((movie) => movie.id != movieId));
-        })
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, movieId, false)
+      .then(() => {
+        // delete movie
+        setMovies(movies.filter((movie) => movie.id !== movieId));
+      });
   };
 
   React.useEffect(() => {
     setMovies([]);
     setName('');
     setErrorStr('');
-    const idStr = params.id ?? '';
+    const id = parseInt(params.id ?? '');
 
-    if (idStr === '') {
-      // TODO handle error
+    if (Number.isNaN(id)) {
+      setErrorStr(`Error: '${params.id}' is not an integer`);
       return;
     }
 
-    try {
-      apiUserWishlist(parseInt(idStr), cookies.token)
-        .then((data) => {
-          setMovies(data.movies);
-          setName(data.username);
-        })
-        .catch((error) => setErrorStr(getErrorMessage(error)));
-    } catch (error) {
-      setErrorStr(getErrorMessage(error));
-    }
+    apiUserWishlist(id, cookies.token)
+      .then((data) => {
+        setMovies(data.movies);
+        setName(data.username);
+      })
+      .catch((error) => setErrorStr(getErrorMessage(error)));
   }, [params.id]);
 
-  // returns whether the remove from wishlist button should be shown
-  const showButton = () => {
-    const idStr = params.id ?? '';
+  // whether the remove from wishlist button should be shown
+  const showButton = cookies.token && params.id! === parseJwt(cookies.token).jti;
 
-    if (idStr === '') {
-      // TODO handle error
-      return false;
-    }
-
-    if (!cookies.token || idStr !== parseJwt(cookies.token).jti) return false;
-
-    return true;
-  };
-
-  if (errorStr || name === '') return <h2>{errorStr}</h2>;
+  if (errorStr || name === '') return (
+    <Container maxWidth="md">
+      <h2>{errorStr}</h2>
+    </Container>
+  )
 
   return (
     <Container maxWidth="lg">
@@ -85,21 +69,25 @@ const Wishlist = () => {
         <title>
           {cookies.token && params.id === parseJwt(cookies.token).jti
             ? 'Your Wishlist'
-            : `${name}'s Wishlist`} - Smoovies
+            : `${name}'s Wishlist`}{' '}
+          - Smoovies
         </title>
       </Helmet>
 
-      <Typography variant="h4" component="h1">
+      <Typography variant="h4" component="h1" fontFamily={'Verdana'}>
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Wishlist'
           : `${name}'s Wishlist`}
       </Typography>
 
-      {!(cookies.token && params.id === parseJwt(cookies.token).jti) &&
-        <Button variant="outlined" onClick={() => navigate(`/user/${params.id}/`)}>
+      {!(cookies.token && params.id === parseJwt(cookies.token).jti) && (
+        <Button
+          variant="outlined"
+          onClick={() => navigate(`/user/${params.id}/`)}
+        >
           Their Reviews
         </Button>
-      }
+      )}
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
@@ -107,17 +95,20 @@ const Wishlist = () => {
         <MovieResultCard
           key={movie.id}
           movie={movie}
-          buttonClick={showButton() ? () => removeMovie(movie.id) : null}
+          buttonClick={showButton ? () => removeMovie(movie.id) : null}
         />
       ))}
 
-      {numMoviesShown < movies.length &&
+      {numMoviesShown < movies.length && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+          <Button
+            variant="contained"
+            onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}
+          >
             Show more
           </Button>
         </div>
-      }
+      )}
     </Container>
   );
 };
