@@ -2,45 +2,64 @@ import requests
 import json
 import random
 
-registerUrl = 'http://localhost:8080/api/user/register'
-loginUrl = 'http://localhost:8080/api/user/login'
-addReviewUrl = 'http://localhost:8080/api/movie/addReview'
+registerUrl = 'https://comp3900-lawnchair-front.herokuapp.com/api/user/register'
+loginUrl = 'https://comp3900-lawnchair-front.herokuapp.com/api/user/login'
+addReviewUrl = 'https://comp3900-lawnchair-front.herokuapp.com/api/movie/addReview'
 
-reviewerRegister = {"name": "Jared Mcdonald", "email": "reviewer21@email.com", "password": "Password123"}
-#reviewerLogin = {"email": "reviewer12@email.com", "password": "Password123"}
+reviewerRegister = {"name": "Sun Wukong", "email": "reviewer20@email.com", "password": "Password123"}
+#reviewerLogin = {"email": "reviewer11@email.com", "password": "Password123"}
 reviewerInfo = requests.post(registerUrl, json = reviewerRegister)  
 #reviewerInfo = requests.post(loginUrl, json = reviewerLogin)
-print(reviewerInfo.json())
+#print(reviewerInfo.json())
 
-review1 = "It's Morbin Time"
-review2 = "It's Not Morbin Time"
-review3 = "This is a dog movie don't watch it"
-review4 = "I'm just leaving a review for the sake of leaving a review"
-review5 = "I love writing reviews"
-review6 = "Only smelly people like this movie"
-review7 = "Only sexy people like this movie"
-review8 = "Give me a refund on my movie ticket please"
-review9 = "Best movie of all time"
-review10 = "Worst movie of all time"
-review11 = "I'm running out of ideas"
-review12 = "I'm in love with the main character"
-review13 = "I reckon I could've done a better fake accent"
-review14 = "Director deserves an award"
-review15 = "Looks like it was made for a HSC drama project"
-review16 = "I just realised that these preset reviews may not correlate with the randomly generated ratings"
-review17 = "The reviewer below is stupid"
-review18 = "Review18"
-review19 = "Almost there (Review19)"
-review20 = "My work here is done"
+review1 = "Actors didnt do a good job in this movie. Send them back to acting school."
+review2 = "Movie title is super misleading."
+review3 = "The director has no direction in this movie. Felt like a sailor on land."
+review4 = "Doesn't live up to the hype. I was honestly really disappointed."
+review5 = "Only giving it 2 stars cause it has good actors."
+review6 = "Story wasn't that interesting, fell asleep in the cinemas. Good soundtrack to fall asleep to though."
+review7 = "Kind of generic, does nothing well but nothing too bad either."
+review8 = "Not worth spending my weekend watching this."
+review9 = "Movie was quite predicatble throughout. Somewhat enjoyed it but wouldnt give it a double take."
+review10 = "Decent Movie. Disliked the main lead."
+review11 = "Recommended by a friend but didnt really like it. Acting was bland and storyline was going around in circles but main actor was popular."   
+review12 = "Ok movie. Terrible acting but visuals were great."
+review13 = "Great movie even though the ending was predictable."
+review14 = "Nice movie, but the ending was a bit confusing."
+review15 = "Enjoyed this movie but I felt that the pacing was a little bit slow."
+review16 = "The plot, soundtrack, and directing were all amazing, but I wish there was more diverse cultural representation."
+review17 = "Absolute masterpiece of a movie. I've never seen such perfection and anything will ever compare."
+review18 = "Best movie of all time. You can't change my mind."
+review19 = "I wish I could watch this movie for the first time again."
+review20 = "This movie is actually so good I've watched it 20 times."
 
-reviewList = [review1, review2, review3, review4, review5, review6, review7, review8, review9, review10, 
-              review11, review12, review13, review14, review15, review16, review17, review18, review19, review20]
-for x in range(1, 45):
+reviewList1 = [review1, review2, review3, review4]
+reviewList2 = [review5, review6, review7, review8]
+reviewList3 = [review9, review10, review11, review12]
+reviewList4 = [review13, review14, review15, review16]
+reviewList5 = [review17, review18, review19, review20]
+
+for x in range(1, 46):
     review = {"token" : [], "movieId" : [], "review" : [], "rating" : []}
     review["token"] = (reviewerInfo.json())["token"]
     review["movieId"] = x
-    review["review"] = reviewList[random.randint(0,19)]
+    
     review["rating"] = random.randint(1,5)
+    if (review["rating"] == 1):
+        review["review"] = reviewList1[random.randint(0,3)]
+    
+    elif (review["rating"] == 2):
+        review["review"] = reviewList2[random.randint(0,3)]
+    
+    elif (review["rating"] == 3):
+        review["review"] = reviewList3[random.randint(0,3)]
+    
+    elif (review["rating"] == 4):
+        review["review"] = reviewList4[random.randint(0,3)]
+    
+    elif (review["rating"] == 5):
+        review["review"] = reviewList5[random.randint(0,3)]
+    
     y = requests.post(addReviewUrl, json = review)
 
     if y.status_code == 200:

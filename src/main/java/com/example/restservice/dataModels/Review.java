@@ -3,7 +3,7 @@ package com.example.restservice.dataModels;
 import java.util.HashSet;
 import java.util.Set;
 
-//import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,11 +17,13 @@ import javax.persistence.Table;
 
 import org.json.JSONObject;
 
-import com.example.restservice.service.ServiceErrors;
+import com.example.restservice.service.helpers.ServiceErrors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Entity that represents a review in the database.
+ */
 @Entity
 @Table(name = "reviews")
 public class Review {

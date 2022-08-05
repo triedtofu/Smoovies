@@ -24,7 +24,9 @@ const SimilarMovieCard = ({ movie }: { movie: SimilarMovie }) => {
           <Typography
             gutterBottom
             component="div"
+            color={'#b77a37'}
             sx={{ textAlign: 'center', fontSize: '12px' }}
+            className={styles.movieLink}
           >
             {`${movie.name} (${movie.year})`}
           </Typography>

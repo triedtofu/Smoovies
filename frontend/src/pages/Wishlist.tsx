@@ -69,21 +69,25 @@ const Wishlist = () => {
         <title>
           {cookies.token && params.id === parseJwt(cookies.token).jti
             ? 'Your Wishlist'
-            : `${name}'s Wishlist`} - Smoovies
+            : `${name}'s Wishlist`}{' '}
+          - Smoovies
         </title>
       </Helmet>
 
-      <Typography variant="h4" component="h1">
+      <Typography variant="h4" component="h1" fontFamily={'Verdana'}>
         {cookies.token && params.id === parseJwt(cookies.token).jti
           ? 'Your Wishlist'
           : `${name}'s Wishlist`}
       </Typography>
 
-      {!(cookies.token && params.id === parseJwt(cookies.token).jti) &&
-        <Button variant="outlined" onClick={() => navigate(`/user/${params.id}/`)}>
+      {!(cookies.token && params.id === parseJwt(cookies.token).jti) && (
+        <Button
+          variant="outlined"
+          onClick={() => navigate(`/user/${params.id}/`)}
+        >
           Their Reviews
         </Button>
-      }
+      )}
 
       {movies.length === 0 && <p>No movies in wishlist.</p>}
 
@@ -95,13 +99,16 @@ const Wishlist = () => {
         />
       ))}
 
-      {numMoviesShown < movies.length &&
+      {numMoviesShown < movies.length && (
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}>
+          <Button
+            variant="contained"
+            onClick={() => setNumMoviesShown(numMoviesShown + PAGE_SIZE)}
+          >
             Show more
           </Button>
         </div>
-      }
+      )}
     </Container>
   );
 };

@@ -2,6 +2,9 @@ package com.example.restservice.dataModels.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class containing all fields for a request from REST API to ban a user
+ */
 public class BanUserRequest {
     private String token;
     private long userId;

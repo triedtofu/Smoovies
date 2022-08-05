@@ -47,7 +47,7 @@ const Blacklist = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1">
+      <Typography variant="h4" component="h1" fontFamily={'Verdana'}>
         Your Blacklist
       </Typography>
 

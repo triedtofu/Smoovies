@@ -23,7 +23,9 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+/**
+ * Entity that represents a movie.
+ */
 @Entity
 @Table(name = "movies")
 public class Movie {
@@ -262,7 +264,9 @@ public class Movie {
     public void clearDBDirectors() {
         this.directorsInMovie.clear();
     }
-
+    /**
+     * Recalculates the average rating for a movie based on its reviews.
+     */
     public void recalculateAverageRating() {
         double total = 0;
         

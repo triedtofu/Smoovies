@@ -18,12 +18,19 @@ const ReviewInput = (props: ReviewInputProps) => {
   const submitReview = (e: React.FormEvent) => {
     e.preventDefault();
     props.submitReview(rating ?? 0, review);
-  }
+  };
 
   return (
     <div className={styles.reviewDiv}>
       <div className={styles.reviewHeader}>
-        <Typography gutterBottom variant="h5" component="h2">Write a Review</Typography>
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="h2"
+          fontFamily={'Verdana'}
+        >
+          Write a Review
+        </Typography>
         <Rating
           name="half-rating"
           value={rating}
@@ -38,7 +45,7 @@ const ReviewInput = (props: ReviewInputProps) => {
           required
           placeholder="Write your review here"
           value={review}
-          onChange={e => setReview(e.target.value)}
+          onChange={(e) => setReview(e.target.value)}
         />
         <Button size="small" variant="contained" type="submit">
           Submit
@@ -46,6 +53,6 @@ const ReviewInput = (props: ReviewInputProps) => {
       </form>
     </div>
   );
-}
+};
 
 export default ReviewInput;

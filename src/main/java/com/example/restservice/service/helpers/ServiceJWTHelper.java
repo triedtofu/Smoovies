@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.helpers;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -18,6 +18,14 @@ public class ServiceJWTHelper {
     private static String resetSignKey = "reset";
 
     //Sample method to construct a JWT
+    
+    /**
+     * Generates a JWT
+     * @param id ID of the user
+     * @param subject Subject to be encrypted in token
+     * @param signKey secret signkey of the token
+     * @return JWT token
+     */
     public static String generateJWT(String id, String subject, String signKey) {
         
         
@@ -59,6 +67,12 @@ public class ServiceJWTHelper {
     }
 
     //Sample method to validate and read the JWT
+    /**
+     * Veriy a jwt
+     * @param jwt The jwt to verify
+     * @param signKey The sign key to decode with
+     * @return the claims of the jwt token, null if not valid jwt
+     */
     private static Claims verifyJWT(String jwt, String signKey) {
     
         //This line will throw an exception if it is not a signed JWS (as expected)
@@ -83,24 +97,45 @@ public class ServiceJWTHelper {
         }
     }
 
+    /**
+     * login token expiry time in ms
+     */
     private static long loginTokenTimeInMilliSeconds() {
         // currently 1 month
         return 30 * 24 * 60 * 60 * 1000; 
     }
-
+    
+    /**
+     * login token expiry time in hrs
+     * @return expiry time
+     */
     public static long loginTokenTimeInHours() {
         return loginTokenTimeInMilliSeconds()/60/60/1000; 
     }
 
+    /**
+     * reset token expiry time in ms
+     * @return expiry time
+     */
     private static long resetTokenTimeInMilliSeconds() {
             // currently 1 hour
             return 60 * 60 * 1000; 
     }
 
+    /**
+     * reset token expiry time in hrs
+     * @return expiry time
+     */
     public static long resetTokenTimeInHours() {
         return resetTokenTimeInMilliSeconds()/60/60/1000; 
     }
 
+    /**
+     * Gets the subject of a jwt
+     * @param jwt the jwt to get subjecty from
+     * @param signKey signkey to decrypt token with
+     * @return subject of the jwt, null if invalid token
+     */
     public static String getTokenSubject(String jwt, String signKey) {
         Claims claims = verifyJWT(jwt, signKey);
         if (claims != null) {
@@ -112,9 +147,9 @@ public class ServiceJWTHelper {
 
     /**
      *  Checks that a users token is valid on GET request
-     * @param jwt
-     * @param signKey
-     * @return true if valid
+     * @param jwt jwt to verify
+     * @param signKey signkey to decrypt token with
+     * @return true if valid, false if not valid
      */
     public static Boolean verifyUserGetRequestToken(String jwt, String signKey) {
         // case where no token (e.g not logged in)
@@ -129,6 +164,12 @@ public class ServiceJWTHelper {
         return false;
     }
 
+    /**
+     * Gets the id of a jwt
+     * @param jwt jwt to verify
+     * @param signKey signkey to decrypt token with
+     * @return id of token, null if invalid token
+     */
     public static Long getTokenId(String jwt, String signKey) {
 
         Claims claims = verifyJWT(jwt, signKey);
@@ -142,7 +183,11 @@ public class ServiceJWTHelper {
         return resetSignKey;
     }
 
-    // pads the sign key to 50 characters with all "a" to the right
+    /**
+     * pads a sign key to 50 characters with all "a" to the right
+     * @param signKey signkey to be padded
+     * @return padded sign key
+     */
     private static String padSignKey(String signKey) {
         if (signKey.length() < 50) {
             signKey = String.format("%-50s", signKey ).replace(' ', 'a');
