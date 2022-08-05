@@ -1,8 +1,8 @@
 package com.example.restservice.service;
-//import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.List;
-//import java.util.Optional;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
 import com.example.restservice.dataModels.requests.UpdateUserDetailsRequest;
-//import com.example.restservice.dataModels.Genre;
+
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
 import com.example.restservice.database.UserDataAccessService;
@@ -27,7 +27,7 @@ import com.example.restservice.service.helpers.ServiceErrors;
 import com.example.restservice.service.helpers.ServiceInputChecks;
 import com.example.restservice.service.helpers.ServiceJWTHelper;
 
-//import io.jsonwebtoken.Claims;
+
 
 /**
  * Service for users that performs backend operations dependent on REST API calls
@@ -112,14 +112,6 @@ public class UserService {
     }
 
     /**
-    * Get list of all users from database
-    * @return list of users
-    */
-    public List<User> getAllUsers() {
-        return userDAO.findAll();
-    }
-
-    /**
     * Grabs the wishlist of a user
     * @param id
     * @return wishlist of user , error message on its owns if there is an error
@@ -152,7 +144,7 @@ public class UserService {
         }
         String requiredUserFields = "username";
         JSONObject responseJSON = JSONObjectGenerators.userObject(requiredUserFields, user, null);
-        //TODO: Sort alphabetically
+
         String requiredMovieFields = "id, name, year, poster, description, genres, averageRating";
         for (Movie movie : user.getWishlistMovies()) {
             moviesArray.put(JSONObjectGenerators.movieObject(requiredMovieFields, movie, userBlacklistDAO, token, user));

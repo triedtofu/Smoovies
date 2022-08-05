@@ -1,10 +1,10 @@
 package com.example.restservice.api;
 
-import java.util.List;
+
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +26,7 @@ import com.example.restservice.dataModels.requests.UpdateWishlistRequest;
 import com.example.restservice.service.ReviewService;
 import com.example.restservice.service.UserService;
 
-//import com.example.restservice.api.ControllerResponses;
 
-//import com.fasterxml.jackson.annotation.JsonProperty;
 
 //Expose endpoints so clients can consume
 
@@ -65,12 +63,6 @@ public class UserController {
         JSONObject response = userService.register(user, false, false);
 
         return ControllerResponses.generateHttpResponse(response);
-    }
-
-
-    @GetMapping("/getAllUsers")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
     }
 
 

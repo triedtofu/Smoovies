@@ -1,13 +1,9 @@
 package com.example.restservice.api;
 
-//import java.lang.ModuleLayer.Controller;
-import java.util.List;
-//import java.util.ResourceBundle.Control;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-//import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.restservice.dataModels.Movie;
+
 import com.example.restservice.dataModels.requests.AddMovieRequest;
 import com.example.restservice.dataModels.requests.AddReviewRequest;
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
 import com.example.restservice.dataModels.requests.LikeReviewRequest;
 import com.example.restservice.dataModels.requests.SearchRequest;
-//import com.example.restservice.dataModels.MovieIdRequest;
+
 import com.example.restservice.service.MovieService;
 import com.example.restservice.service.ReviewService;
 
-//import com.example.restservice.api.ControllerResponses;
+
 
 /**
  * REST API controller for movie routes
@@ -55,10 +51,6 @@ public class MovieController {
         return ControllerResponses.generateHttpResponse(response);
     }
 
-    @GetMapping("/getAllMovies")
-    public List<Movie> getAllMovies() {
-        return movieService.getAllMovies();
-    }
     
     @GetMapping("/homepage")
     public ResponseEntity<Object> homepage(@RequestParam(name = "token", required = false) String token) {

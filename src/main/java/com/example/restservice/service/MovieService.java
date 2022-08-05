@@ -5,21 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-//import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-// import java.util.ArrayList;
-// import java.util.Set;
-// import java.util.Optional;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.text.similarity.JaroWinklerDistance;
-// import org.apache.tomcat.jni.Address;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.User;
 import com.example.restservice.dataModels.UserGenrePreferenceScore;
 import com.example.restservice.dataModels.requests.AddMovieRequest;
-// import com.example.restservice.dataModels.requests.AddReviewRequest;
+
 import com.example.restservice.dataModels.requests.DeleteMovieRequest;
 import com.example.restservice.dataModels.requests.EditMovieRequest;
 import com.example.restservice.dataModels.requests.SearchRequest;
@@ -49,7 +47,7 @@ import com.example.restservice.service.helpers.ServiceErrors;
 import com.example.restservice.service.helpers.ServiceInputChecks;
 import com.example.restservice.service.helpers.ServiceJWTHelper;
 
-//import com.example.restservice.service.ServiceErrors;
+
 /**
  * Service for Movies that performs backend operations dependent on REST API calls
  */
@@ -131,14 +129,6 @@ public class MovieService {
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }
-    }
-
-    /**
-     * Grabs all movies from the database
-     * @return List of all movies
-     */
-    public List<Movie> getAllMovies() {
-        return movieDAO.findAll();
     }
 
 
