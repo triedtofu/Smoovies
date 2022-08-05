@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -138,7 +138,9 @@ const HigherOrLower = () => {
     return <></>;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e : FormEvent) => {
+    e.preventDefault();
+
     setErrorStr('');
     setLoadingMovies(true);
 
