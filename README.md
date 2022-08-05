@@ -2,7 +2,7 @@
 
 The recommended experience is to view the website at [https://comp3900-lawnchair.herokuapp.com](https://comp3900-lawnchair.herokuapp.com). Note: Heroku sleeps the website if it is inactive and so it will take some time to wake up on the first visit.
 
-Run all instructions in the base directory of the unzipped submission.
+The following instructions are for the Lubuntu Virtual Machine. Run all instructions in the base directory of the unzipped submission.
 
 ## Dependencies
 
