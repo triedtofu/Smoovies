@@ -14,14 +14,30 @@ import org.springframework.data.repository.query.Param;
  */
 @Repository 
 public interface MovieDataAccessService extends JpaRepository<Movie, Long>{
-    @Query(value = "SELECT * FROM movies limit 12", nativeQuery = true)
-    public List<Movie> trending();
+    /**
+     * Finds movie by ID
+     * @param id
+     * @return Movie
+     */
     @Query(value = "SELECT * FROM movies m WHERE m.id = :id", nativeQuery = true)
     public Movie findMovieByID(@Param("id") long id);
+    /**
+     * Searches by name and orders by the average-rating
+     * @param name
+     * @return List<Movie>
+     */
     @Query(value = "SELECT * FROM movies m WHERE m.name iLIKE %:name% ORDER BY average_rating DESC, name", nativeQuery = true)
     public List<Movie> searchMovieByName(@Param("name") String name);
+    /**
+     * Deletes the movie with the given id
+     * @param id
+     */
     @Query(value = "DELETE FROM movies m WHERE m.id = :id", nativeQuery = true)
     public void deleteMovie(@Param("id") long id);
+    /**
+     * Returns all movies sorted by rating.
+     * @return
+     */
     @Query(value = "SELECT * FROM movies m ORDER BY m.average_rating DESC", nativeQuery = true)
     public List<Movie> topRated();
     @Query(value = "SELECT * FROM movies m WHERE m.description iLIKE %:description% ORDER BY average_rating DESC, name", nativeQuery = true)
