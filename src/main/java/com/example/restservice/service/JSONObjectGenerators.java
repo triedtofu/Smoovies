@@ -9,6 +9,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.example.restservice.dataModels.Actor;
+import com.example.restservice.dataModels.Director;
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
@@ -55,7 +57,7 @@ public class JSONObjectGenerators {
                 returnMovie.put("contentRating", movie.getContentRating());
                 break;
                 case "runtime" :
-                returnMovie.put("cast", movie.getRuntime());
+                returnMovie.put("cast", movie.getCast());
                 break;
                 case "genres" :
                 returnMovie.put("genres", new JSONArray(movie.getGenreListStr()));
@@ -116,9 +118,58 @@ public class JSONObjectGenerators {
                 break;
                 case "poster" :
                 returnReview.put("poster", review.getMovie().getPoster());
+                break;
             } 
         }
         return new JSONObject(returnReview);
+    }
+
+    public static JSONObject actorObject(String requiredFields, Actor actor, UserBlacklistDataAccessService userBlacklistDAO){
+        HashMap<String, Object> returnActor = new HashMap<>();
+        List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
+        for (String field : required) {
+            switch(field) {
+                case "name" :
+                returnActor.put("name", actor.getName());
+                break;
+                case "id" :
+                returnActor.put("id", actor.getId());
+                break;
+                case "movies" :
+                JSONArray movieArray = new JSONArray();
+                String requiredMovieFields = "id, name, year, poster, description, genres, averageRating";
+                for (Movie movie : actor.getMovieActorsIn()) {
+                    movieArray.put(movieObject(requiredMovieFields, movie, userBlacklistDAO, null, null));
+                }
+                returnActor.put("movies", movieArray);
+                break;
+            }
+        }
+        return new JSONObject(returnActor);
+    }
+
+    public static JSONObject directorObject(String requiredFields, Director director, UserBlacklistDataAccessService userBlacklistDAO){
+        HashMap<String, Object> returnDirector = new HashMap<>();
+        List<String> required = new ArrayList<>(Arrays.asList(requiredFields.split(",[ ]*")));
+        for (String field : required) {
+            switch(field) {
+                case "name" :
+                returnDirector.put("name", director.getName());
+                break;
+                case "id" :
+                returnDirector.put("id", director.getId());
+                break;
+                case "movies" :
+                JSONArray movieArray = new JSONArray();
+                String requiredMovieFields = "id, name, year, poster, description, genres, averageRating";
+                for (Movie movie : director.getDirectorIsIn()) {
+                    movieArray.put(movieObject(requiredMovieFields, movie, userBlacklistDAO, null, null));
+                }
+                returnDirector.put("movies", movieArray);
+                break;
+            }
+        }
+        return new JSONObject(returnDirector);
     }
     
 }

@@ -1,17 +1,13 @@
 package com.example.restservice.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.restservice.dataModels.Review;
 import com.example.restservice.dataModels.User;
-import com.example.restservice.database.ActorDataAccessService;
-import com.example.restservice.database.MovieDataAccessService;
 
 public class ServiceHelperFunctions {
     
@@ -40,28 +36,6 @@ public class ServiceHelperFunctions {
                 }
             }
             reviewJSONArray.put(new JSONObject(userReview));
-        }
-        return reviewJSONArray;
-    }
-
-    public static JSONArray reviewJSONArrayMovies(Boolean needLiked, User user, List<Review> reviews) {
-        JSONArray reviewJSONArray = new JSONArray();
-        for (Review review : reviews) {
-            if (review.getUser().getIsBanned()) continue;
-            HashMap<String, Object> movieReview = new HashMap<String,Object>();
-            movieReview.put("user", review.getUser().getId());
-            movieReview.put("name", review.getUser().getName());
-            movieReview.put("review", review.getReviewString());
-            movieReview.put("rating", review.getRating());
-            movieReview.put("likes", review.getLikes());
-            if (needLiked) {
-                if (review.checkUserLikedReview(user)) {
-                    movieReview.put("liked", true);
-                } else {
-                    movieReview.put("liked", false);
-                }
-            }
-            reviewJSONArray.put(new JSONObject(movieReview));
         }
         return reviewJSONArray;
     }
