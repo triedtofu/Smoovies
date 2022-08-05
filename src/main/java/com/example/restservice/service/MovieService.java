@@ -283,14 +283,7 @@ public class MovieService {
         JSONArray actorsArray = new JSONArray();
         JSONArray directorsArray = new JSONArray();
         //Case where there is no filtering or search results at all
-        if (searchRequest.getName().isEmpty()) {
-            if ((searchRequest.getGenres() == null && searchRequest.getContentRating() == null)) {
-                returnMessage.put("movies", new JSONArray());
-                returnMessage.put("actors", new JSONArray());
-                returnMessage.put("directors", new JSONArray());
-                return new JSONObject(returnMessage);
-            }
-        }
+        
         List<Movie> nameMovies = movieDAO.searchMovieByName(searchRequest.getName());
         List<Movie> descMovies = movieDAO.searchMovieByDescription(searchRequest.getName());
         List<Movie> dbMovies = new ArrayList<Movie>();
