@@ -1,14 +1,26 @@
 .card {
-  margin: 10px;
+  margin: 10px 0;
   display: flex;
   align-items: flex-start;
 }
 
-.card_media {
-  width: 175px !important;
+.cardMedia {
+  width: 175px;
+  max-width: 50%;
 }
 
-.card_content {
-  width: 100%;
+.cardContent {
+  display: flex;
+  align-items: flex-start;
 }
 
+@media (max-width: 600px) {
+  .description {
+    display: none;
+  }
+
+  .cardContent {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+}

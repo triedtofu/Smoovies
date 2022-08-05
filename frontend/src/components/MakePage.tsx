@@ -1,10 +1,10 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
-import Navbar from './Navbar';
-import NavbarLoggedIn from './NavbarLoggedIn';
-import NavbarAdmin from './NavbarAdmin';
+import Navbar from './NewNavbar';
+import NavbarLoggedIn from './NewNavbarLoggedIn';
+import NavbarAdmin from './NewNavbarAdmin';
 
 import { parseJwt } from '../util/helper';
 
@@ -17,16 +17,11 @@ const MakePage = (Component: React.ElementType) => {
       removeCookie('name', { path: '/' });
       removeCookie('admin', { path: '/' });
       window.location.reload();
-    }
+    };
 
-    const Nav = ({ cookies }: { cookies: {[x: string]: any }}) => {
+    const Nav = ({ cookies }: { cookies: { [x: string]: any } }) => {
       if (cookies.token && cookies.admin) {
-        return (
-          <NavbarAdmin
-            name={cookies.name}
-            logout={logout}
-          />
-        );
+        return <NavbarAdmin name={cookies.name} logout={logout} />;
       } else if (cookies.token) {
         return (
           <NavbarLoggedIn
@@ -34,12 +29,12 @@ const MakePage = (Component: React.ElementType) => {
             logout={logout}
             id={parseInt(parseJwt(cookies.token).jti)}
           />
-        )
+        );
       } else {
         return <Navbar />;
       }
-    }
-    
+    };
+
     return (
       <>
         <Helmet>
@@ -48,8 +43,8 @@ const MakePage = (Component: React.ElementType) => {
         <Nav cookies={cookies} />
         <Component />
       </>
-    )
-  }
+    );
+  };
 
   return page;
 };

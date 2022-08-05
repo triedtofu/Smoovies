@@ -5,6 +5,7 @@ import styles from './ReviewInput.module.css';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 interface ReviewInputProps {
   submitReview: (rating: number, review: string) => void;
@@ -17,12 +18,19 @@ const ReviewInput = (props: ReviewInputProps) => {
   const submitReview = (e: React.FormEvent) => {
     e.preventDefault();
     props.submitReview(rating ?? 0, review);
-  }
+  };
 
   return (
     <div className={styles.reviewDiv}>
       <div className={styles.reviewHeader}>
-        <h2>Write a Review</h2>
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="h2"
+          fontFamily={'Verdana'}
+        >
+          Write a Review
+        </Typography>
         <Rating
           name="half-rating"
           value={rating}
@@ -37,7 +45,7 @@ const ReviewInput = (props: ReviewInputProps) => {
           required
           placeholder="Write your review here"
           value={review}
-          onChange={e => setReview(e.target.value)}
+          onChange={(e) => setReview(e.target.value)}
         />
         <Button size="small" variant="contained" type="submit">
           Submit
@@ -45,6 +53,6 @@ const ReviewInput = (props: ReviewInputProps) => {
       </form>
     </div>
   );
-}
+};
 
 export default ReviewInput;

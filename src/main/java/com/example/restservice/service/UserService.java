@@ -1,11 +1,8 @@
 package com.example.restservice.service;
-
-import java.util.ArrayList;
 //import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 //import java.util.Optional;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +17,7 @@ import com.example.restservice.dataModels.requests.BanUserRequest;
 import com.example.restservice.dataModels.requests.BlacklistUserRequest;
 import com.example.restservice.dataModels.requests.RequestResetPasswordRequest;
 import com.example.restservice.dataModels.requests.ResetPasswordRequest;
+import com.example.restservice.dataModels.requests.UpdateUserDetailsRequest;
 //import com.example.restservice.dataModels.Genre;
 import com.example.restservice.database.MovieDataAccessService;
 import com.example.restservice.database.UserBlacklistDataAccessService;
@@ -31,7 +29,7 @@ import com.example.restservice.database.UserDataAccessService;
 @Service
 public class UserService {
     @Autowired
-	private UserDataAccessService userDAO;
+    private UserDataAccessService userDAO;
 
     @Autowired
     private MovieDataAccessService movieDAO;
@@ -43,14 +41,12 @@ public class UserService {
     private UserBlacklistDataAccessService userBlacklistDAO;
 
     /**
-     * Logs a user in based on their email and password.
-     * @param email
-     * @param password
-     * @return userID, isAdmin, token
-     */
+    * Logs a user in based on their email and password.
+    * @param email
+    * @param password
+    * @return userID, isAdmin, token
+    */
     public JSONObject UserLogin(String email, String password) {
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
         // checks inputs for errors (in terms of formatting)
         if (!ServiceInputChecks.checkEmail(email)) {
@@ -69,27 +65,16 @@ public class UserService {
         if (user.getIsBanned()) {
             return ServiceErrors.userBannedError();
         }
-
-        //Password verification step
-        // if (!password.equals(user.getPassword())) {
-        //     return ServiceErrors.userPasswordIncorrectError();
-        // }
-
-        returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
-        returnMessage.put("userId", user.getId());
-        returnMessage.put("isAdmin", user.getIsAdmin());
-        returnMessage.put("name", user.getName());
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        String requiredFields = "token, userId, isAdmin, name";
+        return JSONObjectGenerators.userObject(requiredFields, user, null);
     }
 
     /**
-     * Adds user to database
-     * @param user
-     * @param isAdmin
-     * @return token, userID
-     */
+    * Adds user to database
+    * @param user
+    * @param isAdmin
+    * @return token, userID
+    */
     public JSONObject register(User user, Boolean isAdmin, Boolean isBanned) {
         if (!ServiceInputChecks.checkName(user.getName())) {
             return ServiceErrors.userNameInvalidError();
@@ -108,43 +93,34 @@ public class UserService {
 
         user.setIsAdmin(isAdmin);
         user.setIsBanned(isBanned);
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         try {
             // if user is successfully added, put user in dbUser
             // set return response values
 
             user = userDAO.addNewUser(user.getEmail(), user.getIsAdmin(), user.getName(), user.getPassword());
-
-            returnMessage.put("token", ServiceJWTHelper.generateJWT(user.getId().toString(), user.getEmail(), null));
-            returnMessage.put("userId", user.getId());
-            returnMessage.put("name", user.getName());
+            String requiredFields = "token, userId, name";
+            return JSONObjectGenerators.userObject(requiredFields, user, null);
         } catch(IllegalArgumentException e){
             return ServiceErrors.invalidInputError();
         }
-
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
     }
 
     /**
-     * Get list of all users from database
-     * @return list of users
-     */
+    * Get list of all users from database
+    * @return list of users
+    */
     public List<User> getAllUsers() {
         return userDAO.findAll();
     }
 
     /**
-     * Grabs the wishlist of a user
-     * @param id
-     * @return wishlist of user
-     */
+    * Grabs the wishlist of a user
+    * @param id
+    * @return wishlist of user
+    */
     public JSONObject getUserWishlist(long id, String token) {
-
         // verify the users token
-        Boolean tokenCheck = ServiceJWTHelper.verifyUserGetRequestToken(token, null);
-        if (!tokenCheck) {
+        if (token != null && !ServiceJWTHelper.verifyUserGetRequestToken(token, null)) {
             return ServiceErrors.userTokenInvalidError();
         }
 
@@ -152,57 +128,40 @@ public class UserService {
             return ServiceErrors.userIdInvalidError();
         }
 
-        // check that user is not trying to view a blacklisted users wishlist
-        List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
-        for (UserBlacklist blacklist: userBlacklist) {
-            if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
-            
+        if (token != null) {
+            // check that user is not trying to view a blacklisted users wishlist
+            List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
+            for (UserBlacklist blacklist: userBlacklist) {
+                if (blacklist.getBlacklistedUserId() == id) return ServiceErrors.cannotViewBlacklistedUser();
+            }
         }
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         // stores array of movies that are found by the search
         JSONArray moviesArray = new JSONArray();
         User user = userDAO.findById(id).orElse(null);
         if (user == null) return ServiceErrors.userIdInvalidError();
-        
+
         // check the user is not banned
         if (user.getIsBanned()) {
             return ServiceErrors.userBannedError();
         }
-
-        Set<Movie> wishlist = user.getWishlistMovies();
-        List<Movie> wish = new ArrayList<>(wishlist);
+        String requiredUserFields = "username";
+        JSONObject responseJSON = JSONObjectGenerators.userObject(requiredUserFields, user, null);
         //TODO: Sort alphabetically
-        if (wishlist.size() > 0) {
-            for(int i = 0; i < wishlist.size(); i++) {
-                Movie dbMovie = wish.get(i);
-                HashMap<String,Object> dbMovieDetails = new HashMap<String,Object>();
-                dbMovieDetails.put("id", dbMovie.getId());
-                dbMovieDetails.put("name", dbMovie.getName());
-                dbMovieDetails.put("year", dbMovie.getYear());
-                dbMovieDetails.put("poster", dbMovie.getPoster());
-                dbMovieDetails.put("description", dbMovie.getDescription());
-                dbMovieDetails.put("genres", new JSONArray(dbMovie.getGenreListStr()));
-                dbMovieDetails.put("averageRating", ServiceGetRequestHelperFunctions.getMovieAverageRatingByUserToken(userBlacklistDAO, dbMovie, token));
-
-                JSONObject dbMovieDetailsJson = new JSONObject(dbMovieDetails);
-                moviesArray.put(dbMovieDetailsJson);
-            }
+        String requiredMovieFields = "id, name, year, poster, description, genres, averageRating";
+        for (Movie movie : user.getWishlistMovies()) {
+            moviesArray.put(JSONObjectGenerators.movieObject(requiredMovieFields, movie, userBlacklistDAO, token, user));
         }
-
-        returnMessage.put("movies", moviesArray);
-        returnMessage.put("username", user.getName());
-        JSONObject responseJson = new JSONObject(returnMessage);
-        return responseJson;
+        responseJSON.put("movies", moviesArray);
+        return responseJSON;
     }
 
     /**
-     * Updates the wishlist of a user
-     * @param token
-     * @param movieId
-     * @param addRemove
-     * @return {}
-     */
+    * Updates the wishlist of a user
+    * @param token
+    * @param movieId
+    * @param addRemove
+    * @return {}
+    */
     public JSONObject updateUserWishlist(AuthenticationToken token, long movieId, Boolean addRemove) {
 
         if (!ServiceInputChecks.checkId(movieId)) {
@@ -238,7 +197,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Sends an email to request for a password change.
+     * @param requestResetPasswordRequest
+     * @return
+     */
     public JSONObject requestResetPassword(RequestResetPasswordRequest requestResetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -257,7 +220,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * For a given user, resets their password
+     * @param resetPasswordRequest
+     * @return
+     */
     public JSONObject resetPassword(ResetPasswordRequest resetPasswordRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -296,7 +263,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * ADMIN FUNCTION: Bans the given user.
+     * @param banUserRequest
+     * @return
+     */
     public JSONObject banUser(BanUserRequest banUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -341,7 +312,11 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * For a given user, adds/remove a user from their blacklist.
+     * @param blacklistUserRequest
+     * @return
+     */
     public JSONObject blackListUser(BlacklistUserRequest blacklistUserRequest) {
         HashMap<String,Object> returnMessage = new HashMap<String,Object>();
 
@@ -376,7 +351,7 @@ public class UserService {
             } else {
                 return ServiceErrors.userAlreadyInBlacklist();
             }
-        } 
+        }
         // otherwise, remove from blacklist table
         else {
             UserBlacklist userBlacklist = userBlacklistDAO.findUserFromBlacklist(userId, blacklistedUserId);
@@ -390,36 +365,104 @@ public class UserService {
         JSONObject responseJson = new JSONObject(returnMessage);
         return responseJson;
     }
-
+    /**
+     * Returns the given users blacklist.
+     * @param token
+     * @return
+     */
     public JSONObject getUserBlacklist(String token) {
         // verify the token and extract the users id
         Long user_id = ServiceJWTHelper.getTokenId(token, null);
         if (user_id == null) {
             return ServiceErrors.userTokenInvalidError();
         }
-
-        HashMap<String,Object> returnMessage = new HashMap<String,Object>();
         JSONArray blacklistArray = new JSONArray();
 
         List<UserBlacklist> userIdList = userBlacklistDAO.findUserBlacklistById(user_id);
 
         // find all users in blacklist and write in swagger format
+        String requiredBlacklistFields = "userId, username";
         for (int i = 0; i < userIdList.size(); i ++) {
             User user = userDAO.findUserById(userIdList.get(i).getBlacklistedUserId());
-            HashMap<String,Object> userDetails = new HashMap<String,Object>();
+            blacklistArray.put(JSONObjectGenerators.userObject(requiredBlacklistFields, user, null));
+        }
+        String requiredUserFields = "username";
+        JSONObject responseJson = JSONObjectGenerators.userObject(requiredUserFields, userDAO.findUserById(user_id), null);
+        responseJson.put("users", blacklistArray);
+        return responseJson;
+    }
 
-            userDetails.put("userId", user.getId());
-            userDetails.put("username", user.getName());
+    /**
+    * Gets the users name and email.
+    * @param token
+    * @return The details of the user associated with the token
+    */
+    public JSONObject getUserDetails(String token) {
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(token, null);
+        if (user_id == null) return ServiceErrors.userTokenInvalidError();
 
-            JSONObject userDetailsJson = new JSONObject(userDetails);
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFound();
 
-            blacklistArray.put(userDetailsJson);
+        String requiredFields = "name, email";
+        return JSONObjectGenerators.userObject(requiredFields, user, null);
+    }
+    /**
+     * Updates a users details 
+     * @param updateUserDetailsRequest
+     * @return
+     */
+    public JSONObject updateUserDetails(UpdateUserDetailsRequest updateUserDetailsRequest) {
+        // verify the token and extract the users id
+        Long user_id = ServiceJWTHelper.getTokenId(updateUserDetailsRequest.getToken(), null);
+        if (user_id == null) return ServiceErrors.userTokenInvalidError();
+
+        User user = userDAO.findById(user_id).orElse(null);
+        if (user == null) return ServiceErrors.userNotFound();
+
+        String oldEmail = user.getEmail();
+        String email = updateUserDetailsRequest.getEmail();
+
+        if (email != null) {
+            if (!ServiceInputChecks.checkEmail(email)) return ServiceErrors.userEmailInvalidError();
+
+            if (!email.equals(user.getEmail()) && !ServiceInputChecks.checkUniqueEmail(email, userDAO)) {
+                return ServiceErrors.userEmailInUseError();
+            }
+
+            user.setEmail(email);
         }
 
-        // create the return message
-        returnMessage.put("username", userDAO.findUserById(user_id).getName());
-        returnMessage.put("users", blacklistArray);
-        JSONObject responseJson = new JSONObject(returnMessage);
+        String username = updateUserDetailsRequest.getName();
+
+        if (username != null) {
+            if (!ServiceInputChecks.checkName(username)) return ServiceErrors.userNameInvalidError();
+
+            user.setName(username);
+        }
+
+        String oldPassword = updateUserDetailsRequest.getOldPassword();
+        String password = updateUserDetailsRequest.getPassword();
+
+        if (password != null) {
+            if (oldPassword == null)
+            return ServiceErrors.generateErrorMessage("Old password is null");
+
+            // check old password is correct
+            if (userDAO.findUserByEmailPassword(oldEmail, oldPassword) == null)
+                return ServiceErrors.generateErrorMessage("Old password is incorrect");
+
+            String error = ServiceInputChecks.checkPassword(password);
+            if (!error.equals(""))
+                return ServiceErrors.generateErrorMessage("New " + error.toLowerCase());
+
+            userDAO.updateUserPassword(oldEmail, password);
+        } else {
+            userDAO.save(user);
+        }
+
+        JSONObject responseJson = new JSONObject();
         return responseJson;
     }
 }

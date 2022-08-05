@@ -1,12 +1,10 @@
 package com.example.restservice.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-
 
 import com.example.restservice.dataModels.Movie;
 import com.example.restservice.dataModels.Review;
@@ -16,7 +14,13 @@ import com.example.restservice.database.UserBlacklistDataAccessService;
 
 
 public class ServiceGetRequestHelperFunctions {
-
+    /**
+     * Gets the average rating for a movie for a logged in user, taking into account thier blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return
+     */
     public static double getMovieAverageRatingByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)
@@ -26,7 +30,7 @@ public class ServiceGetRequestHelperFunctions {
         }
 
         double total = 0;
-        Set<Review> reviewsToCalculate = getMovieReviewsByUserToken(userBlacklistDAO, movie, token);
+        List<Review> reviewsToCalculate = getMovieReviewsByUserToken(userBlacklistDAO, movie, token);
         BigDecimal averageRating;
 
         if (reviewsToCalculate.size() == 0) {
@@ -42,16 +46,28 @@ public class ServiceGetRequestHelperFunctions {
         // round to 1dp
         return (double)Math.round(averageRating.doubleValue() * 10d) / 10d;
     }
-
-    public static Set<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
+    /**
+     * Gets the reviews on a movie that a user should see, taking into account their blacklist.
+     * @param userBlacklistDAO
+     * @param movie
+     * @param token
+     * @return
+     */
+    public static List<Review> getMovieReviewsByUserToken(UserBlacklistDataAccessService userBlacklistDAO, Movie movie, String token) {
         
         // case where token is not passed in (since token is optional in some api calls)
         // can be simulated by user not logged in 
         if(token == null) {
-            return movie.getMovieReviews();
+            List<Review> reviews = new ArrayList<Review>(movie.getMovieReviews());
+            Collections.sort(reviews, new Comparator<Review>() {
+                public int compare(Review r1, Review r2) {
+                    return r2.getLikes() - r1.getLikes();
+                }
+            });
+            return reviews;
         }
 
-        Set<Review> validMovieReviews = new HashSet<>();
+        List<Review> validMovieReviews = new ArrayList<Review>();
 
         List<UserBlacklist> userBlacklist = userBlacklistDAO.findUserBlacklistById(ServiceJWTHelper.getTokenId(token, null));
 
@@ -67,6 +83,12 @@ public class ServiceGetRequestHelperFunctions {
                 validMovieReviews.add(review);
             }
         }
+        Collections.sort(validMovieReviews, new Comparator<Review>() {
+            public int compare(Review r1, Review r2) {
+                return r2.getLikes() - r1.getLikes();
+            }
+        });
         return validMovieReviews;
     }
+
 }

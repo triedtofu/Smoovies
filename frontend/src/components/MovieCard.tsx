@@ -22,22 +22,25 @@ const MovieCard = ({ movie }: { movie: MovieSummary }) => {
         alt={`Movie poster for ${movie.name}`}
       />
       <CardContent>
-        <MyLink to={`/movie/${movie.id}`}>
+        <MyLink href={`/movie/${movie.id}`}>
           <Typography
             gutterBottom
             variant="h5"
             component="div"
-            sx={{ textAlign: 'center' }}
+            color={'#b77a37'}
+            sx={{
+              textAlign: 'center',
+            }}
+            className={styles.movieLink}
           >
             {`${movie.name} (${movie.year})`}
           </Typography>
         </MyLink>
-        <div>
+        <div className={styles.genresDiv}>
           {movie.genres.map((genre, index) => (
-            <Chip key={index} label={genre} sx={{ margin: '5px' }} />
+            <Chip key={index} label={genre} />
           ))}
         </div>
-        <div>Rating: {movie.averageRating} / 5</div>
       </CardContent>
     </Card>
   );

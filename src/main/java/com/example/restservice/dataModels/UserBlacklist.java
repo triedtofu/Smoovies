@@ -7,7 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
+/**
+ * Table that stores two userid fields per row to represent the user has blacklisted the other.
+ */
 @Entity
 @Table(name = "userblacklist")
 public class UserBlacklist {

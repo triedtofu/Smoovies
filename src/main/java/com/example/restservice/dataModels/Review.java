@@ -21,7 +21,9 @@ import com.example.restservice.service.ServiceErrors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * Entity that represents a review in the database.
+ */
 @Entity
 @Table(name = "reviews")
 public class Review {

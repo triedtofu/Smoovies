@@ -68,7 +68,7 @@ public class ServiceInputChecks {
      * Checks if a password is of valid format.
      * Modified code from https://www.delftstack.com/howto/java/password-checker-java/
      * @param Password
-     * @return true if valid
+     * @return error message if invalid and "" if valid
      */
     public static String checkPassword(String Password) {
         // Specify the minimum and maximum number of letters in a password

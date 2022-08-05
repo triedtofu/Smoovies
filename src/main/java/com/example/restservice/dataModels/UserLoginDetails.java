@@ -1,5 +1,7 @@
 package com.example.restservice.dataModels;
-
+/**
+ * Request object for the login of a user.
+ */
 public class UserLoginDetails {
     private String email;
     private String password;

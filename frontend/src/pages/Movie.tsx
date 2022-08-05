@@ -1,9 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Helmet } from 'react-helmet';
-import { useInView } from 'react-intersection-observer';
-import { motion, useAnimation } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 import styles from './Movie.module.css';
 import MakePage from '../components/MakePage';
@@ -12,9 +10,11 @@ import ReviewCard from '../components/ReviewCard';
 import ReviewInput from '../components/ReviewInput';
 import MyLink from '../components/MyLink';
 import ConfirmModal from '../components/ConfirmModal';
+import Container from '../components/MyContainer';
 
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import SimilarMovieCard from '../components/SimilarMovieCard';
 
 import {
   apiGetMovie,
@@ -33,125 +33,57 @@ interface buttonProps {
 
 let addingReview = false;
 
+const PAGE_SIZE = 5;
+
 const Movie = () => {
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const params = useParams();
-  const animation = useAnimation();
-  const animation2 = useAnimation();
-  const animation3 = useAnimation();
 
   const [movie, setMovie] = React.useState<SpecificMovieResponse | undefined>(
     undefined
   );
+  const [numReviewsShown, setNumReviewsShown] = React.useState(PAGE_SIZE);
+
   const [errorStr, setErrorStr] = React.useState('');
   const [button, setButton] = React.useState(0);
   const [deleteMovieConfirm, setDeleteMovieConfirm] = React.useState(false);
   const [deleteMovieErr, setDeleteMovieErr] = React.useState('');
   const [deleteReviewErr, setDeleteReviewErr] = React.useState('');
 
-
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
-
-  const [ref2, inView2] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
-
-  const [ref3, inView3] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
-
   const updateMovie = (id: number) => {
-    apiGetMovie(id)
+    apiGetMovie(id, cookies.token)
       .then((data) => setMovie(data))
       .catch((error) => setErrorStr(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
-    setErrorStr('');
-    setMovie(undefined);
+    const id = parseInt(params.id ?? '');
 
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      setErrorStr('Error');
+    if (Number.isNaN(id)) {
+      setErrorStr('Invalid movie id');
       return;
     }
 
-    try {
-      const id = parseInt(idStr);
-      updateMovie(id);
-    } catch (error) {
-      setErrorStr(getErrorMessage(error));
-    }
-  }, [params]);
+    setErrorStr('');
+    setMovie(undefined);
+
+    updateMovie(id);
+  }, [params.id]);
 
   React.useEffect(() => {
     if (!movie || !cookies.token || cookies.admin) return;
 
-    try {
-      apiUserWishlist(parseInt(parseJwt(cookies.token).jti)).then((data) => {
+    apiUserWishlist(parseInt(parseJwt(cookies.token).jti))
+      .then(data => {
         if (data.movies.find((m) => m.id === movie.id)) {
           setButton(2);
         } else {
           setButton(1);
         }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .catch(error => setErrorStr(getErrorMessage(error)));
   }, [movie]);
-
-  React.useEffect(() => {
-    if (inView) {
-      animation.start({
-        x: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.7,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation.start({ x: '-100vw' });
-    }
-  }, [inView]);
-
-  React.useEffect(() => {
-    if (inView2) {
-      animation2.start({
-        y: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.5,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation2.start({ y: '100vh' });
-    }
-  }, [inView2]);
-
-  React.useEffect(() => {
-    if (inView3) {
-      animation3.start({
-        y: 0,
-        transition: {
-          type: 'spring',
-          duration: 0.5,
-          bounce: 0.3,
-        },
-      });
-    } else {
-      animation3.start({ y: '50vh' });
-    }
-  }, [inView3]);
 
   const WishlistButton = ({ state }: buttonProps) => {
     if (state === 1)
@@ -182,7 +114,7 @@ const Movie = () => {
         setErrorStr('Movie has been deleted.');
         setDeleteMovieConfirm(false);
       })
-      .catch(error => setDeleteMovieErr(getErrorMessage(error)));
+      .catch((error) => setDeleteMovieErr(getErrorMessage(error)));
   };
 
   const AdminButton = () => {
@@ -193,77 +125,65 @@ const Movie = () => {
         <Button variant="outlined" onClick={() => navigate('edit')}>
           Edit
         </Button>
-        <Button variant="outlined" color="error" onClick={() => setDeleteMovieConfirm(true)}>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => setDeleteMovieConfirm(true)}
+        >
           Delete
         </Button>
       </div>
     );
   };
 
-  if (errorStr) return <p>{errorStr}</p>;
+  if (errorStr) return (
+    <Container maxWidth="md">
+      <Typography variant="h5" component="h2">{errorStr}</Typography>
+    </Container>
+  );
 
   if (movie && Object.keys(movie).length === 0) return <></>;
 
   const addMovieToWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), true)
-        .then((_) => setButton(2))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), true)
+      .then(() => setButton(2))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const removeMovieFromWishlist = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
-    try {
-      apiPutUserWishlist(cookies.token, parseInt(idStr), false)
-        .then((_) => setButton(1))
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    }
+    apiPutUserWishlist(cookies.token, parseInt(params.id!), false)
+      .then(() => setButton(1))
+      .catch((err) => setErrorStr(getErrorMessage(err)));
   };
 
   const submitReview = (rating: number, review: string) => {
     if (addingReview) return;
 
     addingReview = true;
-    apiAddReview(cookies.token, parseInt(params.id!), review, rating).then(() => {
-      addingReview = false;
-      updateMovie(parseInt(params.id!));
-    })
-      .catch(() => addingReview = false);
+    apiAddReview(cookies.token, parseInt(params.id!), review, rating)
+      .then(() => {
+        addingReview = false;
+        updateMovie(parseInt(params.id!));
+      })
+      .catch(() => (addingReview = false));
   };
 
   const deleteReview = (movieId: number, reviewUser: number) => {
     apiDeleteReview(cookies.token, movieId, reviewUser)
       .then(() => updateMovie(movieId))
-      .catch(error => setDeleteReviewErr(getErrorMessage(error)));
-    // TODO handle error
+      .catch((error) => setDeleteReviewErr(getErrorMessage(error)));
   };
 
   const deleteButtonFunc = (reviewUser: number) => {
-    if (cookies.token && 
-      (cookies.admin || reviewUser === parseInt(parseJwt(cookies.token).jti))) {
+    if (
+      cookies.token &&
+      (cookies.admin || reviewUser === parseInt(parseJwt(cookies.token).jti))
+    ) {
       return () => deleteReview(movie!.id, reviewUser);
     }
 
     return undefined;
-  }
+  };
 
   if (!movie) return <></>;
 
@@ -273,14 +193,19 @@ const Movie = () => {
         <title>{`${movie.name} - Smoovies`}</title>
       </Helmet>
       <div className={styles.titleDiv}>
-        <h1>
+        <Typography
+          gutterBottom
+          variant="h4"
+          component="h1"
+          fontFamily={'Verdana'}
+        >
           {movie.name} ({movie.year})
-        </h1>
+        </Typography>
 
         <WishlistButton state={button} />
         <AdminButton />
 
-        {deleteMovieConfirm &&
+        {deleteMovieConfirm && (
           <ConfirmModal
             title="Delete movie"
             body={`Are you sure you want to delete ${movie.name}? This action can't be undone.`}
@@ -288,7 +213,7 @@ const Movie = () => {
             cancel={() => setDeleteMovieConfirm(false)}
             error={deleteMovieErr}
           />
-        }
+        )}
       </div>
 
       <div style={{ maxWidth: '740px' }}>
@@ -297,89 +222,113 @@ const Movie = () => {
 
       <br />
 
-      <div ref={ref} style={{ display: 'flex' }}>
-        <motion.div
-          style={{ display: 'flex' }}
-          initial={{ x: '-100vw' }}
-          animate={animation}
-          transition={{ type: 'spring', duration: 0.7, bounce: 0.3 }}
-        >
-          <img src={movie.poster} style={{ width: '200px' }} />
+      <div className={styles.movieSummary}>
+        <img src={movie.poster} style={{ height: '300px', width: '200px' }} />
 
-          <div style={{ width: '100%', textAlign: 'center' }}>
-            <h2>{movie.name}</h2>
-            <div style={{ paddingLeft: '20px', textAlign: 'left' }}>
-              <p>
-                Genre: {movie.genres.join(', ')}
-                <br />
-                Director: {movie.director
-                  .split(',')
-                  .map((s) => s.trim())
-                  .join(', ')}
-                <br />
-                Cast:{' '}
-                {movie.cast
-                  .split(',')
-                  .map((s) => s.trim())
-                  .join(', ')}
-                <br />
-                Content Rating: {movie.contentRating}
-                <br />
-                Average Rating: {movie.averageRating} / 5
-                <br />
-                Runtime: {movie.runtime} minutes
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+        <div style={{ width: '100%', display: 'flex ' }}>
+          <div>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              fontFamily={'Verdana'}
+            >
+              {movie.name}
+            </Typography>
 
-      <div ref={ref3}>
-        <motion.div
-          initial={{ y: '50vh' }}
-          animate={animation3}
-          transition={{ type: 'spring', duration: 1, bounce: 0.3 }}
-        >
-          <h3>Movie Info</h3>
-
-          <p>{movie.description}</p>
-        </motion.div>
-      </div>
-
-      <div ref={ref2}>
-        <div>
-          <h2>Reviews</h2>
-          <div className={styles.reviewsDiv}>
-            {movie.reviews.map((review) => (
-              <ReviewCard
-                key={review.user}
-                onDelete={deleteButtonFunc(review.user)}
-                review={review}
-                error={deleteReviewErr}
-              />
-            ))}
+            <p style={{ display: 'flex' }}>
+              Genre:{' '}
+              {movie.genres
+                .map((s) => s[0].toUpperCase() + s.slice(1))
+                .join(', ')}
+              <br />
+              Director:{' '}
+              {movie.director
+                .split(',')
+                .map((s) => s.trim())
+                .join(', ')}
+              <br />
+              Cast:{' '}
+              {movie.cast
+                .split(',')
+                .map((s) => s.trim())
+                .join(', ')}
+              <br />
+              Content Rating: {movie.contentRating}
+              <br />
+              Average Rating: {movie.averageRating} / 5
+              <br />
+              Runtime: {movie.runtime} minutes
+            </p>
           </div>
         </div>
-
-        {!cookies.token && (
-          <p>
-            <MyLink to="/login">Login</MyLink>/
-            <MyLink to="/register">Register</MyLink> to write a review!
-          </p>
-        )}
-
-        <br />
-
-        {cookies.token &&
-          !movie.reviews.find(
-            (review) =>
-              review.user === parseInt(parseJwt(cookies.token).jti)
-          ) &&
-          <motion.div animate={animation2}>
-            <ReviewInput submitReview={submitReview} />
-          </motion.div>
-        }
       </div>
+      <br />
+      <div>
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
+          Movie Info
+        </Typography>
+
+        <p>{movie.description}</p>
+      </div>
+      <br />
+      <div>
+        <Typography variant="h5" component="h3" fontFamily={'Verdana'}>
+          Movies similar to this one!
+        </Typography>
+        <br />
+        <div className={styles.similarMoviesDiv}>
+          {movie.similar.map((similarMovie) => (
+            <SimilarMovieCard key={similarMovie.id} movie={similarMovie} />
+          ))}
+        </div>
+      </div>
+      <br />
+      <div>
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="h2"
+          fontFamily={'Verdana'}
+        >
+          Reviews
+        </Typography>
+        <div className={styles.reviewsDiv}>
+          {movie.reviews.slice(0, numReviewsShown).map((review) => (
+            <ReviewCard
+              key={review.user}
+              onDelete={deleteButtonFunc(review.user)}
+              review={review}
+              error={deleteReviewErr}
+            />
+          ))}
+
+          {numReviewsShown < movie.reviews.length && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                variant="contained"
+                onClick={() => setNumReviewsShown(numReviewsShown + PAGE_SIZE)}
+              >
+                Show more
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {!cookies.token && (
+        <p>
+          <MyLink href="/login">Login</MyLink>/
+          <MyLink href="/register">Register</MyLink> to write a review!
+        </p>
+      )}
+
+      <br />
+
+      {cookies.token &&
+        !movie.reviews.find(
+          (review) => review.user === parseInt(parseJwt(cookies.token).jti)
+        ) && <ReviewInput submitReview={submitReview} />}
     </Container>
   );
 };
