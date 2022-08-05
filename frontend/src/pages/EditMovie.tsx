@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import MakePage from '../components/MakePage';
@@ -52,24 +53,22 @@ const EditMovie = () => {
       runtime,
     };
     apiEditMovie(cookies.token, movie!.id, movieDetails)
-      .then((_) => navigate(`/movie/${movie!.id}`))
+      .then(() => navigate(`/movie/${movie!.id}`))
       .catch((error) => setErrorString(getErrorMessage(error)));
   };
 
   React.useEffect(() => {
+    setErrorString('');
     const movieId = parseInt(params.id ?? '');
 
     if (Number.isNaN(movieId)) {
-      // TODO set error
+      setErrorString(`Error: '${params.id}' is not an integer`);
       return;
     }
-
-    try {
-      apiGetMovie(movieId).then((data) => setMovie(data));
-    } catch {
-      // TODO handle errors
-    }
-  }, [params]);
+    apiGetMovie(movieId)
+      .then((data) => setMovie(data))
+      .catch((error) => setErrorString(getErrorMessage(error)));
+  }, [params.id]);
 
   React.useEffect(() => {
     // get the list of possible genres
@@ -79,14 +78,29 @@ const EditMovie = () => {
   if (!cookies.token || !cookies.admin)
     return (
       <Container maxWidth="md">
-        <h2>Access denied. Only admins can access this page.</h2>
+        <Typography gutterBottom variant="h5" component="h2">
+          Access denied. Only admins can access this page.
+        </Typography>
       </Container>
     );
 
   if (!movie) return <></>;
 
+  if (errorString)
+    return (
+      <Container maxWidth="md">
+        <Typography gutterBottom variant="h5" component="h2">
+          {errorString}
+        </Typography>
+      </Container>
+    );
+
   return (
     <Container maxWidth="sm">
+      <Helmet>
+        <title>Edit Movie - Smoovies</title>
+      </Helmet>
+
       <Typography
         gutterBottom
         variant="h4"

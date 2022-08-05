@@ -5,7 +5,7 @@ import MakePage from '../components/MakePage';
 
 const Page404 = () => {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <h2>This page doesn't exist</h2>
     </Container>
   );

@@ -38,9 +38,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
-    // [theme.breakpoints.up('md')]: {
-    //   width: '20ch',
-    // },
   },
   width: '100%',
 }));
@@ -53,7 +50,7 @@ const Search = ({ submitSearch }: { submitSearch: (str: string) => void }) => {
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
-      <form onSubmit={() => submitSearch(movieSearch)}>
+      <form onSubmit={(e) => {e.preventDefault(); submitSearch(movieSearch)}}>
         <StyledInputBase
           placeholder="Search…"
           inputProps={{ 'aria-label': 'search' }}

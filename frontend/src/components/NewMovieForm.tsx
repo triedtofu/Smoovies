@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
+import FormLabel from '@mui/material/FormLabel';
 
 import styles from './NewMovieForm.module.css';
 import RequiredTextField from './RequiredTextField';
@@ -49,9 +50,11 @@ const NewMovieForm = (props: NewMovieProps) => {
   const [contentRating, setContentRating] = React.useState('');
   const [cast, setCast] = React.useState('');
   const [runtime, setRuntime] = React.useState('');
-  
+
   const [posterUrl, setPosterUrl] = React.useState('');
   const [trailerUrl, setTrailerUrl] = React.useState('');
+
+  const [errorStr, setErrorStr] = React.useState('');
 
   React.useEffect(() => {
     const initialValues = props.initialValues;
@@ -84,21 +87,18 @@ const NewMovieForm = (props: NewMovieProps) => {
 
   const newMovieSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setErrorStr('');
 
-    let yearNumber = 0;
-    let runtimeNumber = 0;
+    const yearNumber = parseInt(year);
+    const runtimeNumber = parseInt(runtime);
 
-    try {
-      yearNumber = parseInt(year);
-    } catch {
-      // TODO
+    if (Number.isNaN(yearNumber)) {
+      setErrorStr(`Year '${year}' is not a number`);
       return;
     }
 
-    try {
-      runtimeNumber = parseInt(runtime);
-    } catch {
-      // TODO
+    if (Number.isNaN(runtimeNumber)) {
+      setErrorStr(`Runtime '${runtime}' is not a number`);
       return;
     }
 
@@ -119,6 +119,7 @@ const NewMovieForm = (props: NewMovieProps) => {
   return (
     <>
       <form onSubmit={newMovieSubmit} className={styles.movieForm}>
+        {errorStr && <FormLabel error={true}>{errorStr}</FormLabel>}
         <RequiredTextField
           size="small"
           name="name"

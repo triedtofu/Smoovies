@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -64,7 +63,7 @@ const Navbar = (props: NavbarLoggedInProps) => {
     ['My Profile', `/user/${props.id}`],
     ['Edit Profile', '/editprofile'],
     ['My Wishlist', `/user/${props.id}/wishlist`],
-    ['My Blacklist', `/user/${props.id}/blacklist`],
+    ['My Blacklist', '/blacklist'],
   ];
 
   const drawer = (

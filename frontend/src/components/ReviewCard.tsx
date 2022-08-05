@@ -14,7 +14,7 @@ import { Review } from '../util/interface';
 import { motion } from 'framer-motion';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-import { CookiesProvider, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { apilikeUnlikeReview } from '../util/api';
 
 interface ReviewCardProps {
@@ -46,9 +46,8 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
   }, []);
 
   const likeUnlikeClick = () => {
-    // TODO
     if (heartColour === '#a9a9a9') {
-      // Set to like status
+      // set to like status
       setHeartColour('#ff0000');
       setReviewTextColour('#000000');
       setReviewBGColour('#ffa8b5');
@@ -61,7 +60,7 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
       );
       // Do api
     } else {
-      // Set to unlike status
+      // set to unlike status
       setHeartColour('#a9a9a9');
       setReviewTextColour('#bebebe');
       setReviewBGColour('#ffffff');
@@ -87,8 +86,6 @@ const ReviewCard = ({ review, onDelete, error }: ReviewCardProps) => {
             emptyIcon={<StarIcon style={{ opacity: 0.7 }} fontSize="inherit" />}
           />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          {/* <StarIcon className={styles.starRating}></StarIcon> &nbsp;
-          {review.rating}/5 &nbsp;&nbsp;&nbsp;&nbsp; */}
           {cookies.token && (
             <motion.div
               whileHover={{ scale: 1.1 }}

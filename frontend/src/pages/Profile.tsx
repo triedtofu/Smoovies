@@ -43,15 +43,8 @@ const Profile = () => {
 
   const refreshPage = () => {
     setErrorStr('');
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return;
-    }
-
     try {
-      apiGetUserReviews(parseInt(idStr), cookies.token)
+      apiGetUserReviews(parseInt(params.id!), cookies.token)
         .then((data) => {
           setReviews(data.reviews);
           setName(data.username);
@@ -66,7 +59,7 @@ const Profile = () => {
     setReviews([]);
     setName('');
     refreshPage();
-  }, [params]);
+  }, [params.id]);
 
   const removeReview = (movieId: number) => {
     apiDeleteReview(cookies.token, movieId, parseInt(params.id!))
@@ -76,16 +69,9 @@ const Profile = () => {
 
   // returns whether the remove from review button should be shown
   const showButton = () => {
-    const idStr = params.id ?? '';
-
-    if (idStr === '') {
-      // TODO handle error
-      return false;
-    }
-
     if (
       !cookies.token ||
-      (!cookies.admin && idStr !== parseJwt(cookies.token).jti)
+      (!cookies.admin && params.id! !== parseJwt(cookies.token).jti)
     )
       return false;
 
@@ -105,7 +91,6 @@ const Profile = () => {
   };
 
   const blacklistUser = () => {
-    // TODO
     const idStr = params.id ?? '';
     apiPutBlacklistUser(cookies.token, parseInt(idStr), BLUser);
     setBLUser(false);
@@ -135,17 +120,15 @@ const Profile = () => {
             ? 'Your Reviews'
             : `${name}'s Reviews`}
         </Typography>
-        {cookies.token &&
-          cookies.admin &&
-          params.id !== parseJwt(cookies.token).jti && (
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => setConfirmBanUser(true)}
-            >
-              Ban User &nbsp;<CancelIcon></CancelIcon>
-            </Button>
-          )}
+        {cookies.admin && params.id !== parseJwt(cookies.token).jti && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setConfirmBanUser(true)}
+          >
+            Ban User &nbsp;<CancelIcon></CancelIcon>
+          </Button>
+        )}
         {BLUser && cookies.token && params.id !== parseJwt(cookies.token).jti && (
           <Button
             variant="outlined"

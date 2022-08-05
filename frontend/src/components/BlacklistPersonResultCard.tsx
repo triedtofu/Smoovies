@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 import Card from '@mui/material/Card';
@@ -26,7 +24,6 @@ const BlacklistPersonResultCard = (props: BlacklistPersonResultCardProps) => {
   const [cookies] = useCookies();
 
   const removeFromBlacklist = () => {
-    // TODO
     apiPutBlacklistUser(cookies.token, props.userId, BLRemove);
     setBLRemove(true);
   };

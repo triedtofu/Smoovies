@@ -17,7 +17,6 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
-import TestingUI from './pages/TestingUI';
 import Wishlist from './pages/Wishlist';
 
 // Manages the routes
@@ -31,13 +30,12 @@ const Router = () => {
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/resetpassword" element={<ResetPassword />} />
       <Route path="/user/:id/wishlist" element={<Wishlist />} />
-      <Route path="/user/:id/blacklist" element={<Blacklist />} />
+      <Route path="/blacklist" element={<Blacklist />} />
       <Route path="/movie/:id" element={<Movie />} />
       <Route path="/movie/:id/edit" element={<EditMovie />} />
       <Route path="/search" element={<Search />} />
       <Route path="/higherorlower" element={<HigherOrLower />} />
       <Route path="/addmovie" element={<AddMovie />} />
-      <Route path="/movie/:id/testingui" element={<TestingUI />} />
       <Route path="/user/:id" element={<Profile />} />
       <Route path="/actor/:id" element={<Actor />} />
       <Route path="/director/:id" element={<Director />} />

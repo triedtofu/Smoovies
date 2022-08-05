@@ -91,7 +91,7 @@ const EditProfile = () => {
     if (email !== originalEmail) params.email = email;
 
     apiUpdateUserDetails(params)
-      .then((_) => {
+      .then(() => {
         setAlertOpen(true);
         setDisabledButton1(false);
 
@@ -130,7 +130,7 @@ const EditProfile = () => {
     };
 
     apiUpdateUserDetails(params)
-      .then((_) => {
+      .then(() => {
         setAlertOpen(true);
         setDisabledButton2(false);
 
