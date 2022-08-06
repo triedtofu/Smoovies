@@ -41,8 +41,8 @@ To load the database run:
 
 ```
 createdb moviedb
-psql moviedb -c 'CREATE EXTENSION pgcrypto;'
 pg_restore -d moviedb database.dump
+psql moviedb -c 'CREATE EXTENSION pgcrypto;'
 ```
 
 ## Building the Code
